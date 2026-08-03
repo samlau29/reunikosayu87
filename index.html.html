@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reuni Rubi 1987&ndash;2027 &middot; Tetap Bersemangat</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700;9..144,900&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ruby: #7C1F2B;
+    --ruby-deep: #4E1119;
+    --gold: #C79A3E;
+    --paper: #F3EBDA;
+    --paper-warm: #EDE0C6;
+    --ink: #251C18;
+    --pine: #33493F;
+    --cream-white: #FBF7ED;
+    --stamp-line: rgba(37,28,24,0.25);
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--paper);
+    color:var(--ink);
+    font-family:'IBM Plex Sans', sans-serif;
+    line-height:1.55;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{
+    font-family:'Fraunces', serif;
+    margin:0;
+    letter-spacing:-0.01em;
+  }
+  .mono{ font-family:'IBM Plex Mono', monospace; letter-spacing:0.04em; }
+  a{color:inherit;}
+  img{max-width:100%;display:block;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 24px;}
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none!important; transition:none!important;}
+  }
+
+  /* ---------- NAV ---------- */
+  nav{
+    position:sticky; top:0; z-index:50;
+    background:rgba(243,235,218,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom:1px solid var(--stamp-line);
+  }
+  nav .wrap{
+    display:flex; align-items:center; justify-content:space-between;
+    height:64px;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px;
+    font-family:'Fraunces', serif; font-weight:700; font-size:1.05rem;
+  }
+  .brand-badge{
+    width:34px;height:34px;border-radius:50%;
+    background:var(--ruby); color:var(--cream-white);
+    display:flex;align-items:center;justify-content:center;
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem; font-weight:600;
+    border:2px solid var(--gold);
+  }
+  .navlinks{display:flex; gap:28px; font-size:0.88rem;}
+  .navlinks a{
+    text-decoration:none; color:var(--ink); opacity:0.75;
+    padding-bottom:3px; border-bottom:2px solid transparent;
+    transition:opacity .2s, border-color .2s;
+  }
+  .navlinks a:hover{opacity:1; border-color:var(--gold);}
+  .navtoggle{display:none;}
+  @media (max-width:720px){
+    .navlinks{display:none;}
+  }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(199,154,62,0.16), transparent 45%),
+      radial-gradient(circle at 85% 0%, rgba(124,31,43,0.10), transparent 40%),
+      var(--paper);
+    padding:76px 0 60px;
+    overflow:hidden;
+    border-bottom:1px solid var(--stamp-line);
+  }
+  .hero .wrap{
+    display:grid;
+    grid-template-columns:1.1fr 0.9fr;
+    gap:48px;
+    align-items:center;
+  }
+  @media (max-width:860px){
+    .hero .wrap{grid-template-columns:1fr; text-align:left;}
+  }
+  .eyebrow{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:0.72rem; letter-spacing:0.12em; text-transform:uppercase;
+    color:var(--ruby);
+    background:rgba(124,31,43,0.08);
+    border:1px solid rgba(124,31,43,0.25);
+    padding:6px 12px; border-radius:999px;
+    margin-bottom:22px;
+  }
+  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--ruby);}
+  .hero h1{
+    font-size:clamp(2.6rem, 5.4vw, 4.4rem);
+    font-weight:700;
+    line-height:0.98;
+    color:var(--ruby-deep);
+  }
+  .hero h1 em{
+    font-style:normal;
+    color:var(--ruby);
+    display:block;
+    font-weight:900;
+  }
+  .hero p.lede{
+    margin-top:20px;
+    font-size:1.08rem;
+    max-width:46ch;
+    color:rgba(37,28,24,0.82);
+  }
+  .hero-cta{
+    margin-top:32px;
+    display:flex; gap:14px; flex-wrap:wrap;
+  }
+  .btn{
+    font-family:'IBM Plex Sans', sans-serif;
+    font-weight:600; font-size:0.92rem;
+    padding:13px 24px; border-radius:6px;
+    text-decoration:none; cursor:pointer;
+    border:1.5px solid transparent;
+    transition:transform .15s ease, box-shadow .15s ease;
+    display:inline-flex; align-items:center; gap:8px;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn-primary{ background:var(--ruby); color:var(--cream-white); box-shadow:0 4px 0 var(--ruby-deep);}
+  .btn-primary:hover{box-shadow:0 6px 0 var(--ruby-deep);}
+  .btn-ghost{ background:transparent; color:var(--ruby-deep); border-color:var(--ruby-deep); }
+  .btn-ghost:hover{ background:rgba(124,31,43,0.06); }
+
+  /* Ticket stub */
+  .ticket{
+    position:relative;
+    background:var(--cream-white);
+    border:1.5px solid var(--ink);
+    border-radius:14px;
+    padding:0;
+    display:grid;
+    grid-template-columns:1fr auto;
+    box-shadow:8px 8px 0 rgba(124,31,43,0.18);
+    transform:rotate(1.2deg);
+  }
+  .ticket-main{padding:26px 22px;}
+  .ticket-main .tag{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    letter-spacing:0.1em; text-transform:uppercase; color:var(--pine);
+  }
+  .ticket-main h3{
+    font-size:1.5rem; margin-top:6px; color:var(--ruby-deep);
+  }
+  .ticket-meta{
+    margin-top:16px; display:flex; flex-direction:column; gap:8px;
+    font-size:0.9rem;
+  }
+  .ticket-meta div{display:flex; gap:8px; align-items:baseline;}
+  .ticket-meta .k{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--ruby); min-width:64px;}
+  .ticket-stub{
+    border-left:1.5px dashed var(--ink);
+    display:flex; align-items:center; justify-content:center;
+    padding:18px 14px;
+    writing-mode:vertical-rl;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem; letter-spacing:0.14em;
+    color:var(--ruby); text-transform:uppercase;
+    background:repeating-linear-gradient(180deg, transparent, transparent 8px, rgba(124,31,43,0.06) 8px, rgba(124,31,43,0.06) 9px);
+  }
+  .ticket::before, .ticket::after{
+    content:""; position:absolute; width:20px; height:20px;
+    background:var(--paper); border-radius:50%;
+    border:1.5px solid var(--ink);
+    top:50%; transform:translateY(-50%);
+  }
+  .ticket::before{ left:calc(100% - 78px); margin-left:-10px; }
+  .ticket::after{ left:calc(100% - 78px); margin-left:-10px; display:none;}
+
+  /* ---------- COUNTDOWN ---------- */
+  .countdown-strip{
+    background:var(--ruby-deep); color:var(--cream-white);
+    padding:22px 0;
+  }
+  .countdown-strip .wrap{
+    display:flex; align-items:center; justify-content:center; gap:0;
+    flex-wrap:wrap;
+  }
+  .cd-item{
+    text-align:center; padding:0 26px;
+    border-right:1px solid rgba(251,247,237,0.2);
+  }
+  .cd-item:last-child{border-right:none;}
+  .cd-num{
+    font-family:'Fraunces', serif; font-weight:700;
+    font-size:2rem; color:var(--gold);
+  }
+  .cd-label{
+    font-family:'IBM Plex Mono', monospace; font-size:0.66rem;
+    letter-spacing:0.1em; text-transform:uppercase; opacity:0.85;
+  }
+
+  /* ---------- SECTION GENERIC ---------- */
+  section{padding:76px 0; scroll-margin-top:76px;}
+  header.hero{scroll-margin-top:76px;}
+  .section-head{
+    max-width:640px; margin-bottom:44px;
+  }
+  .section-head .eyebrow{margin-bottom:16px;}
+  .section-head h2{
+    font-size:clamp(1.8rem,3vw,2.4rem);
+    color:var(--ruby-deep);
+  }
+  .section-head p{
+    margin-top:14px; color:rgba(37,28,24,0.75); font-size:1.02rem;
+  }
+
+  /* ---------- TEMA ---------- */
+  .tema{background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);}
+  .tema-grid{
+    display:grid; grid-template-columns:repeat(3,1fr); gap:24px;
+  }
+  @media (max-width:820px){ .tema-grid{grid-template-columns:1fr;} }
+  .tema-card{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:10px;
+    padding:26px 22px;
+  }
+  .tema-card .num{
+    font-family:'IBM Plex Mono',monospace; color:var(--gold);
+    font-size:0.78rem; letter-spacing:0.08em;
+  }
+  .tema-card h3{
+    font-size:1.15rem; margin-top:10px; color:var(--ruby-deep);
+  }
+  .tema-card p{margin-top:8px; font-size:0.92rem; color:rgba(37,28,24,0.75);}
+
+  /* ---------- TIMELINE / RUNDOWN ---------- */
+  .rundown-day{
+    border:1px solid var(--stamp-line);
+    border-radius:10px;
+    background:var(--cream-white);
+    margin-bottom:18px;
+    overflow:hidden;
+  }
+  .rundown-day summary{
+    list-style:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:20px 24px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.15rem;
+    color:var(--ruby-deep);
+  }
+  .rundown-day summary::-webkit-details-marker{display:none;}
+  .rundown-day summary .day-date{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    color:var(--pine); font-weight:500;
+  }
+  .rundown-day summary::after{
+    content:"+"; font-family:'IBM Plex Mono',monospace;
+    color:var(--gold); font-size:1.2rem; margin-left:12px;
+  }
+  .rundown-day[open] summary::after{content:"–";}
+  .rundown-list{padding:0 24px 22px;}
+  .rundown-row{
+    display:grid; grid-template-columns:90px 1fr; gap:16px;
+    padding:10px 0; border-top:1px dashed var(--stamp-line);
+    font-size:0.92rem;
+  }
+  .rundown-row:first-child{border-top:none;}
+  .rundown-row .time{font-family:'IBM Plex Mono',monospace; color:var(--ruby); font-size:0.82rem;}
+
+  /* ---------- RSVP ---------- */
+  .rsvp{background:var(--ruby-deep); color:var(--cream-white);}
+  .rsvp .section-head h2{color:var(--gold);}
+  .rsvp .section-head p{color:rgba(251,247,237,0.78);}
+  .rsvp-form-wrap{
+    background:var(--cream-white);
+    border-radius:12px;
+    padding:16px;
+    box-shadow:8px 8px 0 rgba(0,0,0,0.15);
+  }
+  .rsvp-form-wrap iframe{
+    border-radius:6px;
+    background:var(--cream-white);
+    display:block;
+  }
+  .rsvp-fallback{ text-align:center; margin-top:14px; }
+  .rsvp-note{
+    font-size:0.8rem; color:rgba(37,28,24,0.55);
+    margin-top:14px; text-align:center;
+  }
+
+  /* ---------- GALERI ---------- */
+  .galeri-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:18px;
+  }
+  @media (max-width:820px){.galeri-grid{grid-template-columns:repeat(2,1fr);}}
+  .polaroid{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    padding:10px 10px 26px;
+    box-shadow:3px 4px 0 rgba(37,28,24,0.08);
+    transform:rotate(var(--r,-1.5deg));
+    position:relative;
+  }
+  .polaroid:nth-child(2n){--r:2deg;}
+  .polaroid:nth-child(3n){--r:-2.5deg;}
+  .polaroid-photo{
+    aspect-ratio:1/1;
+    background:
+      linear-gradient(135deg, rgba(124,31,43,0.14), rgba(51,73,63,0.14)),
+      repeating-linear-gradient(45deg, rgba(37,28,24,0.04) 0 2px, transparent 2px 10px);
+    border:1px solid var(--stamp-line);
+    display:flex; align-items:center; justify-content:center;
+    color:rgba(37,28,24,0.35);
+    font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
+    text-align:center; padding:8px;
+  }
+  .polaroid-cap{
+    text-align:center; margin-top:10px;
+    font-family:'Fraunces',serif; font-size:0.82rem; color:var(--ruby-deep);
+  }
+
+  /* ---------- PANITIA ---------- */
+  .panitia-grid{
+    display:grid; grid-template-columns:repeat(4,1fr); gap:20px;
+  }
+  @media (max-width:820px){.panitia-grid{grid-template-columns:repeat(2,1fr);}}
+  .panitia-card{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:10px; padding:20px;
+    text-align:center;
+  }
+  .panitia-avatar{
+    width:54px; height:54px; border-radius:50%;
+    background:var(--paper-warm);
+    border:2px solid var(--gold);
+    margin:0 auto 12px;
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Fraunces',serif; font-weight:700; color:var(--ruby-deep);
+  }
+  .panitia-role{
+    font-family:'IBM Plex Mono',monospace; font-size:0.66rem;
+    letter-spacing:0.08em; text-transform:uppercase; color:var(--ruby);
+    margin-bottom:4px;
+  }
+  .panitia-name{font-weight:600; font-size:0.92rem;}
+  .panitia-name + .panitia-name{margin-top:4px;}
+
+  /* ---------- FOOTER ---------- */
+  footer{
+    background:var(--ink); color:var(--paper);
+    padding:44px 0 28px;
+  }
+  footer .wrap{
+    display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:16px;
+  }
+  .footer-slogan{
+    font-family:'Fraunces', serif; font-weight:700; font-size:1.2rem; color:var(--gold);
+  }
+  footer .fine{font-family:'IBM Plex Mono',monospace; font-size:0.72rem; opacity:0.6;}
+
+  .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
+  .reveal.show{opacity:1; transform:translateY(0);}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="wrap">
+    <div class="brand"><span class="brand-badge">87</span> Reuni Rubi</div>
+    <div class="navlinks">
+      <a href="#tema">Tema</a>
+      <a href="#acara">Acara</a>
+      <a href="#rundown">Rundown</a>
+      <a href="#rsvp">Konfirmasi</a>
+      <a href="#panitia">Panitia</a>
+    </div>
+  </div>
+</nav>
+
+<header class="hero">
+  <div class="wrap">
+    <div>
+      <span class="eyebrow">1987 &mdash; 2027</span>
+      <h1>Reuni Rubi<em>Tetap Bersemangat</em></h1>
+      <p class="lede">Empat dekade sejak kita lulus, semangat almamater itu masih menyala. Reuni Rubi mengumpulkan kembali angkatan 1987 untuk tiga hari penuh cerita, tawa, dan kebersamaan.</p>
+      <div class="hero-cta">
+        <a href="#rsvp" class="btn btn-primary">Konfirmasi Kehadiran</a>
+        <a href="#rundown" class="btn btn-ghost">Lihat Rundown Acara</a>
+      </div>
+    </div>
+    <div class="ticket">
+      <div class="ticket-main">
+        <div class="tag">Tiket Reuni &middot; Angkatan 87</div>
+        <h3>Reuni Rubi 1987&ndash;2027</h3>
+        <div class="ticket-meta">
+          <div><span class="k mono">TANGGAL</span> 30 Jul &ndash; 1 Agu 2027</div>
+          <div><span class="k mono">DURASI</span> 3 hari 2 malam</div>
+          <div><span class="k mono">LOKASI</span> <span id="lokasi-info">akan diumumkan</span></div>
+          <div><span class="k mono">TEMA</span> Tetap Bersemangat</div>
+        </div>
+      </div>
+      <div class="ticket-stub">ANGKATAN &middot; 1987</div>
+    </div>
+  </div>
+</header>
+
+<div class="countdown-strip">
+  <div class="wrap" id="countdown">
+    <div class="cd-item"><div class="cd-num" id="cd-days">--</div><div class="cd-label">Hari</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
+    <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
+  </div>
+</div>
+
+<section class="tema" id="tema">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Tentang Reuni</span>
+      <h2>Kenapa "Tetap Bersemangat"?</h2>
+      <p>Slogan sekolah kita dulu bukan cuma jargon di dinding aula. Empat puluh tahun kemudian, semangat itu yang membawa kita kembali berkumpul &mdash; beda usia, beda kota, beda cerita hidup, tapi satu almamater.</p>
+    </div>
+    <div class="tema-grid">
+      <div class="tema-card reveal">
+        <div class="num mono">01</div>
+        <h3>Nostalgia</h3>
+        <p>Bernostalgia ke lorong sekolah, seragam, dan kenangan yang hanya dimengerti angkatan 87.</p>
+      </div>
+      <div class="tema-card reveal">
+        <div class="num mono">02</div>
+        <h3>Kebersamaan</h3>
+        <p>Tiga hari penuh untuk benar-benar terhubung kembali, bukan sekadar reuni sehari yang terburu-buru.</p>
+      </div>
+      <div class="tema-card reveal">
+        <div class="num mono">03</div>
+        <h3>Semangat Baru</h3>
+        <p>Pulang membawa energi baru &mdash; bukti bahwa persahabatan sekolah bisa bertahan seumur hidup.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="acara">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Detail Acara</span>
+      <h2>Info Penting</h2>
+      <p>Catat tanggalnya &mdash; detail lokasi dan akomodasi akan diupdate begitu venue final dikonfirmasi panitia.</p>
+    </div>
+    <div class="tema-grid">
+      <div class="tema-card reveal">
+        <div class="num mono">TGL</div>
+        <h3>30 Jul &ndash; 1 Agu 2027</h3>
+        <p>Jumat sampai Minggu, 3 hari 2 malam.</p>
+      </div>
+      <div class="tema-card reveal">
+        <div class="num mono">LOK</div>
+        <h3 id="lokasi-detail">Segera Diumumkan</h3>
+        <p>Kandidat lokasi sedang disurvei panitia perlengkapan.</p>
+      </div>
+      <div class="tema-card reveal">
+        <div class="num mono">IUR</div>
+        <h3>Info Menyusul</h3>
+        <p>Rincian biaya per orang akan dikirim ke grup angkatan setelah venue terkonfirmasi.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="rundown" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Rundown</span>
+      <h2>Rangkaian 3 Hari</h2>
+      <p>Klik tiap hari untuk lihat detail acara.</p>
+    </div>
+
+    <details class="rundown-day reveal" open>
+      <summary>Hari 1 &middot; Kedatangan &amp; Welcome <span class="day-date">Jumat, 30 Jul</span></summary>
+      <div class="rundown-list">
+        <div class="rundown-row"><span class="time">14.00</span><span>Check-in peserta &amp; pembagian welcome kit</span></div>
+        <div class="rundown-row"><span class="time">18.30</span><span>Welcome dinner &amp; sesi nostalgia santai</span></div>
+        <div class="rundown-row"><span class="time">21.00</span><span>Ngobrol bebas / reuni kamar</span></div>
+      </div>
+    </details>
+
+    <details class="rundown-day reveal">
+      <summary>Hari 2 &middot; Acara Inti <span class="day-date">Sabtu, 31 Jul</span></summary>
+      <div class="rundown-list">
+        <div class="rundown-row"><span class="time">07.00</span><span>Sarapan bersama</span></div>
+        <div class="rundown-row"><span class="time">09.00</span><span>Sambutan &amp; kilas balik masa sekolah</span></div>
+        <div class="rundown-row"><span class="time">11.00</span><span>Games &amp; sesi per kelompok</span></div>
+        <div class="rundown-row"><span class="time">19.00</span><span>Malam gala: hiburan, penghargaan, doorprize</span></div>
+      </div>
+    </details>
+
+    <details class="rundown-day reveal">
+      <summary>Hari 3 &middot; Penutupan <span class="day-date">Minggu, 1 Agu</span></summary>
+      <div class="rundown-list">
+        <div class="rundown-row"><span class="time">07.00</span><span>Sarapan &amp; foto bersama</span></div>
+        <div class="rundown-row"><span class="time">09.00</span><span>City tour (opsional)</span></div>
+        <div class="rundown-row"><span class="time">12.00</span><span>Farewell &amp; check-out</span></div>
+      </div>
+    </details>
+  </div>
+</section>
+
+<section class="rsvp" id="rsvp">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Konfirmasi</span>
+      <h2>Siapa yang Datang?</h2>
+      <p>Isi form di bawah untuk konfirmasi kehadiran. Data akan masuk otomatis ke panitia.</p>
+    </div>
+    <div class="rsvp-form-wrap reveal">
+      <!--
+        CARA PASANG GOOGLE FORM (lakukan sekali, sebelum situs live):
+        1. Buat form baru di https://forms.google.com — tambahkan field: Nama, Kelas/Jurusan, No. WhatsApp, Jumlah Tamu.
+        2. Klik tombol "Send" di kanan atas form, pilih tab ikon "<>" (embed).
+        3. Copy nilai "src" dari kode iframe yang muncul (bentuknya seperti:
+           https://docs.google.com/forms/d/e/XXXXXXXXXXXXXXXXX/viewform?embedded=true)
+        4. Tempel URL itu ke atribut src pada <iframe> di bawah, menggantikan placeholder GANTI_DENGAN_LINK_GOOGLE_FORM_ANDA.
+        5. Tombol "Buka di Tab Baru" juga perlu di-update dengan link form yang sama (tanpa ?embedded=true).
+      -->
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform?embedded=true"
+        width="100%"
+        height="820"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Form Konfirmasi Kehadiran Reuni">
+        Memuat form&hellip;
+      </iframe>
+      <div class="rsvp-fallback">
+        Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
+      </div>
+      <div class="rsvp-note">Data hanya digunakan panitia untuk keperluan reuni Angkatan 1987.</div>
+    </div>
+  </div>
+</section>
+
+<section id="galeri">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Kenangan</span>
+      <h2>Galeri Angkatan 87</h2>
+      <p>Ruang untuk foto-foto kenangan &mdash; akan diisi begitu panitia dokumentasi mengumpulkan foto lama dan foto acara.</p>
+    </div>
+    <div class="galeri-grid">
+      <div class="polaroid reveal"><div class="polaroid-photo">FOTO<br>ANGKATAN</div><div class="polaroid-cap">Segera hadir</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo">MOMEN<br>KELAS</div><div class="polaroid-cap">Segera hadir</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo">EKSKUL<br>&amp; ACARA</div><div class="polaroid-cap">Segera hadir</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo">WISUDA<br>1987</div><div class="polaroid-cap">Segera hadir</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="panitia" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Panitia</span>
+      <h2>Hubungi Kami</h2>
+      <p>Ada pertanyaan soal reuni? Hubungi panitia berikut.</p>
+    </div>
+    <div class="panitia-grid">
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">S</div>
+        <div class="panitia-role">Ketua Panitia</div>
+        <div class="panitia-name">Sam Lau</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">L</div>
+        <div class="panitia-role">Wakil Ketua</div>
+        <div class="panitia-name">Leonard Lauw (Sing Liang)</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">S</div>
+        <div class="panitia-role">Sekretaris &amp; Humas</div>
+        <div class="panitia-name">Leonard Lauw (Sing Liang)</div>
+        <div class="panitia-name">Fany Tendeyong</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">F</div>
+        <div class="panitia-role">Bendahara</div>
+        <div class="panitia-name">Fany Tendeyong</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">A</div>
+        <div class="panitia-role">Acara &amp; Program</div>
+        <div class="panitia-name">Lilik Tranggono</div>
+        <div class="panitia-name">Lily AG</div>
+        <div class="panitia-name">Muliawan Wijaya (Yan Tiong)</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">K</div>
+        <div class="panitia-role">Konsumsi</div>
+        <div class="panitia-name">Lilik Tranggono</div>
+        <div class="panitia-name">Lie Sien</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">D</div>
+        <div class="panitia-role">Dokumentasi &amp; Sponsorship</div>
+        <div class="panitia-name">Lilik Soegiwati (Mee Hwa)</div>
+        <div class="panitia-name">Lily AG</div>
+      </div>
+      <div class="panitia-card reveal">
+        <div class="panitia-avatar">?</div>
+        <div class="panitia-role">Perlengkapan &amp; Venue</div>
+        <div class="panitia-name">Segera ditentukan</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    <div class="footer-slogan">Tetap Bersemangat.</div>
+    <div class="fine">Reuni Rubi &middot; Angkatan 1987 &middot; 30 Jul &ndash; 1 Agu 2027</div>
+  </div>
+</footer>
+
+<script>
+  // Countdown
+  const target = new Date("2027-07-30T00:00:00");
+  function updateCountdown(){
+    const now = new Date();
+    let diff = target - now;
+    if(diff < 0) diff = 0;
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+    document.getElementById('cd-days').textContent = d;
+    document.getElementById('cd-hours').textContent = String(h).padStart(2,'0');
+    document.getElementById('cd-mins').textContent = String(m).padStart(2,'0');
+    document.getElementById('cd-secs').textContent = String(s).padStart(2,'0');
+  }
+  updateCountdown();
+  setInterval(updateCountdown, 1000);
+
+  // Scroll reveal
+  const revealEls = document.querySelectorAll('.reveal');
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  revealEls.forEach(el=>io.observe(el));
+</script>
+
+</body>
+</html>
