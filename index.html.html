@@ -327,7 +327,10 @@
     color:rgba(37,28,24,0.35);
     font-family:'IBM Plex Mono',monospace; font-size:0.65rem;
     text-align:center; padding:8px;
+    overflow:hidden;
   }
+  .polaroid-photo img{ cursor:pointer; transition:transform .25s ease; }
+  .polaroid-photo img:hover{ transform:scale(1.04); }
   .polaroid-cap{
     text-align:center; margin-top:10px;
     font-family:'Fraunces',serif; font-size:0.82rem; color:var(--ruby-deep);
@@ -379,6 +382,129 @@
 
   .reveal{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s ease;}
   .reveal.show{opacity:1; transform:translateY(0);}
+
+  /* ---------- DAFTAR ALUMNI ---------- */
+  .alumni-search{
+    display:flex; gap:12px; margin-bottom:24px; flex-wrap:wrap; align-items:center;
+  }
+  .alumni-search input{
+    flex:1; min-width:220px;
+    background:var(--cream-white);
+    border:1.5px solid var(--stamp-line);
+    border-radius:6px;
+    padding:11px 14px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:0.94rem;
+    color:var(--ink);
+  }
+  .alumni-search input:focus{ outline:none; border-color:var(--ruby); }
+  .alumni-stats{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
+    color:var(--ruby-deep); white-space:nowrap;
+  }
+  .alumni-stats strong{ color:var(--ruby); font-size:1rem; }
+  .alumni-class{
+    border:1px solid var(--stamp-line);
+    border-radius:10px;
+    background:var(--cream-white);
+    margin-bottom:14px;
+    overflow:hidden;
+  }
+  .alumni-class summary{
+    list-style:none; cursor:pointer;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:16px 22px;
+    font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem;
+    color:var(--ruby-deep);
+  }
+  .alumni-class summary::-webkit-details-marker{display:none;}
+  .alumni-class summary .class-count{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--pine); font-weight:500;
+  }
+  .alumni-class summary::after{
+    content:"+"; font-family:'IBM Plex Mono',monospace;
+    color:var(--gold); font-size:1.1rem; margin-left:12px;
+  }
+  .alumni-class[open] summary::after{content:"–";}
+  .alumni-rows{ padding:0 22px 18px; }
+  .alumni-row{
+    display:flex; align-items:center; gap:10px;
+    padding:8px 4px; font-size:0.9rem;
+    border-top:1px dashed var(--stamp-line);
+  }
+  .alumni-row:first-child{border-top:none;}
+  .alumni-tick{
+    width:20px; height:20px; border-radius:50%;
+    border:1.5px solid var(--stamp-line);
+    display:flex; align-items:center; justify-content:center;
+    flex-shrink:0; font-size:0.72rem; color:transparent;
+  }
+  .alumni-row.confirmed .alumni-tick{
+    background:var(--pine); border-color:var(--pine); color:var(--cream-white);
+  }
+  .alumni-row.confirmed .alumni-name{ font-weight:600; }
+  .alumni-row.deceased{ opacity:0.55; }
+  .alumni-row.deceased .alumni-tick{ border-color:transparent; }
+  .alumni-name{ flex:1; }
+  .alumni-alm{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:rgba(37,28,24,0.5); font-style:italic; margin-left:4px;
+  }
+  .alumni-kota{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:rgba(37,28,24,0.45);
+  }
+  .alumni-legend{
+    display:flex; gap:20px; margin-top:18px; font-size:0.82rem;
+    color:rgba(37,28,24,0.65); flex-wrap:wrap;
+  }
+  .alumni-legend span{ display:flex; align-items:center; gap:6px; }
+
+  /* ---------- LIGHTBOX ---------- */
+  .lightbox{
+    position:fixed; inset:0; z-index:200;
+    background:rgba(18,12,10,0.92);
+    display:none; align-items:center; justify-content:center;
+    padding:40px 20px;
+  }
+  .lightbox.open{display:flex;}
+  .lightbox img{
+    max-width:100%; max-height:85vh;
+    border-radius:6px;
+    box-shadow:0 10px 40px rgba(0,0,0,0.5);
+  }
+  .lightbox-close{
+    position:absolute; top:20px; right:24px;
+    background:rgba(251,247,237,0.1);
+    border:1.5px solid rgba(251,247,237,0.4);
+    color:var(--cream-white);
+    width:42px; height:42px; border-radius:50%;
+    font-size:1.3rem; line-height:1;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .lightbox-close:hover{ background:rgba(251,247,237,0.2); }
+  .lightbox-nav{
+    position:absolute; top:50%; transform:translateY(-50%);
+    background:rgba(251,247,237,0.1);
+    border:1.5px solid rgba(251,247,237,0.4);
+    color:var(--cream-white);
+    width:46px; height:46px; border-radius:50%;
+    font-size:1.4rem;
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer;
+  }
+  .lightbox-nav:hover{ background:rgba(251,247,237,0.2); }
+  .lightbox-prev{ left:16px; }
+  .lightbox-next{ right:16px; }
+  .lightbox-cap{
+    position:absolute; bottom:24px; left:0; right:0;
+    text-align:center; color:var(--cream-white);
+    font-family:'Fraunces',serif; font-size:0.95rem;
+  }
+  @media (max-width:640px){
+    .lightbox-nav{width:38px;height:38px;font-size:1.1rem;}
+  }
 </style>
 </head>
 <body>
@@ -391,6 +517,8 @@
       <a href="#acara">Acara</a>
       <a href="#rundown">Rundown</a>
       <a href="#rsvp">Konfirmasi</a>
+      <a href="#daftar-alumni">Daftar Alumni</a>
+      <a href="#update-data">Update Data</a>
       <a href="#panitia">Panitia</a>
     </div>
   </div>
@@ -561,12 +689,84 @@
   </div>
 </section>
 
+<section id="daftar-alumni" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">453 Alumni &middot; 9 Kelas</span>
+      <h2>Daftar Alumni Angkatan 87</h2>
+      <p>Cari nama kamu atau teman-teman di bawah. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
+    </div>
+
+    <div class="alumni-search reveal">
+      <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
+      <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 453 sudah konfirmasi</div>
+    </div>
+
+    <div id="alumniClasses" class="reveal"></div>
+
+    <div class="alumni-legend reveal">
+      <span><span class="alumni-tick confirmed" style="background:var(--pine);border-color:var(--pine);color:var(--cream-white);display:inline-flex;align-items:center;justify-content:center;">&#10003;</span> Sudah konfirmasi hadir</span>
+      <span><span class="alumni-tick" style="display:inline-flex;"></span> Belum konfirmasi</span>
+      <span style="opacity:0.55;">Nama (Alm.) &mdash; Telah berpulang</span>
+    </div>
+  </div>
+</section>
+
+<section id="update-data">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Data Alumni</span>
+      <h2>Update Data &mdash; Diri Sendiri atau Teman</h2>
+      <p>Pakai form yang sama untuk dua hal: perbarui data diri kamu sendiri, <strong>atau</strong> bantu isikan data teman yang kamu tahu kontaknya tapi tidak aktif di grup WhatsApp. Cukup pilih namanya dari daftar &mdash; kamu tidak perlu tahu siapa saja yang datanya masih kosong.</p>
+    </div>
+    <div class="rsvp-form-wrap reveal">
+      <!--
+        CARA PASANG GOOGLE FORM GABUNGAN (update data diri + data teman):
+        1. Buat form baru di https://forms.google.com dengan field:
+           - "Nama" -> tipe Dropdown, isi dengan 453 nama alumni (paste daftar sekali, Google Form
+             otomatis pecah per baris jadi opsi). Ini bisa untuk NAMA SIAPA SAJA — diri sendiri atau teman.
+           - "Ini data siapa?" -> tipe Multiple choice: "Data saya sendiri" / "Data teman (saya bantu isikan)"
+           - "Status Alumni" -> tipe Multiple choice: "Masih aktif / bisa dihubungi" / "Sudah meninggal
+             (Almarhum/Almarhumah)". Kalau mau, aktifkan "Go to section based on answer" supaya kalau
+             pilih "Sudah meninggal", field WA/Email otomatis dilewati (opsional, form tetap jalan tanpa ini).
+           - "Nama Panggilan" -> isian bebas (opsional)
+           - "Kota Sekarang Tinggal" -> isian bebas
+           - "Email" -> isian bebas (opsional)
+           - "Nomor WhatsApp Terkini" -> isian bebas
+           - "Nama Kamu (yang mengisi form ini)" -> isian bebas, opsional, untuk follow-up panitia
+        2. Klik "Send" -> tab ikon "<>" (embed) -> copy nilai "src" dari kode iframe.
+        3. Ganti GANTI_DENGAN_LINK_FORM_UPDATE_DATA di bawah dengan URL itu (2 tempat: iframe & tombol).
+        4. Untuk menampilkan status "(Alm.)" otomatis di Daftar Alumni: publish sheet respons form ini
+           sebagai CSV (File -> Share -> Publish to web -> CSV), lalu isi UPDATE_CSV_URL di bagian
+           script bawah (cari komentar "UPDATE_CSV_URL").
+        Tip: aktifkan "Allow response editing" (ikon gerigi -> Responses) supaya orang bisa balik lagi
+        edit data yang sudah pernah diisi tanpa bikin entri duplikat.
+      -->
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform?embedded=true"
+        width="100%"
+        height="720"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Form Update Data Alumni">
+        Memuat form&hellip;
+      </iframe>
+      <div class="rsvp-fallback">
+        Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
+      </div>
+      <div class="rsvp-note">Tahu kontak lebih dari satu teman? Isi form ini beberapa kali, satu kali per orang.</div>
+      <div class="rsvp-note">Data hanya digunakan panitia untuk keperluan reuni Angkatan 1987.</div>
+    </div>
+  </div>
+</section>
+
 <section id="galeri">
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Kenangan</span>
       <h2>Galeri Angkatan 87</h2>
-      <p>Ruang untuk foto-foto kenangan &mdash; akan diisi begitu panitia dokumentasi mengumpulkan foto lama dan foto acara.</p>
+      <p>Kenangan dari reuni 2017 dan perjalanan bersama angkatan 87 sebelumnya — akan terus bertambah seiring foto-foto acara baru masuk.</p>
     </div>
     <div class="galeri-grid">
       <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-01.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kosayu 30 Tahun, Bali 2017</div></div>
@@ -584,6 +784,20 @@
       <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-13.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
       <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-14.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Angkatan 1987</div></div>
       <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-15.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Perjalanan Kapal</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-16.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-17.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">2Friends 2Gether 4Ever</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-18.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-19.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sarapan Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-20.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Angkatan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-21.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Barisan di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-22.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kunjungan Tebing</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-23.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Kapal</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-24.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Rebah di Pasir</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-25.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Gazebo Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-26.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Jalan-Jalan Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-27.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul di Jalan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-28.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sore di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-29.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kebersamaan Angkatan</div></div>
     </div>
   </div>
 </section>
@@ -647,6 +861,14 @@
   </div>
 </section>
 
+<div class="lightbox" id="lightbox">
+  <div class="lightbox-close" id="lightboxClose">&times;</div>
+  <div class="lightbox-nav lightbox-prev" id="lightboxPrev">&#8249;</div>
+  <img id="lightboxImg" src="" alt="">
+  <div class="lightbox-nav lightbox-next" id="lightboxNext">&#8250;</div>
+  <div class="lightbox-cap" id="lightboxCap"></div>
+</div>
+
 <footer>
   <div class="wrap">
     <div class="footer-slogan">Tetap Bersemangat.</div>
@@ -655,6 +877,125 @@
 </footer>
 
 <script>
+
+  // Data alumni angkatan 87
+  const alumniData = [{"k": "I-6", "n": "Adi Widjaja Gunawan", "a": "Tarakan"}, {"k": "I-7", "n": "Agnes Farida B.", "a": "Malang"}, {"k": "I-1", "n": "Agung Budijani", "a": "Malang"}, {"k": "I-4", "n": "Agung Soenartho", "a": "Fak Fak"}, {"k": "I-7", "n": "Agus Cahyono", "a": "Malang"}, {"k": "I-3", "n": "Agus Harijanto", "a": "Kediri"}, {"k": "I-7", "n": "Agustinus Petrus K.", "a": "Donggala"}, {"k": "I-7", "n": "Aires Arjanti", "a": "Dampit"}, {"k": "I-4", "n": "Albert Samuel", "a": "Bacan"}, {"k": "I-5", "n": "Alexander Wiweko", "a": "Ujung Pandang"}, {"k": "I-6", "n": "Alfonsus Mero", "a": "Maumere"}, {"k": "I-9", "n": "Alfred Rinaldy", "a": "Fak Fak"}, {"k": "I-8", "n": "Ama Desiliana", "a": "Banyuwangi"}, {"k": "I-4", "n": "Amelia Fifi Y.", "a": "Ujung Pandang"}, {"k": "I-3", "n": "Andi Sugianto", "a": "Magetan"}, {"k": "I-8", "n": "Andojo Anggoro", "a": "Tumpang"}, {"k": "I-7", "n": "Andreas", "a": "Malang"}, {"k": "I-2", "n": "Andriana Dewi", "a": "Sumenep"}, {"k": "I-9", "n": "Andrijanto Gunawan", "a": "Tegal"}, {"k": "I-4", "n": "Anelis Widjaja", "a": "Malang"}, {"k": "I-2", "n": "Ang Giok Hwa", "a": "Tumpang"}, {"k": "I-9", "n": "Ang Kian Hoat", "a": "Batu"}, {"k": "I-7", "n": "Ang Meng Theng", "a": "Malang"}, {"k": "I-1", "n": "Ang Soen Fie", "a": "Malang"}, {"k": "I-1", "n": "Anggiono", "a": "Malang"}, {"k": "I-5", "n": "Ani Setiyowati", "a": "Malang"}, {"k": "I-7", "n": "Anne Kurniawati", "a": "Blitar"}, {"k": "I-9", "n": "Anny Taneke", "a": "Malang"}, {"k": "I-5", "n": "Antonius Taslim", "a": "Surabaya"}, {"k": "I-8", "n": "Arif G. Honandar", "a": "Ambon"}, {"k": "I-9", "n": "Awen Harsono", "a": "Banyuwangi"}, {"k": "I-6", "n": "Ayliana Hariati", "a": "Kencong"}, {"k": "I-8", "n": "Bambang Suprajitno", "a": "Banyuwangi"}, {"k": "I-6", "n": "Benny Surya", "a": "Kupang"}, {"k": "I-4", "n": "Benny Yohanis T.", "a": "NTT"}, {"k": "I-2", "n": "Berkim Irfena Nahan", "a": "Palangka Raya"}, {"k": "I-1", "n": "Berlia Santoso", "a": "Malang"}, {"k": "I-3", "n": "Bernadus Heriyanto", "a": "Sampit"}, {"k": "I-8", "n": "Bernadus Mariono", "a": "Malang"}, {"k": "I-2", "n": "Bhari Lofis", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Billy", "a": "Blitar"}, {"k": "I-1", "n": "Bing Selamat", "a": "Malang"}, {"k": "I-4", "n": "Birawati Soehtmo", "a": "Malang"}, {"k": "I-1", "n": "Biyanto", "a": "Malang"}, {"k": "I-2", "n": "Boen Khin Khin", "a": "Lawang"}, {"k": "I-3", "n": "Bong Su An", "a": "Pontianak"}, {"k": "I-9", "n": "Budhi Surjana", "a": "Ampenan"}, {"k": "I-5", "n": "Budi Pitoyo", "a": "Malang"}, {"k": "I-6", "n": "Budi Santoso", "a": "Batu"}, {"k": "I-3", "n": "Budi Sukian Alamsyah", "a": "Teluk Betung"}, {"k": "I-1", "n": "Budimn Ruslim", "a": "Pontianak"}, {"k": "I-1", "n": "Budiono Djajanto", "a": "Surabaya"}, {"k": "I-1", "n": "Budiyanto", "a": "Banjarmasin"}, {"k": "I-3", "n": "Buntero", "a": "Pontianak"}, {"k": "I-1", "n": "Catharina Retnosari", "a": "Malang"}, {"k": "I-4", "n": "Chaidar Putera Liem", "a": "Ujung Pandang"}, {"k": "I-2", "n": "Chandra Tohir", "a": "Ujung Pandang"}, {"k": "I-8", "n": "Chin Sen Nyap", "a": "Cakranegara"}, {"k": "I-2", "n": "Christin Sri S.", "a": "Malang"}, {"k": "I-1", "n": "Christina Kurniasih", "a": "Ujung Pndang"}, {"k": "I-5", "n": "Daniel David Liyadi", "a": "Ujung Pandang"}, {"k": "I-4", "n": "Daniel Purnomo", "a": "Malang"}, {"k": "I-4", "n": "Danu Julianto", "a": "Pasuruan"}, {"k": "I-6", "n": "Darmono Talim", "a": "Teluk Betung"}, {"k": "I-1", "n": "David Agustinus Eman", "a": "Ampenan"}, {"k": "I-5", "n": "Debora Susilawati P", "a": "Belimbing"}, {"k": "I-7", "n": "Deflin Simange", "a": "Tobelo"}, {"k": "I-8", "n": "Derk Chandra", "a": "Jember"}, {"k": "I-9", "n": "Dewi Djojo Setijo", "a": "Malang"}, {"k": "I-9", "n": "Dewi Larasari", "a": "Malang"}, {"k": "I-9", "n": "Diana / Poei Hong Ding", "a": "Gresik"}, {"k": "I-5", "n": "Dicky Ernanto", "a": "Malang"}, {"k": "I-3", "n": "Dicky Iksan Soetikno", "a": "Malang"}, {"k": "I-9", "n": "Djemi Tedry", "a": "Ternate"}, {"k": "I-1", "n": "Djojo Hadikusumo", "a": "Malang"}, {"k": "I-8", "n": "Djoko Wiyono", "a": "Wlingi"}, {"k": "I-2", "n": "Djuniawati", "a": "Malang"}, {"k": "I-2", "n": "Dwi Iswandi", "a": "Malang"}, {"k": "I-8", "n": "Dyah Indrawati", "a": "Tuban"}, {"k": "I-8", "n": "Eddy Winoto", "a": "Jember"}, {"k": "I-9", "n": "Edwyn Hearyanto", "a": "Malang"}, {"k": "I-4", "n": "Eka Herwanti", "a": "Malang"}, {"k": "I-6", "n": "Eko Budiono Santoso", "a": "Malang"}, {"k": "I-1", "n": "Eko Santoso", "a": "Tulungagung"}, {"k": "I-8", "n": "Elizabeth Lucia S.", "a": "Pontianak"}, {"k": "I-5", "n": "Elizabeth Siekwandy", "a": "Situbondo"}, {"k": "I-7", "n": "Elliana", "a": "Jakarta Pusat"}, {"k": "I-2", "n": "Elly Puspita D.", "a": "Tulungagung"}, {"k": "I-6", "n": "Elynah", "a": "Pontianak"}, {"k": "I-7", "n": "Emeralda Castalia", "a": "Ende"}, {"k": "I-8", "n": "Endang", "a": "Bima"}, {"k": "I-6", "n": "Enny Indriati", "a": "Lumajang"}, {"k": "I-7", "n": "Enny Lindawati", "a": "Blitar"}, {"k": "I-6", "n": "Erbia Santoso", "a": "Pontianak"}, {"k": "I-2", "n": "Erick Erino Honand", "a": "Ujung Pandang"}, {"k": "I-3", "n": "Erick Gerung", "a": "Jakarta Utara"}, {"k": "I-7", "n": "Erien Alidinata", "a": "Kediri"}, {"k": "I-5", "n": "Erna Listiowati", "a": "Sumenep"}, {"k": "I-3", "n": "Erna Soenyoto", "a": "Malang"}, {"k": "I-7", "n": "Erni Pherdy", "a": "Maumere"}, {"k": "I-8", "n": "Ernie", "a": "Pontianak"}, {"k": "I-3", "n": "Ernie Ong", "a": "Rogojampi"}, {"k": "I-7", "n": "Erniek Anggoro", "a": "Tumpang"}, {"k": "I-1", "n": "Erny / Oei Yoe Tjhin", "a": "Banyuwangi"}, {"k": "I-2", "n": "Evi Hiono", "a": "Pare"}, {"k": "I-3", "n": "F. X. Suprakto HS", "a": "Sumenep"}, {"k": "I-9", "n": "Fadjarwati", "a": "Malang"}, {"k": "I-3", "n": "Fang Lie", "a": "Lawang"}, {"k": "I-1", "n": "Fany Tendeyong", "a": "Malang"}, {"k": "I-6", "n": "Fei Fei Magdalena", "a": "Lawang"}, {"k": "I-7", "n": "Felex", "a": "Ujung Pandang"}, {"k": "I-6", "n": "Fenny Rosita", "a": "Malang"}, {"k": "I-6", "n": "Ferry Halim Limawal", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Fifin Tanaya", "a": "Bima"}, {"k": "I-9", "n": "Firman Setiawan", "a": "Malang"}, {"k": "I-6", "n": "Fiviane", "a": "Malang"}, {"k": "I-9", "n": "Fonny Fulbertus", "a": "Kupang"}, {"k": "I-2", "n": "Fonny Lauw", "a": "Malang"}, {"k": "I-6", "n": "Fonny Ungranesia", "a": "Ujung Pandang"}, {"k": "I-8", "n": "Frans Gozal", "a": "Ujung Pandang"}, {"k": "I-9", "n": "Go Hwie Lie", "a": "Malang"}, {"k": "I-9", "n": "Go Kok Ang", "a": "Teluk Betung"}, {"k": "I-5", "n": "Go Ming Ming", "a": "Malang"}, {"k": "I-2", "n": "Go Oei Kiong", "a": "Mojokerto"}, {"k": "I-7", "n": "Go Poo Tjie", "a": "Lawang"}, {"k": "I-5", "n": "Go Sioe Ming", "a": "Lumajang"}, {"k": "I-7", "n": "Go Tiek Eng", "a": "Malang"}, {"k": "I-6", "n": "Go Yan Hok", "a": "Dampit"}, {"k": "I-6", "n": "Goei Hauw Kiong", "a": "Surabaya"}, {"k": "I-9", "n": "Goey Kim Hong", "a": "Tarakan"}, {"k": "I-4", "n": "Gunadi Dirdjakarsana", "a": "Semarang"}, {"k": "I-5", "n": "Gunawan Karim", "a": "Pontianak"}, {"k": "I-5", "n": "Han Bok Lian", "a": "Pasuruan"}, {"k": "I-5", "n": "Handi Iswanto", "a": "Malang"}, {"k": "I-6", "n": "Handoko Kertawidjaja", "a": "Malang"}, {"k": "I-2", "n": "Handoko Purnomo", "a": "Kediri"}, {"k": "I-3", "n": "Handoko Santoso", "a": "Malang"}, {"k": "I-1", "n": "Handoyo", "a": "Malang"}, {"k": "I-4", "n": "Handoyo Utomo", "a": "Rembang"}, {"k": "I-6", "n": "Hari Santoso", "a": "Malang"}, {"k": "I-8", "n": "Hari Sugiarto", "a": "Banyuwangi"}, {"k": "I-1", "n": "Hariarsih", "a": "Singosari"}, {"k": "I-9", "n": "Harijanto Iputro", "a": "Malang"}, {"k": "I-4", "n": "Harley Santoso", "a": "Malang"}, {"k": "I-2", "n": "Harry Soebroto", "a": "Lumajang"}, {"k": "I-8", "n": "Harsono Simka", "a": "Malang"}, {"k": "I-7", "n": "Harto Sudianto", "a": "Malang"}, {"k": "I-1", "n": "Haryanto Tiono", "a": "Malang"}, {"k": "I-8", "n": "Haryawati", "a": "Teluk Betung"}, {"k": "I-9", "n": "Hendratno Kurniawan", "a": "Tanjung Karang"}, {"k": "I-3", "n": "Hendrowati", "a": "Malang"}, {"k": "I-1", "n": "Hendy Wendjaja", "a": "Teluk Betung"}, {"k": "I-7", "n": "Henky Sonata", "a": "Banjarmasin"}, {"k": "I-9", "n": "Henny Laguna", "a": "Ternate"}, {"k": "I-8", "n": "Henora Kofenno Nahan", "a": "Kuala Kapuas"}, {"k": "I-5", "n": "Henry Djojo", "a": "Banjarmasin"}, {"k": "I-5", "n": "Henry Edward K.", "a": "Madiun"}, {"k": "I-8", "n": "Herbert Djahan S.", "a": "Kupang"}, {"k": "I-7", "n": "Herman Kwandang", "a": "Ternate"}, {"k": "I-6", "n": "Hermanto Goentjoro", "a": "Malang"}, {"k": "I-4", "n": "Hermanto Ruslim", "a": "Pontianak"}, {"k": "I-7", "n": "Hermanus Albertus M.", "a": "Malang"}, {"k": "I-8", "n": "Herry Djunaidi", "a": "Malang"}, {"k": "I-6", "n": "Hiendra Wahyudi", "a": "Ponorogo"}, {"k": "I-2", "n": "Hoetung Sidarta", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Hondi Halim", "a": "Kota Baru"}, {"k": "I-7", "n": "Hoo The Tjien", "a": "Bondowoso"}, {"k": "I-3", "n": "Ichwan Johan", "a": "Malang"}, {"k": "I-3", "n": "Ida Kusuma", "a": "Tulungagung"}, {"k": "I-2", "n": "Idawati Trisno", "a": "Malang"}, {"k": "I-9", "n": "Idrus Hermawan", "a": "Malang"}, {"k": "I-8", "n": "Ie, Linda Yuliani", "a": "Ponorogo"}, {"k": "I-6", "n": "Ign Rudi Wijaya", "a": "Tulungagung"}, {"k": "I-1", "n": "Ign. Teddy Anggrianto", "a": "Surabaya"}, {"k": "I-4", "n": "Iin Wahyujati", "a": "Boyolali"}, {"k": "I-2", "n": "Iman Soendjojo", "a": "Tegal"}, {"k": "I-7", "n": "Indahwati Budiardjo", "a": "Tarakan"}, {"k": "I-4", "n": "Indahyu Lingsih", "a": "Lumajang"}, {"k": "I-5", "n": "Indra Setiawan", "a": "Malang"}, {"k": "I-3", "n": "Indrawati Iwan", "a": "Malang"}, {"k": "I-7", "n": "Indrawati Sugito", "a": "Malang"}, {"k": "I-2", "n": "Inyo Setiawan", "a": "Bojonegoro"}, {"k": "I-2", "n": "Irenion Thie", "a": "Kaimana"}, {"k": "I-1", "n": "Iswanto", "a": "Banyuwangi"}, {"k": "I-8", "n": "Ita Boediman", "a": "Malang"}, {"k": "I-8", "n": "Iwan Halim", "a": "Blitar"}, {"k": "I-7", "n": "Iwan Kolopaking", "a": "Lawang"}, {"k": "I-9", "n": "Iwan Kurniawan", "a": "Ternate"}, {"k": "I-9", "n": "Jap Kee Bing", "a": "Malang"}, {"k": "I-4", "n": "Jap Shiu Hua", "a": "Malang"}, {"k": "I-7", "n": "Jauw Tao Sing", "a": "Blitar"}, {"k": "I-7", "n": "Jemmy Hartono A.", "a": "Bangkalan"}, {"k": "I-5", "n": "Jenny Angkawidjaja", "a": "Ampenan"}, {"k": "I-7", "n": "Jenny Setiawati", "a": "Malang"}, {"k": "I-5", "n": "Jimmy Liem Tjiauw Liong", "a": "Malang"}, {"k": "I-6", "n": "Jimmy Tjoajoknoto", "a": "Ternate"}, {"k": "I-6", "n": "Johan Darmanto", "a": "Ujung Pandang"}, {"k": "I-8", "n": "Johan Santoso", "a": "Situbondo"}, {"k": "I-2", "n": "Johanes", "a": "Surabaya"}, {"k": "I-6", "n": "Johanes Budi Santoso", "a": "Surabaya"}, {"k": "I-9", "n": "Johannes", "a": "Malang"}, {"k": "I-8", "n": "Johanson Therik", "a": "Kupang"}, {"k": "I-3", "n": "Johnny Limoa", "a": "Ujung Pandang"}, {"k": "I-9", "n": "Johny Limmunandar", "a": "Ternate"}, {"k": "I-6", "n": "Johny Sudarso B.", "a": "Pangkalpinang"}, {"k": "I-6", "n": "Johny Theis", "a": "Ternate"}, {"k": "I-5", "n": "Jomes Winter", "a": "Sampit"}, {"k": "I-4", "n": "Jonas Susilo", "a": "Banjarmasin"}, {"k": "I-1", "n": "Jong Han Peng", "a": "Malang"}, {"k": "I-6", "n": "Jong Jan Tiong", "a": "Malang"}, {"k": "I-7", "n": "Joseph Adi Witjaksana", "a": "Ternate"}, {"k": "I-3", "n": "Joseph Rudy D.M.", "a": "Malang"}, {"k": "I-3", "n": "Josephine Benita", "a": "Ternate"}, {"k": "I-5", "n": "Josephine Ong", "a": "Ternate"}, {"k": "I-6", "n": "Julia Afianto", "a": "Jakarta Barat"}, {"k": "I-3", "n": "Juliana Widjaja", "a": "Banyuwangi"}, {"k": "I-7", "n": "Juswandhi Budiato", "a": "Tegal"}, {"k": "I-4", "n": "Kareantho Tantri", "a": "Tobelo"}, {"k": "I-6", "n": "Kartikawati Dewi", "a": "Lawang"}, {"k": "I-8", "n": "Kenny Anggrianto", "a": "Fak Fak"}, {"k": "I-1", "n": "Kheng Hwie Lien", "a": "Malang"}, {"k": "I-7", "n": "Khiah Budi Apolowati", "a": "Malang"}, {"k": "I-8", "n": "Kho Ay Tien", "a": "Malang"}, {"k": "I-8", "n": "Kho Seng Kiong", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Koe The Chen", "a": "Tulungagung"}, {"k": "I-5", "n": "Koesjanto", "a": "Malang"}, {"k": "I-7", "n": "Kusmini Dewi R.", "a": "Maumere"}, {"k": "I-9", "n": "Kusumadewi", "a": "Tulungagung"}, {"k": "I-3", "n": "Kwan Bun Tak", "a": "Tarakan"}, {"k": "I-9", "n": "Lam Min Fang", "a": "Malang"}, {"k": "I-4", "n": "Laniyati Hamijoyo", "a": "Ambon"}, {"k": "I-8", "n": "Laurentius D. Gadi Djou", "a": "Ende"}, {"k": "I-8", "n": "Lauw Sing Liang", "a": "Turen"}, {"k": "I-4", "n": "Liaw Gi Hian", "a": "Dampit"}, {"k": "I-5", "n": "Liem Lie Djiu", "a": "Malang"}, {"k": "I-1", "n": "Liem Ning Tong", "a": "Pasuruan"}, {"k": "I-8", "n": "Liem See Liang", "a": "Malang"}, {"k": "I-3", "n": "Liem Soek Fen", "a": "Malang"}, {"k": "I-9", "n": "Lienawati", "a": "Malang"}, {"k": "I-5", "n": "Lili Samsia", "a": "Ujung Pandang"}, {"k": "I-9", "n": "Liliana Winoto", "a": "Jember"}, {"k": "I-9", "n": "Lilik Elia Wati", "a": "Bondowoso"}, {"k": "I-4", "n": "Lilik Soe (Mee Hwa)", "a": "Kota Anyar"}, {"k": "I-8", "n": "Lilik Teranggono", "a": "Malang"}, {"k": "I-9", "n": "Lily Kartikawati", "a": "Malang"}, {"k": "I-1", "n": "Lily Pitta", "a": "Ternate"}, {"k": "I-2", "n": "Lily Soendoro", "a": "Batu"}, {"k": "I-3", "n": "Lily Soewarno", "a": "Surabaya"}, {"k": "I-4", "n": "Lim Tjuen Khion", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Lina Karyono", "a": "Pontianak"}, {"k": "I-9", "n": "Lina Melinda", "a": "Malang"}, {"k": "I-5", "n": "Lindawati", "a": "Rogojampi"}, {"k": "I-5", "n": "Lisa Puspa Dewi", "a": "Sukorejo"}, {"k": "I-4", "n": "Lo Ing Lan", "a": "Malang"}, {"k": "I-9", "n": "Lona Lucilia", "a": "Malang"}, {"k": "I-3", "n": "Luci Vincen", "a": "Malang"}, {"k": "I-2", "n": "Lusiana Sardjojo", "a": "Kediri"}, {"k": "I-6", "n": "Lyna Mariati", "a": "Batu"}, {"k": "I-7", "n": "Majasari", "a": "Malang"}, {"k": "I-7", "n": "Maria Gregoria", "a": "Malang"}, {"k": "I-2", "n": "Markus Iskandar", "a": "Surabaya"}, {"k": "I-5", "n": "Martin Kadaroesman", "a": "Surabaya"}, {"k": "I-2", "n": "Megasari", "a": "Malang"}, {"k": "I-5", "n": "Melia Purnama", "a": "Nganjuk"}, {"k": "I-8", "n": "Mellina Gomel", "a": "Maumere"}, {"k": "I-3", "n": "Merry", "a": "Teluk Betung"}, {"k": "I-1", "n": "Metta Halimunanda", "a": "Teluk Betung"}, {"k": "I-8", "n": "Michael M. Ola", "a": "Kupang"}, {"k": "I-8", "n": "Mimi Sudilowati", "a": "Malang"}, {"k": "I-4", "n": "Mira Kartika", "a": "Banyuwangi"}, {"k": "I-6", "n": "Mochamad Dawan H.", "a": "Malang"}, {"k": "I-6", "n": "Mulijanto", "a": "Malang"}, {"k": "I-5", "n": "Mulyadi Santoso", "a": "Malang"}, {"k": "I-3", "n": "Mulyono Tedjo", "a": "Lumajang"}, {"k": "I-6", "n": "Murni Widjaja", "a": "Pontianak"}, {"k": "I-5", "n": "Nani Surjana", "a": "Belitung"}, {"k": "I-1", "n": "Nanik Darwati", "a": "Nganjuk"}, {"k": "I-5", "n": "Naomi Purwatie", "a": "Banyuwangi"}, {"k": "I-3", "n": "Ng Fei Ing", "a": "Probolinggo"}, {"k": "I-5", "n": "Ni Desak Made Santi", "a": "Pontianak"}, {"k": "I-2", "n": "Ni Desak Putu Evi", "a": "Pontianak"}, {"k": "I-9", "n": "Ninik Seniwati", "a": "Malang"}, {"k": "I-1", "n": "Nio Song Ai", "a": "Malang"}, {"k": "I-7", "n": "Njoo Lie Sien", "a": "Malang"}, {"k": "I-3", "n": "Oei Fei Ling", "a": "Malang"}, {"k": "I-8", "n": "Oei Moy Ing", "a": "Malang"}, {"k": "I-5", "n": "Oei Yan An / Andi Winarko", "a": "Malang"}, {"k": "I-5", "n": "Okky Eko G.", "a": "Sidoarjo"}, {"k": "I-4", "n": "Ong Yauw Kiat", "a": "Gresik"}, {"k": "I-2", "n": "Ongko Joni", "a": "Sampit"}, {"k": "I-7", "n": "Paulus Sugeng W.", "a": "Ujung Pandang"}, {"k": "I-1", "n": "Paulus Sunardi", "a": "Tumpang"}, {"k": "I-3", "n": "Peter", "a": "Malang"}, {"k": "I-3", "n": "Petrus Sudiarto", "a": "Flores"}, {"k": "I-6", "n": "Philip", "a": "Tanjung Karang"}, {"k": "I-4", "n": "Poh Kok Gay", "a": "Malang"}, {"k": "I-2", "n": "Poo Mien Djien", "a": "Blitar"}, {"k": "I-4", "n": "Pratiti Sahasra Wibowo", "a": "Yogjakarta"}, {"k": "I-2", "n": "Prilianto", "a": "Kesamben"}, {"k": "I-4", "n": "Prima Wirajaya", "a": "Sampit"}, {"k": "I-2", "n": "Purnomo Dewi", "a": "Malang"}, {"k": "I-6", "n": "Purwanto", "a": "Pasuruan"}, {"k": "I-6", "n": "Racha Roi", "a": "Blimbing"}, {"k": "I-2", "n": "Ranny Budiman", "a": "Palembang"}, {"k": "I-2", "n": "Ratna Yuliawati", "a": "Malang"}, {"k": "I-3", "n": "Raymond Agus", "a": "Malang"}, {"k": "I-6", "n": "Rebeka Hartanto", "a": "Malang"}, {"k": "I-3", "n": "Rifan Woenarso", "a": "Ujung Pandang"}, {"k": "I-8", "n": "Rina Sumampauw", "a": "Malang"}, {"k": "I-9", "n": "Rini Sastrawati", "a": "Malang"}, {"k": "I-7", "n": "Roby Purba", "a": "Malang"}, {"k": "I-7", "n": "Rony Sumenap", "a": "Ujung Pandang"}, {"k": "I-4", "n": "Roseana", "a": "Banyuwangi"}, {"k": "I-4", "n": "Rosita", "a": "Bondowoso"}, {"k": "I-1", "n": "Rosnawti Bambang", "a": "Pontianak"}, {"k": "I-3", "n": "Rovin Suhardi", "a": "Flores"}, {"k": "I-1", "n": "Rudie Santoso", "a": "Sampit"}, {"k": "I-4", "n": "Rudy", "a": "Malang"}, {"k": "I-1", "n": "Rudy Christanto S.", "a": "Bojonegoro"}, {"k": "I-2", "n": "Rudy Lautan", "a": "Ujung Pandang"}, {"k": "I-3", "n": "Rudy Subagyo", "a": "Pangkalan Bun"}, {"k": "I-9", "n": "Rustam Sidjaja", "a": "Ujung Pandang"}, {"k": "I-5", "n": "S. Suhendra", "a": "Denpasar"}, {"k": "I-8", "n": "Sanly Sunyoto", "a": "Malang"}, {"k": "I-1", "n": "Santoso Suwignyo", "a": "Malang"}, {"k": "I-3", "n": "Saverius Suryanto", "a": "Ruteng"}, {"k": "I-5", "n": "Senny Soendjaya", "a": "Lumajang"}, {"k": "I-1", "n": "Sentono / Kwa Thay Seng", "a": "Pasuruan"}, {"k": "I-4", "n": "Setiawan Darma", "a": "Tanjung Karang"}, {"k": "I-5", "n": "Setya Budi", "a": "Teluk Betung"}, {"k": "I-2", "n": "Sherly Pantjadarma", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Sia Giok Suan", "a": "Surabaya"}, {"k": "I-3", "n": "Sia Kok Wee", "a": "Bondowoso"}, {"k": "I-7", "n": "Siauw Jan Gwan", "a": "Malang"}, {"k": "I-8", "n": "Sie Lie Lie", "a": "Malang"}, {"k": "I-8", "n": "Slamet", "a": "Tegal"}, {"k": "I-2", "n": "Soebagio", "a": "Malang"}, {"k": "I-4", "n": "Soegiarto", "a": "Banyuwangi"}, {"k": "I-4", "n": "Soeliani", "a": "Malang"}, {"k": "I-4", "n": "Soen Ling Nie", "a": "Malang"}, {"k": "I-4", "n": "Soetekli Faid", "a": "Tretes"}, {"k": "I-5", "n": "Soetrisno", "a": "Rembang"}, {"k": "I-3", "n": "Song Wee Widiarsih", "a": "Malang"}, {"k": "I-5", "n": "Sony Chandra", "a": "Surabaya"}, {"k": "I-4", "n": "Sri Dutawati", "a": "Bondowoso"}, {"k": "I-5", "n": "Sri Muliati", "a": "Surabaya"}, {"k": "I-6", "n": "Sri Soertini T.", "a": "Malang"}, {"k": "I-9", "n": "Sri Sundari", "a": "Lumajang"}, {"k": "I-7", "n": "Stefanus Hendra S.", "a": "Ruteng"}, {"k": "I-9", "n": "Stefanus Ricky Elias", "a": "Ujung Pandang"}, {"k": "I-2", "n": "Sucipto Joyo", "a": "Atambua"}, {"k": "I-7", "n": "Sugeng Tanudjaja", "a": "Wonosobo"}, {"k": "I-2", "n": "Sugianti", "a": "Kalisat"}, {"k": "I-3", "n": "Sugianto", "a": "Bondowoso"}, {"k": "I-6", "n": "Sugiharto W.", "a": "Malang"}, {"k": "I-4", "n": "Sugihjanto Tjandar", "a": "Malang"}, {"k": "I-3", "n": "Sugiwiyati", "a": "Banyuwangi"}, {"k": "I-8", "n": "Suhardi", "a": "Teluk Betung"}, {"k": "I-1", "n": "Suhartati", "a": "Tulungagung"}, {"k": "I-8", "n": "Sujarwo", "a": "Bojonegoro"}, {"k": "I-4", "n": "Sumampo Lau", "a": "Teluk Betung"}, {"k": "I-2", "n": "Suprapto", "a": "Banjarmasin"}, {"k": "I-3", "n": "Suria Djaja", "a": "Batu"}, {"k": "I-7", "n": "Suriansyah", "a": "Balikpapan"}, {"k": "I-2", "n": "Surjadi Sugiopranoto", "a": "Malang"}, {"k": "I-8", "n": "Susan Megawati A.", "a": "Tarakan"}, {"k": "I-8", "n": "Susana", "a": "Tuban"}, {"k": "I-8", "n": "Susanto Joyo", "a": "Atambua"}, {"k": "I-3", "n": "Sutanto", "a": "Pontianak"}, {"k": "I-2", "n": "Suwandito", "a": "Malang"}, {"k": "I-1", "n": "Suwatio", "a": "Krawang"}, {"k": "I-6", "n": "Suzy Susanty", "a": "Malang"}, {"k": "I-3", "n": "Swani Wangsa", "a": "Malang"}, {"k": "I-9", "n": "Switomo Santoso", "a": "Kediri"}, {"k": "I-5", "n": "Syarifuddin Idris", "a": "Teluk Betung"}, {"k": "I-3", "n": "Tan Fei Mien", "a": "Surabaya"}, {"k": "I-8", "n": "Tan Kiem Hun", "a": "Malang"}, {"k": "I-6", "n": "Tan Lie Lie", "a": "Lawang"}, {"k": "I-4", "n": "Tan Mei Ing", "a": "Banjarmasin"}, {"k": "I-3", "n": "Tan Sek Hok", "a": "Malang"}, {"k": "I-1", "n": "Tan Siok Kwan", "a": "Kediri"}, {"k": "I-7", "n": "Tan Thjoen  Lei", "a": "Malang"}, {"k": "I-3", "n": "Tan Ting Giok", "a": "Blitar"}, {"k": "I-7", "n": "Tan Tjong Koa", "a": "Ternate"}, {"k": "I-4", "n": "Tan Wie Wan / Gunawan", "a": "Malang"}, {"k": "I-6", "n": "Tantiemes Seri", "a": "Tanjung Karang"}, {"k": "I-3", "n": "Taswin Taruna", "a": "Malang"}, {"k": "I-2", "n": "Tekok Siangharto", "a": "Banyuwangi"}, {"k": "I-7", "n": "Tetikandi", "a": "Malang"}, {"k": "I-9", "n": "Tham Fuk Ling", "a": "Malang"}, {"k": "I-2", "n": "The Hong Ing", "a": "Malang"}, {"k": "I-4", "n": "The Hsi Hwie", "a": "Surabaya"}, {"k": "I-9", "n": "Andreas Thekualu (KS)", "a": "Ujung Pandang"}, {"k": "I-5", "n": "Then Siu Tjien", "a": "Kediri"}, {"k": "I-4", "n": "Thomas Liman", "a": "Bojonegoro"}, {"k": "I-1", "n": "Timotius Onggara", "a": "Malang"}, {"k": "I-1", "n": "Tio Swee Tjen", "a": "Tumpang"}, {"k": "I-3", "n": "Tirta Djajaadi", "a": "Ruteng"}, {"k": "I-8", "n": "Titik Melieuhwati", "a": "Banyuwangi"}, {"k": "I-9", "n": "Tjahjono Bahagio", "a": "Kalisat"}, {"k": "I-9", "n": "Tjen Jie Ming", "a": "Pangkalpinang"}, {"k": "I-3", "n": "Tjen Ling", "a": "Malang"}, {"k": "I-6", "n": "Tjie Jung Tjhong", "a": "Banyuwangi"}, {"k": "I-9", "n": "Tjin Tek Yoen", "a": "Malang"}, {"k": "I-7", "n": "Tjin Tjee Sin", "a": "Jember"}, {"k": "I-6", "n": "Tjioe Chen Han", "a": "Tulungagung"}, {"k": "I-7", "n": "Tjiong Er Lin", "a": "Malang"}, {"k": "I-3", "n": "Tjoa Pie Hung", "a": "Genteng"}, {"k": "I-1", "n": "Tjoe Tjau Jen", "a": "Ujung Pandang"}, {"k": "I-9", "n": "Melissa Christivera", "a": "Malang"}, {"k": "I-2", "n": "Tjung Khun Ton", "a": "Singkawang"}, {"k": "I-4", "n": "Trikorini Silviana", "a": "Benculuk"}, {"k": "I-1", "n": "Triwantoro", "a": "Pare"}, {"k": "I-7", "n": "Venny Anggung", "a": "Ternate"}, {"k": "I-2", "n": "Venny Litan", "a": "Ternate"}, {"k": "I-9", "n": "Venny Theresia", "a": "Malang"}, {"k": "I-4", "n": "Victor", "a": "Sekura"}, {"k": "I-1", "n": "Vincencius Jomi", "a": "Ruteng"}, {"k": "I-1", "n": "W. Minto", "a": "Malang"}, {"k": "I-7", "n": "Wahyudi Sujanto", "a": "Kediri"}, {"k": "I-7", "n": "Welly Junaidi", "a": "Situbondo"}, {"k": "I-6", "n": "Wenny Setiowati", "a": "Malang"}, {"k": "I-4", "n": "Widarsih Hartomo", "a": "Malang"}, {"k": "I-9", "n": "Widijasmoko", "a": "Tumpang"}, {"k": "I-9", "n": "Widodo Suryanto", "a": "Porong"}, {"k": "I-5", "n": "Wigawati", "a": "Tuban"}, {"k": "I-2", "n": "Wijaya Suwono", "a": "Malang"}, {"k": "I-5", "n": "Wike Dewi", "a": "Malang"}, {"k": "I-1", "n": "Winasia", "a": "Malang"}, {"k": "I-8", "n": "Wiyanto Wijoyo", "a": "Malang"}, {"k": "I-7", "n": "Wong Aei Lie", "a": "Malang"}, {"k": "I-8", "n": "Wong Aei Mey", "a": "Malang"}, {"k": "I-2", "n": "Yahya Hadi Wijanto", "a": "Lumajang"}, {"k": "I-1", "n": "Yani Angdika", "a": "Jakarta Pusat"}, {"k": "I-1", "n": "Yap Tik Bing", "a": "Kediri"}, {"k": "I-2", "n": "Yenny Lesmana", "a": "Malang"}, {"k": "I-6", "n": "Yenny Ongkowidjojo", "a": "Malang"}, {"k": "I-4", "n": "Yenny Valentin", "a": "Lawang"}, {"k": "I-8", "n": "Yerry Hatorangan S.", "a": "Singosari"}, {"k": "I-6", "n": "Yetty Darmanto", "a": "Ujung Pandang"}, {"k": "I-7", "n": "Yohana Rachmawati", "a": "Malang"}, {"k": "I-2", "n": "Yohanes Santoso", "a": "Malang"}, {"k": "I-8", "n": "Yong Yong Lian", "a": "Malang"}, {"k": "I-9", "n": "Yosef Budiarto", "a": "Situbondo"}, {"k": "I-5", "n": "Yosep Primadi M.", "a": "Blitar"}, {"k": "I-2", "n": "Yuli Fana Setia P.", "a": "Krian"}, {"k": "I-3", "n": "Yulia Tenoyo", "a": "Malang"}, {"k": "I-4", "n": "Yuliany", "a": "Sumenep"}, {"k": "I-1", "n": "Yuliany Tjandra", "a": "Malang"}, {"k": "I-1", "n": "Yunalisyah", "a": "Teluk Betung"}, {"k": "I-1", "n": "Yustinus Budianto S.", "a": "Tegal"}, {"k": "I-5", "n": "Yustinus Tarbin", "a": "Flores"}, {"k": "I-9", "n": "Yuvitawati", "a": "Malang"}];
+
+  // CARA HUBUNGKAN STATUS KONFIRMASI OTOMATIS DARI GOOGLE SHEET:
+  // 1. Buka Google Sheet hasil respons form RSVP (terhubung otomatis dari Google Form).
+  // 2. File -> Share -> Publish to web -> pilih sheet responses -> format CSV -> Publish.
+  // 3. Copy link CSV yang muncul, tempel ke variabel RSVP_CSV_URL di bawah (ganti null).
+  const RSVP_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRdOSOQiQ9n11_eB0qqrkbUz4MVwZW93593NfnClMc4MVHjBMYNITHnkROWOZ9IZW_Z5zTYNX5Ecp8c/pub?gid=397258898&single=true&output=csv";
+
+  let confirmedNames = [];
+
+  function normalizeName(s){
+    return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z\s]/g,'').trim();
+  }
+
+  async function loadConfirmedNames(){
+    if(!RSVP_CSV_URL) return;
+    try{
+      const res = await fetch(RSVP_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2) return;
+      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const nameIdx = header.findIndex(h => h.includes('nama'));
+      if(nameIdx === -1) return;
+      confirmedNames = lines.slice(1).map(line => {
+        const cols = line.split(',');
+        return normalizeName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : '');
+      }).filter(Boolean);
+    }catch(err){
+      console.error('Gagal memuat data konfirmasi', err);
+    }
+  }
+
+  function isConfirmed(nama){
+    const norm = normalizeName(nama);
+    return confirmedNames.some(c => c === norm || c.includes(norm) || norm.includes(c));
+  }
+
+  // CARA HUBUNGKAN STATUS ALUMNI (AKTIF / SUDAH MENINGGAL) DARI GOOGLE SHEET:
+  // 1. Buka Google Sheet hasil respons form Update Data (terhubung otomatis dari Google Form gabungan).
+  // 2. File -> Share -> Publish to web -> pilih sheet responses -> format CSV -> Publish.
+  // 3. Copy link CSV yang muncul, tempel ke variabel UPDATE_CSV_URL di bawah (ganti null).
+  const UPDATE_CSV_URL = null; // contoh: "https://docs.google.com/spreadsheets/d/e/XXXX/pub?output=csv"
+
+  let deceasedNames = [];
+
+  async function loadDeceasedNames(){
+    if(!UPDATE_CSV_URL) return;
+    try{
+      const res = await fetch(UPDATE_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2) return;
+      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const nameIdx = header.findIndex(h => h.includes('nama') && !h.includes('panggilan') && !h.includes('kamu'));
+      const statusIdx = header.findIndex(h => h.includes('status'));
+      if(nameIdx === -1 || statusIdx === -1) return;
+      deceasedNames = lines.filter((line, i) => {
+        if(i === 0) return false;
+        const cols = line.split(',');
+        const status = (cols[statusIdx] || '').toLowerCase();
+        return status.includes('meninggal') || status.includes('almarhum');
+      }).map(line => normalizeName(line.split(',')[nameIdx].replace(/"/g,'')));
+    }catch(err){
+      console.error('Gagal memuat data status alumni', err);
+    }
+  }
+
+  function isDeceased(nama){
+    const norm = normalizeName(nama);
+    return deceasedNames.some(c => c === norm || c.includes(norm) || norm.includes(c));
+  }
+
+  function renderAlumniList(filter){
+    const container = document.getElementById('alumniClasses');
+    const term = normalizeName(filter);
+    const classes = {};
+    alumniData.forEach(a => { (classes[a.k] = classes[a.k] || []).push(a); });
+    const classKeys = Object.keys(classes).sort();
+
+    let totalConfirmed = 0;
+    let html = '';
+    classKeys.forEach(k => {
+      const members = classes[k].filter(a => !term || normalizeName(a.n).includes(term));
+      if(members.length === 0) return;
+      const rows = members.map(a => {
+        const deceased = isDeceased(a.n);
+        const confirmed = !deceased && isConfirmed(a.n);
+        if(confirmed) totalConfirmed++;
+        return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
+          <div class="alumni-tick">&#10003;</div>
+          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${deceased ? ' <span class="alumni-alm">(Alm.)</span>' : ''}</div>
+          <div class="alumni-kota">${escapeHtmlAlumni(a.a || '')}</div>
+        </div>`;
+      }).join('');
+      html += `<details class="alumni-class">
+        <summary>Kelas ${k} <span class="class-count">${members.length} alumni</span></summary>
+        <div class="alumni-rows">${rows}</div>
+      </details>`;
+    });
+    container.innerHTML = html || '<p style="text-align:center;color:rgba(37,28,24,0.5);padding:20px;">Nama tidak ditemukan.</p>';
+    document.getElementById('alumniConfirmedCount').textContent = totalConfirmed;
+  }
+
+  function escapeHtmlAlumni(str){
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  document.getElementById('alumniSearch').addEventListener('input', (e) => {
+    renderAlumniList(e.target.value);
+  });
+
+
+  Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => renderAlumniList(''));
+
   // Countdown
   const target = new Date("2027-07-30T00:00:00");
   function updateCountdown(){
@@ -679,6 +1020,40 @@
     entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('show'); io.unobserve(e.target); } });
   }, {threshold:0.12});
   revealEls.forEach(el=>io.observe(el));
+
+  // Lightbox
+  const galleryImgs = Array.from(document.querySelectorAll('.polaroid-photo img'));
+  const lightbox = document.getElementById('lightbox');
+  const lightboxImg = document.getElementById('lightboxImg');
+  const lightboxCap = document.getElementById('lightboxCap');
+  let currentIndex = 0;
+
+  function openLightbox(index){
+    currentIndex = index;
+    updateLightboxImg();
+    lightbox.classList.add('open');
+  }
+  function updateLightboxImg(){
+    const imgEl = galleryImgs[currentIndex];
+    lightboxImg.src = imgEl.src;
+    const cap = imgEl.closest('.polaroid').querySelector('.polaroid-cap');
+    lightboxCap.textContent = cap ? cap.textContent : '';
+  }
+  function closeLightbox(){ lightbox.classList.remove('open'); }
+  function showNext(){ currentIndex = (currentIndex + 1) % galleryImgs.length; updateLightboxImg(); }
+  function showPrev(){ currentIndex = (currentIndex - 1 + galleryImgs.length) % galleryImgs.length; updateLightboxImg(); }
+
+  galleryImgs.forEach((img, i) => img.addEventListener('click', () => openLightbox(i)));
+  document.getElementById('lightboxClose').addEventListener('click', closeLightbox);
+  document.getElementById('lightboxNext').addEventListener('click', showNext);
+  document.getElementById('lightboxPrev').addEventListener('click', showPrev);
+  lightbox.addEventListener('click', (e) => { if(e.target === lightbox) closeLightbox(); });
+  document.addEventListener('keydown', (e) => {
+    if(!lightbox.classList.contains('open')) return;
+    if(e.key === 'Escape') closeLightbox();
+    if(e.key === 'ArrowRight') showNext();
+    if(e.key === 'ArrowLeft') showPrev();
+  });
 </script>
 
 </body>
