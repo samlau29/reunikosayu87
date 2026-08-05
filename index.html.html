@@ -506,6 +506,54 @@
     display:grid; grid-template-columns:1fr 1fr; gap:6px 20px;
   }
   @media (max-width:640px){ .prize-box ul{ grid-template-columns:1fr; } }
+
+  /* ---------- TRANSPARANSI KEUANGAN ---------- */
+  .budget-table{
+    width:100%; border-collapse:collapse;
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:10px;
+    overflow:hidden;
+  }
+  .budget-table th, .budget-table td{
+    padding:13px 16px; text-align:left; font-size:0.9rem;
+    border-bottom:1px solid var(--stamp-line);
+  }
+  .budget-table th{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--ruby); background:var(--paper-warm);
+  }
+  .budget-table td.amount{ text-align:right; font-family:'IBM Plex Mono',monospace; }
+  .budget-table tr:last-child td{ border-bottom:none; }
+  .budget-table tr.total-row td{
+    font-weight:700; color:var(--ruby-deep);
+    border-top:2px solid var(--ink);
+  }
+  .budget-status{
+    display:inline-flex; align-items:center; gap:6px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    padding:4px 10px; border-radius:999px;
+    background:rgba(199,154,62,0.15); color:var(--gold);
+    border:1px solid rgba(199,154,62,0.4);
+  }
+  .budget-status::before{ content:""; width:6px; height:6px; border-radius:50%; background:var(--gold); }
+  .budget-note{
+    font-size:0.85rem; color:rgba(37,28,24,0.6);
+    margin-top:16px; font-style:italic;
+  }
+  .live-report-box{
+    margin-top:32px;
+    border:1.5px dashed var(--stamp-line);
+    border-radius:10px;
+    padding:28px;
+    text-align:center;
+    color:rgba(37,28,24,0.55);
+  }
+  .live-report-box .lr-title{
+    font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;
+    color:var(--ruby-deep); margin-bottom:8px;
+  }
   .class-summary-card .cs-bar{
     height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
     margin-top:8px; overflow:hidden;
@@ -575,6 +623,7 @@
       <a href="#rsvp">Konfirmasi</a>
       <a href="#daftar-alumni">Daftar Alumni</a>
       <a href="#update-data">Update Data</a>
+      <a href="#keuangan">Transparansi Keuangan</a>
       <a href="#panitia">Panitia</a>
     </div>
   </div>
@@ -896,6 +945,30 @@
   </div>
 </section>
 
+<section id="keuangan">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Transparansi</span>
+      <h2>Transparansi Keuangan</h2>
+      <p>Reuni ini didanai bersama oleh alumni, jadi panitia berkomitmen menjaga pengelolaan dana tetap terbuka. Rincian biaya per orang sedang disusun oleh divisi Dana &amp; Keuangan berdasarkan penawaran vendor yang sedang dikonfirmasi &mdash; akan dipublikasikan di sini begitu resmi ditetapkan.</p>
+    </div>
+
+    <div class="reveal" style="margin-bottom:14px;">
+      <span class="budget-status">Sedang disusun oleh divisi Dana &amp; Keuangan</span>
+    </div>
+
+    <div class="live-report-box reveal">
+      <div class="lr-title">Rincian Biaya per Orang</div>
+      <p style="font-size:0.88rem;">Akan diumumkan di sini setelah venue dan vendor (EO, dsb) final dikonfirmasi. Update resmi akan disampaikan oleh Bendahara.</p>
+    </div>
+
+    <div class="live-report-box reveal">
+      <div class="lr-title">Laporan Realisasi Dana</div>
+      <p style="font-size:0.88rem;">Total dana terkumpul dan pengeluaran per kategori akan tampil di sini setelah proses pengumpulan iuran berjalan. Bendahara akan update laporan ini secara berkala.</p>
+    </div>
+  </div>
+</section>
+
 <section id="panitia" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line);">
   <div class="wrap">
     <div class="section-head reveal">
@@ -987,6 +1060,14 @@
     return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z\s]/g,'').trim();
   }
 
+  // Dropdown Google Form formatnya "Nama (dulu: NamaLama) — Kelas I-X" — ambil bagian nama bersihnya saja
+  function extractPlainName(raw){
+    let s = raw || '';
+    s = s.split('—')[0];
+    s = s.replace(/\(dulu:[^)]*\)/i, '');
+    return s.trim();
+  }
+
   async function loadConfirmedNames(){
     if(!RSVP_CSV_URL) return;
     try{
@@ -999,7 +1080,7 @@
       if(nameIdx === -1) return;
       confirmedNames = lines.slice(1).map(line => {
         const cols = line.split(',');
-        return normalizeName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : '');
+        return normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
       }).filter(Boolean);
     }catch(err){
       console.error('Gagal memuat data konfirmasi', err);
@@ -1008,7 +1089,7 @@
 
   function isConfirmed(nama){
     const norm = normalizeName(nama);
-    return confirmedNames.some(c => c === norm || c.includes(norm) || norm.includes(c));
+    return confirmedNames.some(c => c === norm);
   }
 
   // CARA HUBUNGKAN STATUS ALUMNI (AKTIF / SUDAH MENINGGAL) DARI GOOGLE SHEET:
@@ -1042,7 +1123,7 @@
         const cols = line.split(',');
         const status = (cols[statusIdx] || '').toLowerCase();
         return status.includes('meninggal') || status.includes('almarhum');
-      }).map(line => normalizeName(line.split(',')[nameIdx].replace(/"/g,'')));
+      }).map(line => normalizeName(extractPlainName(line.split(',')[nameIdx].replace(/"/g,''))));
     }catch(err){
       console.error('Gagal memuat data status alumni', err);
     }
@@ -1051,7 +1132,7 @@
   function isDeceased(nama){
     const norm = normalizeName(nama);
     if(manualDeceased.some(c => c === norm)) return true;
-    return deceasedNames.some(c => c === norm || c.includes(norm) || norm.includes(c));
+    return deceasedNames.some(c => c === norm);
   }
 
   function renderAlumniList(filter){
