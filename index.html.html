@@ -483,6 +483,29 @@
     font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem;
     color:var(--ruby-deep); margin-top:4px;
   }
+  .class-summary-card .cs-percent{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    color:rgba(37,28,24,0.5); margin-top:2px;
+  }
+  .class-summary-card.top .cs-percent{ color:var(--gold); font-weight:600; }
+
+  .prize-box{
+    background:var(--cream-white);
+    border:1.5px solid var(--gold);
+    border-radius:10px;
+    padding:20px 22px;
+    margin-bottom:24px;
+  }
+  .prize-box h3{
+    font-size:1.05rem; color:var(--ruby-deep);
+    display:flex; align-items:center; gap:8px;
+  }
+  .prize-box ul{
+    margin:12px 0 0; padding-left:20px;
+    font-size:0.9rem; color:rgba(37,28,24,0.8);
+    display:grid; grid-template-columns:1fr 1fr; gap:6px 20px;
+  }
+  @media (max-width:640px){ .prize-box ul{ grid-template-columns:1fr; } }
   .class-summary-card .cs-bar{
     height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
     margin-top:8px; overflow:hidden;
@@ -731,7 +754,18 @@
     <div class="section-head reveal">
       <span class="eyebrow">459 Alumni &middot; 9 Kelas</span>
       <h2>Daftar Alumni Angkatan 87</h2>
-      <p>Ringkasan di bawah menunjukkan jumlah alumni yang sudah konfirmasi hadir per kelas (kelas dengan konfirmasi terbanyak ditandai emas). Cari nama kamu atau teman-teman di daftar lengkap di bawahnya. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
+      <p>Ringkasan di bawah menunjukkan jumlah alumni yang sudah konfirmasi hadir per kelas (kelas dengan <strong>persentase konfirmasi tertinggi</strong> ditandai emas). Cari nama kamu atau teman-teman di daftar lengkap di bawahnya. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
+    </div>
+
+    <div class="prize-box reveal">
+      <h3>&#127942; Penghargaan "Kelas Paling Kompak"</h3>
+      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.7);">Kelas dengan <strong>persentase konfirmasi tertinggi</strong> akan mendapat:</p>
+      <ul>
+        <li>Diumumkan sebagai "Kelas Paling Kompak" di malam gala</li>
+        <li>Meja terbaik/terdepan di acara malam gala</li>
+        <li>Goodie bag ekstra untuk seluruh anggota kelas</li>
+        <li>Kesempatan pertama sambutan/toast di acara</li>
+      </ul>
     </div>
 
     <div id="classSummary" class="class-summary reveal"></div>
@@ -1064,13 +1098,14 @@
       return { k, confirmed, total: members.length, pct: members.length ? (confirmed/members.length*100) : 0 };
     });
 
-    const maxConfirmed = Math.max(...stats.map(s => s.confirmed), 0);
+    const maxPct = Math.max(...stats.map(s => s.pct), 0);
 
     container.innerHTML = stats.map(s => {
-      const isTop = s.confirmed > 0 && s.confirmed === maxConfirmed;
+      const isTop = s.confirmed > 0 && Math.abs(s.pct - maxPct) < 0.01;
       return `<div class="class-summary-card ${isTop ? 'top' : ''}">
         <div class="cs-kelas">Kelas ${s.k}</div>
         <div class="cs-ratio">${s.confirmed} / ${s.total}</div>
+        <div class="cs-percent">${s.pct.toFixed(0)}%</div>
         <div class="cs-bar"><div class="cs-bar-fill" style="width:${s.pct}%;"></div></div>
       </div>`;
     }).join('');
