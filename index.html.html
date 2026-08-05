@@ -464,6 +464,35 @@
   }
   .alumni-legend span{ display:flex; align-items:center; gap:6px; }
 
+  .class-summary{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(120px, 1fr));
+    gap:10px; margin-bottom:24px;
+  }
+  .class-summary-card{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:8px;
+    padding:12px 10px;
+    text-align:center;
+  }
+  .class-summary-card .cs-kelas{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--ruby);
+  }
+  .class-summary-card .cs-ratio{
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.15rem;
+    color:var(--ruby-deep); margin-top:4px;
+  }
+  .class-summary-card .cs-bar{
+    height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
+    margin-top:8px; overflow:hidden;
+  }
+  .class-summary-card .cs-bar-fill{
+    height:100%; background:var(--pine); border-radius:2px;
+  }
+  .class-summary-card.top .cs-ratio{ color:var(--gold); }
+  .class-summary-card.top{ border-color:var(--gold); }
+
   /* ---------- LIGHTBOX ---------- */
   .lightbox{
     position:fixed; inset:0; z-index:200;
@@ -704,6 +733,8 @@
       <h2>Daftar Alumni Angkatan 87</h2>
       <p>Cari nama kamu atau teman-teman di bawah. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
     </div>
+
+    <div id="classSummary" class="class-summary reveal"></div>
 
     <div class="alumni-search reveal">
       <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
@@ -1021,6 +1052,30 @@
     document.getElementById('alumniConfirmedCount').textContent = totalConfirmed;
   }
 
+  function renderClassSummary(){
+    const container = document.getElementById('classSummary');
+    const classes = {};
+    alumniData.forEach(a => { (classes[a.k] = classes[a.k] || []).push(a); });
+    const classKeys = Object.keys(classes).sort();
+
+    const stats = classKeys.map(k => {
+      const members = classes[k];
+      const confirmed = members.filter(a => !isDeceased(a.n) && isConfirmed(a.n)).length;
+      return { k, confirmed, total: members.length, pct: members.length ? (confirmed/members.length*100) : 0 };
+    });
+
+    const maxConfirmed = Math.max(...stats.map(s => s.confirmed), 0);
+
+    container.innerHTML = stats.map(s => {
+      const isTop = s.confirmed > 0 && s.confirmed === maxConfirmed;
+      return `<div class="class-summary-card ${isTop ? 'top' : ''}">
+        <div class="cs-kelas">Kelas ${s.k}</div>
+        <div class="cs-ratio">${s.confirmed} / ${s.total}</div>
+        <div class="cs-bar"><div class="cs-bar-fill" style="width:${s.pct}%;"></div></div>
+      </div>`;
+    }).join('');
+  }
+
   function escapeHtmlAlumni(str){
     const d = document.createElement('div');
     d.textContent = str || '';
@@ -1032,7 +1087,10 @@
   });
 
 
-  Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => renderAlumniList(''));
+  Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => {
+    renderAlumniList('');
+    renderClassSummary();
+  });
 
   // Countdown
   const target = new Date("2027-07-30T00:00:00");
