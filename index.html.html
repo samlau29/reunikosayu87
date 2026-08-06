@@ -231,17 +231,22 @@
   .cd-item:last-child{border-right:none;}
   .cd-item-link{
     text-decoration:none; cursor:pointer;
-    transition:opacity .2s ease;
+    transition:opacity .2s ease, transform .2s ease;
+    background:rgba(199,154,62,0.12);
+    border-radius:10px;
+    padding-top:8px; padding-bottom:8px;
+    border:1px solid rgba(199,154,62,0.35);
   }
-  .cd-item-link:hover{ opacity:0.8; }
-  .cd-item-link .cd-num{ font-size:1.5rem; }
+  .cd-item-link:hover{ opacity:0.85; transform:translateY(-2px); }
+  .cd-item-link .cd-label{ color:var(--gold); font-weight:600; }
+  .cd-item-link .cd-num{ font-size:2.4rem; color:var(--gold); }
   @media (max-width:640px){
     .cd-item{ padding:0 12px; }
-    .cd-item-link .cd-num{ font-size:1.2rem; }
+    .cd-item-link .cd-num{ font-size:1.8rem; }
   }
   .cd-num{
     font-family:'Fraunces', serif; font-weight:700;
-    font-size:2rem; color:var(--gold);
+    font-size:1.4rem; color:var(--gold);
   }
   .cd-label{
     font-family:'IBM Plex Mono', monospace; font-size:0.66rem;
@@ -761,7 +766,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Terdaftar</div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Terdaftar &#8594;</div></a>
   </div>
 </div>
 
