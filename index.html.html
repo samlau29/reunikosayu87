@@ -1786,15 +1786,15 @@
   // MODE TESTING: isi angka (menit) untuk uji coba, undian akan "buka" sekian menit dari saat halaman
   // dibuka. GANTI JADI null SEBELUM DIBAGIKAN LUAS, supaya kembali ke jadwal bulanan normal.
   const TEST_MODE_MINUTES = 1;
+  // Target waktu testing dihitung SEKALI saja saat script dimuat (supaya tidak bergeser tiap refresh)
+  const TEST_DRAW_TIME = (TEST_MODE_MINUTES !== null) ? new Date(Date.now() + TEST_MODE_MINUTES * 60 * 1000) : null;
 
   function runUndian(){
     const now = new Date();
     const year = now.getUTCFullYear();
     const monthIndex = now.getUTCMonth();
     const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
-    const drawTime = (TEST_MODE_MINUTES !== null)
-      ? new Date(now.getTime() + TEST_MODE_MINUTES * 60 * 1000)
-      : getDrawDateTime(year, monthIndex);
+    const drawTime = TEST_DRAW_TIME || getDrawDateTime(year, monthIndex);
     const nameDisplay = document.getElementById('undianNameDisplay');
     const statusLine = document.getElementById('undianStatusLine');
     const countdownEl = document.getElementById('undianCountdown');
@@ -1802,7 +1802,8 @@
     const resultEl = document.getElementById('undianResult');
 
     if(now < drawTime){
-      // Belum waktunya
+      // Belum waktunya -> tampilkan countdown, dan otomatis cek ulang sendiri saat waktunya tiba
+      // (tidak perlu refresh manual)
       nameDisplay.textContent = '?';
       statusLine.textContent = TEST_MODE_MINUTES !== null ? 'Mode testing — undian belum dimulai' : 'Undian belum dimulai';
       const diff = drawTime - now;
@@ -1810,6 +1811,7 @@
       const h = Math.floor((diff / (1000*60*60)) % 24);
       const m = Math.floor((diff / (1000*60)) % 60);
       countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}: ${d} hari ${h} jam ${m} menit lagi`;
+      setTimeout(runUndian, Math.min(diff + 500, 2147000000)); // auto re-check pas waktunya tiba
       return;
     }
 
