@@ -229,6 +229,16 @@
     border-right:1px solid rgba(251,247,237,0.2);
   }
   .cd-item:last-child{border-right:none;}
+  .cd-item-link{
+    text-decoration:none; cursor:pointer;
+    transition:opacity .2s ease;
+  }
+  .cd-item-link:hover{ opacity:0.8; }
+  .cd-item-link .cd-num{ font-size:1.5rem; }
+  @media (max-width:640px){
+    .cd-item{ padding:0 12px; }
+    .cd-item-link .cd-num{ font-size:1.2rem; }
+  }
   .cd-num{
     font-family:'Fraunces', serif; font-weight:700;
     font-size:2rem; color:var(--gold);
@@ -751,6 +761,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Terdaftar</div></a>
   </div>
 </div>
 
@@ -1326,6 +1337,8 @@
     });
     container.innerHTML = html || '<p style="text-align:center;color:rgba(37,28,24,0.5);padding:20px;">Nama tidak ditemukan.</p>';
     document.getElementById('alumniConfirmedCount').textContent = totalConfirmed;
+    const cdConfirmed = document.getElementById('cd-confirmed');
+    if(cdConfirmed) cdConfirmed.textContent = totalConfirmed + '/459';
   }
 
   function renderClassSummary(){
