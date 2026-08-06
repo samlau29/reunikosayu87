@@ -1824,7 +1824,7 @@
     countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}`;
 
     // Fase 1: alarm 5 detik sebelum roda berputar
-    let alarmCount = 5;
+    let alarmCount = 10;
     nameDisplay.textContent = String(alarmCount);
     statusLine.textContent = 'Undian akan dimulai...';
     playBeep();
@@ -1874,7 +1874,7 @@
             resultEl.innerHTML = `${escapeHtmlAlumni(winner.n)} keluar sebagai nama undian, tapi belum terdaftar/bayar &mdash; <strong>tidak ada pemenang bulan ini</strong>. Undian lanjut lagi bulan depan!`;
           }
         }, 5000);
-      }, 15000);
+      }, 20000);
     }
   }
 
