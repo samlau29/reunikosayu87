@@ -750,6 +750,81 @@
   }
   .mini-gate-input-row input:focus{ outline:none; border-color:var(--ruby); }
   .mini-gate .gate-error{ width:100%; margin-top:4px; }
+
+  /* ---------- UNDIAN BULANAN ---------- */
+  .undian-box{
+    background:var(--cream-white);
+    border:1.5px solid var(--gold);
+    border-radius:14px;
+    padding:36px 24px;
+    text-align:center;
+    max-width:560px;
+    margin:0 auto;
+  }
+  .undian-wheel-wrap{
+    position:relative;
+    width:180px; height:180px;
+    margin:0 auto 24px;
+  }
+  .undian-wheel{
+    width:100%; height:100%;
+    border-radius:50%;
+    background:conic-gradient(
+      var(--ruby) 0deg 45deg, var(--gold) 45deg 90deg,
+      var(--pine) 90deg 135deg, var(--ruby-deep) 135deg 180deg,
+      var(--ruby) 180deg 225deg, var(--gold) 225deg 270deg,
+      var(--pine) 270deg 315deg, var(--ruby-deep) 315deg 360deg
+    );
+    border:4px solid var(--ink);
+    box-shadow:0 6px 18px rgba(0,0,0,0.2);
+  }
+  .undian-wheel.spinning{
+    animation:undian-spin 1.1s linear infinite;
+  }
+  @keyframes undian-spin{
+    from{ transform:rotate(0deg); }
+    to{ transform:rotate(360deg); }
+  }
+  .undian-pointer{
+    position:absolute; top:-14px; left:50%; transform:translateX(-50%);
+    width:0; height:0;
+    border-left:12px solid transparent;
+    border-right:12px solid transparent;
+    border-top:20px solid var(--ink);
+    z-index:2;
+  }
+  .undian-name-display{
+    min-height:44px;
+    font-family:'Fraunces',serif; font-weight:700; font-size:1.4rem;
+    color:var(--ruby-deep);
+    margin-bottom:8px;
+    transition:opacity .1s ease;
+  }
+  .undian-status-line{
+    font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
+    color:rgba(37,28,24,0.6);
+    min-height:20px;
+  }
+  .undian-countdown{
+    font-family:'IBM Plex Mono',monospace; font-size:0.85rem;
+    color:var(--ruby); margin-top:6px;
+  }
+  .undian-result{
+    margin-top:18px; padding:16px 18px;
+    border-radius:10px; font-size:0.92rem;
+    display:none;
+  }
+  .undian-result.show{ display:block; }
+  .undian-result.win{
+    background:rgba(51,73,63,0.12); border:1px solid rgba(51,73,63,0.35); color:var(--pine);
+  }
+  .undian-result.nowin{
+    background:rgba(124,31,43,0.08); border:1px solid rgba(124,31,43,0.25); color:var(--ruby-deep);
+  }
+  .undian-note{
+    margin-top:20px; font-size:0.78rem; color:rgba(37,28,24,0.5);
+    text-align:left;
+  }
   .class-summary-card .cs-bar{
     height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
     margin-top:8px; overflow:hidden;
@@ -819,6 +894,7 @@
       <a href="#rsvp">Konfirmasi</a>
       <a href="#daftar-alumni">Daftar Alumni</a>
       <a href="#papan-kenangan">Papan Kenangan</a>
+      <a href="#undian">Undian</a>
       <a href="#keuangan">Keuangan</a>
       <a href="#panitia">Panitia</a>
     </div>
@@ -1212,6 +1288,30 @@
 
     <div id="papanGrid" class="papan-grid reveal">
       <div class="papan-empty">Memuat pesan&hellip;</div>
+    </div>
+  </div>
+</section>
+
+<section id="undian" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">&#127775; Bulanan</span>
+      <h2>Undian Bulanan</h2>
+      <p>Tiap akhir bulan, 1 nama diundi dari 459 alumni angkatan 87. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai cicil, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
+    </div>
+
+    <div class="undian-box reveal">
+      <div class="undian-wheel-wrap">
+        <div class="undian-pointer"></div>
+        <div class="undian-wheel" id="undianWheel"></div>
+      </div>
+      <div class="undian-name-display" id="undianNameDisplay">&mdash;</div>
+      <div class="undian-status-line" id="undianStatusLine"></div>
+      <div class="undian-countdown" id="undianCountdown"></div>
+      <div class="undian-result" id="undianResult"></div>
+      <div class="undian-note">
+        <strong>Catatan:</strong> pemenang dihitung otomatis berdasarkan bulan berjalan, sama untuk semua orang yang buka halaman ini di hari yang sama. Status "sudah bayar" tergantung data yang diinput Bendahara &mdash; kalau belum diisi, sistem hanya bisa cek status "sudah terdaftar".
+      </div>
     </div>
   </div>
 </section>
@@ -1627,6 +1727,147 @@
   });
 
   loadPapanMessages();
+
+  // ---------- UNDIAN BULANAN ----------
+  // CARA HUBUNGKAN CEK STATUS "SUDAH BAYAR" (opsional, isi kalau Bendahara sudah siap):
+  // 1. Bendahara buat Google Sheet sederhana, 2 kolom: "Nama" dan "Sudah Bayar" (isi: Ya / Sudah / Lunas).
+  //    Nama di kolom ini sebaiknya sama persis dengan nama di Daftar Alumni (nama sekarang).
+  // 2. File -> Share -> Publish to web -> pilih sheet -> format CSV -> Publish.
+  // 3. Copy link CSV, tempel ke PAYMENT_CSV_URL di bawah (ganti null).
+  const PAYMENT_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vSthT_QgwPIf8Du0QbvwQoWSZJp1boxWlRFaKtgCDS_FlkSbQHkbW6IwHmFBcNkRzc25mG6X8ijzERr/pub?gid=0&single=true&output=csv";
+
+  // Jadwal undian: hari terakhir tiap bulan, jam 20:00 WIB (UTC+7)
+  function getDrawDateTime(year, monthIndex){ // monthIndex 0-based (0=Jan)
+    const lastDay = new Date(Date.UTC(year, monthIndex + 1, 0)); // hari terakhir bulan itu
+    // 20:00 WIB = 13:00 UTC
+    return new Date(Date.UTC(year, monthIndex, lastDay.getUTCDate(), 13, 0, 0));
+  }
+
+  // Hash string sederhana (djb2) -> angka positif, dipakai sebagai "seed" undian bulanan
+  function seedFromString(str){
+    let hash = 5381;
+    for(let i = 0; i < str.length; i++){
+      hash = ((hash << 5) + hash) + str.charCodeAt(i);
+      hash = hash & 0xFFFFFFFF;
+    }
+    return Math.abs(hash);
+  }
+
+  let paidNames = [];
+  async function loadPaidNames(){
+    if(!PAYMENT_CSV_URL) return;
+    try{
+      const res = await fetch(PAYMENT_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2) return;
+      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const nameIdx = header.findIndex(h => h.includes('nama'));
+      const paidIdx = header.findIndex(h => h.includes('bayar'));
+      if(nameIdx === -1 || paidIdx === -1) return;
+      paidNames = lines.slice(1).filter(line => {
+        const cols = line.split(',');
+        const val = (cols[paidIdx] || '').toLowerCase();
+        return val.includes('ya') || val.includes('sudah') || val.includes('lunas');
+      }).map(line => normalizeName(extractPlainName(line.split(',')[nameIdx].replace(/"/g,''))));
+    }catch(err){
+      console.error('Gagal memuat data pembayaran', err);
+    }
+  }
+
+  function isPaid(nama, namaDulu){
+    if(!PAYMENT_CSV_URL) return null; // null = data belum tersedia
+    const norm = normalizeName(nama);
+    if(paidNames.some(c => c === norm)) return true;
+    if(namaDulu && paidNames.some(c => c === normalizeName(namaDulu))) return true;
+    return false;
+  }
+
+  // MODE TESTING: isi angka (menit) untuk uji coba, undian akan "buka" sekian menit dari saat halaman
+  // dibuka. GANTI JADI null SEBELUM DIBAGIKAN LUAS, supaya kembali ke jadwal bulanan normal.
+  const TEST_MODE_MINUTES = 10;
+
+  function runUndian(){
+    const now = new Date();
+    const year = now.getUTCFullYear();
+    const monthIndex = now.getUTCMonth();
+    const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
+    const drawTime = (TEST_MODE_MINUTES !== null)
+      ? new Date(now.getTime() + TEST_MODE_MINUTES * 60 * 1000)
+      : getDrawDateTime(year, monthIndex);
+    const nameDisplay = document.getElementById('undianNameDisplay');
+    const statusLine = document.getElementById('undianStatusLine');
+    const countdownEl = document.getElementById('undianCountdown');
+    const wheel = document.getElementById('undianWheel');
+    const resultEl = document.getElementById('undianResult');
+
+    if(now < drawTime){
+      // Belum waktunya
+      nameDisplay.textContent = '?';
+      statusLine.textContent = TEST_MODE_MINUTES !== null ? 'Mode testing — undian belum dimulai' : 'Undian belum dimulai';
+      const diff = drawTime - now;
+      const d = Math.floor(diff / (1000*60*60*24));
+      const h = Math.floor((diff / (1000*60*60)) % 24);
+      const m = Math.floor((diff / (1000*60)) % 60);
+      countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}: ${d} hari ${h} jam ${m} menit lagi`;
+      return;
+    }
+
+    // Sudah waktunya -> hitung pemenang (deterministik, sama untuk semua orang)
+    const seedStr = `${year}-${String(monthIndex+1).padStart(2,'0')}-undian-reuni87`;
+    const seed = seedFromString(seedStr);
+    const winnerIndex = seed % alumniData.length;
+    const winner = alumniData[winnerIndex];
+
+    countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}`;
+    statusLine.textContent = 'Memutar undian...';
+
+    // Animasi: putar roda + nama berganti cepat (gaya slot machine) beberapa detik
+    wheel.classList.add('spinning');
+    let flickerCount = 0;
+    const flickerInterval = setInterval(() => {
+      const randomAlumni = alumniData[Math.floor(Math.random() * alumniData.length)];
+      nameDisplay.textContent = randomAlumni.n;
+      flickerCount++;
+    }, 90);
+
+    setTimeout(() => {
+      clearInterval(flickerInterval);
+      wheel.classList.remove('spinning');
+      nameDisplay.textContent = winner.n;
+      statusLine.textContent = `Kelas ${winner.k} — Memverifikasi status...`;
+
+      // Verifikasi status: beberapa detik biar terasa ada "proses cek"
+      setTimeout(() => {
+        const registered = isConfirmed(winner.n, winner.d);
+        const paidStatus = isPaid(winner.n, winner.d); // true / false / null (data belum ada)
+
+        if(registered && paidStatus === true){
+          statusLine.textContent = 'Verifikasi selesai';
+          resultEl.className = 'undian-result show win';
+          resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> terverifikasi sudah terdaftar &amp; sudah bayar/cicil! Selamat, dapat potongan Rp 200.000 dari biaya reuni (atau goodie bag kalau sudah lunas). Panitia akan hubungi langsung.`;
+        } else if(registered && paidStatus === null){
+          statusLine.textContent = 'Verifikasi selesai (sebagian)';
+          resultEl.className = 'undian-result show win';
+          resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> sudah terdaftar. Status pembayaran akan dicek manual oleh Bendahara untuk konfirmasi hadiah.`;
+        } else {
+          statusLine.textContent = 'Verifikasi selesai';
+          resultEl.className = 'undian-result show nowin';
+          resultEl.innerHTML = `${escapeHtmlAlumni(winner.n)} keluar sebagai nama undian, tapi belum terdaftar/bayar &mdash; <strong>tidak ada pemenang bulan ini</strong>. Undian lanjut lagi bulan depan!`;
+        }
+      }, 1800);
+    }, 3200);
+  }
+
+  function escapeHtmlAlumni2(str){ return escapeHtmlAlumni(str); }
+
+  loadPaidNames().then(() => {
+    // Tunggu data alumni & konfirmasi siap juga sebelum jalankan undian
+    Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => {
+      runUndian();
+    });
+  });
+
 
 
   // ---------- GERBANG PASSWORD (unlock 1x untuk semua bagian terkunci) ----------
