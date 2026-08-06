@@ -717,10 +717,13 @@
   .gate-locked.hidden{ display:none; }
 
   /* WA number protection (per-item, dalam kartu panitia) */
-  .wa-number{ display:none; }
+  .wa-number{
+    display:none; font-weight:400; font-family:'IBM Plex Mono',monospace;
+    font-size:0.72rem; color:var(--ruby); margin-top:2px;
+  }
   .wa-locked-note{
-    display:inline; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
-    color:rgba(37,28,24,0.4); font-style:italic;
+    display:block; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    color:rgba(37,28,24,0.4); font-style:italic; margin-top:2px;
   }
   body.is-unlocked .wa-number{ display:block; }
   body.is-unlocked .wa-locked-note{ display:none; }
