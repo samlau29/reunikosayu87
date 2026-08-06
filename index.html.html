@@ -50,6 +50,7 @@
   }
   nav .wrap{
     display:flex; align-items:center; justify-content:space-between;
+    position:relative;
     height:64px;
   }
   .brand{
@@ -70,9 +71,35 @@
     transition:opacity .2s, border-color .2s;
   }
   .navlinks a:hover{opacity:1; border-color:var(--gold);}
-  .navtoggle{display:none;}
+  .navtoggle{
+    display:none;
+    flex-direction:column; justify-content:center; gap:5px;
+    width:36px; height:36px;
+    background:none; border:none; cursor:pointer;
+    padding:0;
+  }
+  .navtoggle span{
+    display:block; width:100%; height:2px;
+    background:var(--ruby-deep); border-radius:2px;
+    transition:transform .25s ease, opacity .25s ease;
+  }
+  .navtoggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
+  .navtoggle.open span:nth-child(2){ opacity:0; }
+  .navtoggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
   @media (max-width:720px){
-    .navlinks{display:none;}
+    .navlinks{
+      display:none;
+      position:absolute; top:64px; left:0; right:0;
+      flex-direction:column; gap:0;
+      background:var(--paper); border-bottom:1px solid var(--stamp-line);
+      box-shadow:0 8px 16px rgba(0,0,0,0.08);
+    }
+    .navlinks.open{ display:flex; }
+    .navlinks a{
+      padding:14px 24px; border-bottom:1px solid var(--stamp-line);
+    }
+    .navlinks a:hover{ border-bottom:1px solid var(--stamp-line); background:var(--paper-warm); }
+    .navtoggle{ display:flex; }
   }
 
   /* ---------- HERO ---------- */
@@ -555,6 +582,64 @@
     font-family:'Fraunces',serif; font-weight:600; font-size:1.05rem;
     color:var(--ruby-deep); margin-bottom:8px;
   }
+
+  /* ---------- PAPAN KENANGAN ---------- */
+  .papan-search{
+    margin-bottom:20px;
+  }
+  .papan-search input{
+    width:100%;
+    background:var(--cream-white);
+    border:1.5px solid var(--stamp-line);
+    border-radius:6px;
+    padding:11px 14px;
+    font-family:'IBM Plex Sans',sans-serif;
+    font-size:0.94rem;
+    color:var(--ink);
+  }
+  .papan-search input:focus{ outline:none; border-color:var(--ruby); }
+  .papan-grid{
+    display:grid; grid-template-columns:repeat(2, 1fr);
+    gap:16px;
+  }
+  @media (max-width:720px){ .papan-grid{ grid-template-columns:1fr; } }
+  .papan-card{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-left:3px solid var(--gold);
+    border-radius:8px;
+    padding:16px 18px;
+  }
+  .papan-from{
+    font-family:'Fraunces',serif; font-weight:600; font-size:0.95rem;
+    color:var(--ruby-deep);
+  }
+  .papan-to{
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:var(--pine); margin-top:2px;
+  }
+  .papan-msg{
+    margin-top:8px; font-size:0.9rem; color:rgba(37,28,24,0.85);
+    line-height:1.5;
+  }
+  .papan-time{
+    margin-top:10px; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    color:rgba(37,28,24,0.4);
+  }
+  .papan-wa-btn{
+    display:inline-flex; align-items:center; gap:6px;
+    margin-top:12px;
+    background:#25D366; color:#fff;
+    font-family:'IBM Plex Sans',sans-serif; font-size:0.78rem; font-weight:600;
+    padding:7px 14px; border-radius:6px;
+    text-decoration:none;
+  }
+  .papan-wa-btn:hover{ filter:brightness(0.95); }
+  .papan-empty{
+    text-align:center; color:rgba(37,28,24,0.5);
+    padding:30px; font-style:italic; font-size:0.9rem;
+    grid-column:1/-1;
+  }
   .class-summary-card .cs-bar{
     height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
     margin-top:8px; overflow:hidden;
@@ -617,16 +702,19 @@
 <nav>
   <div class="wrap">
     <div class="brand"><span class="brand-badge">87</span> Reuni Rubi</div>
-    <div class="navlinks">
+    <div class="navlinks" id="navLinks">
       <a href="#tema">Tema</a>
       <a href="#acara">Acara</a>
       <a href="#rundown">Rundown</a>
       <a href="#rsvp">Konfirmasi</a>
       <a href="#daftar-alumni">Daftar Alumni</a>
-      <a href="#update-data">Update Data</a>
-      <a href="#keuangan">Transparansi Keuangan</a>
+      <a href="#papan-kenangan">Papan Kenangan</a>
+      <a href="#keuangan">Keuangan</a>
       <a href="#panitia">Panitia</a>
     </div>
+    <button class="navtoggle" id="navToggle" aria-label="Buka menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
 
@@ -795,6 +883,7 @@
         Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
       </div>
       <div class="rsvp-note">Data hanya digunakan panitia untuk keperluan reuni Angkatan 1987.</div>
+      <p style="text-align:center; margin-top:16px; font-size:0.85rem; color:rgba(251,247,237,0.7);">Belum siap konfirmasi hadir tapi mau update data kontak? <a href="#update-data" style="color:var(--gold); font-weight:600;">Klik di sini &darr;</a></p>
     </div>
   </div>
 </section>
@@ -889,59 +978,111 @@
       <p>Kenangan dari reuni 2017 dan perjalanan bersama angkatan 87 sebelumnya — akan terus bertambah seiring foto-foto acara baru masuk.</p>
     </div>
     <div class="galeri-grid">
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-01.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kosayu 30 Tahun, Bali 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-02.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Santai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-03.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-04.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Nusa Penida</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-05.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Perjalanan Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-06.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Di Dalam Mobil</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-07.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">On The Road</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-08.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Laut</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-09.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Di Tepi Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-10.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Naik Perahu</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-11.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Makan Malam</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-12.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Jalan di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-13.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-14.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Angkatan 1987</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-15.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Perjalanan Kapal</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-16.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-17.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">2Friends 2Gether 4Ever</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-18.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-19.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sarapan Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-20.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Angkatan</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-21.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Barisan di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-22.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kunjungan Tebing</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-23.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Kapal</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-24.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Rebah di Pasir</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-25.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Gazebo Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-26.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Jalan-Jalan Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-27.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul di Jalan</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-28.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sore di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-29.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kebersamaan Angkatan</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-30.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Canda Tawa di Bus</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-31.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kostum Seru</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-32.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Lompat di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-33.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Makan Malam</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-34.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Angkatan</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-35.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Malam Seru</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-36.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Nusa Penida</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-37.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-38.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pondok</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-40.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Bersama</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-41.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-42.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Balon KS</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-43.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-44.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-45.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-46.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-47.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul di Gazebo</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-48.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">2Friends 2Gether 4Ever</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-49.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Perahu</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-50.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-51.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Bermain di Ombak</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-52.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Basah-Basahan</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-53.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pantai</div></div>
-      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-54.jpg" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Potret Santai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-01.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kosayu 30 Tahun, Bali 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-02.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Santai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-03.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-04.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Nusa Penida</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-05.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Perjalanan Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-06.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Di Dalam Mobil</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-07.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">On The Road</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-08.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Laut</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-09.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Di Tepi Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-10.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Naik Perahu</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-11.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Makan Malam</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-12.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Jalan di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-13.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-14.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Angkatan 1987</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-15.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Perjalanan Kapal</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-16.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-17.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">2Friends 2Gether 4Ever</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-18.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-19.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sarapan Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-20.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Angkatan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-21.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Barisan di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-22.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kunjungan Tebing</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-23.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Kapal</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-24.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Rebah di Pasir</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-25.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Gazebo Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-26.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Jalan-Jalan Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-27.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul di Jalan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-28.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sore di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-29.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kebersamaan Angkatan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-30.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Canda Tawa di Bus</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-31.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kostum Seru</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-32.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Lompat di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-33.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Makan Malam</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-34.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Angkatan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-35.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Malam Seru</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-36.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Nusa Penida</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-37.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-38.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pondok</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-40.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Foto Bersama</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-41.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-42.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Balon KS</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-43.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-44.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-45.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-46.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Pearl Reunion 2017</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-47.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Kumpul di Gazebo</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-48.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">2Friends 2Gether 4Ever</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-49.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Perahu</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-50.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Sunset di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-51.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Bermain di Ombak</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-52.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Basah-Basahan</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-53.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Santai di Pantai</div></div>
+      <div class="polaroid reveal"><div class="polaroid-photo"><img src="images/foto-54.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;"></div><div class="polaroid-cap">Potret Santai</div></div>
+    </div>
+  </div>
+</section>
+
+<section id="papan-kenangan" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">Sebelum Ketemu Langsung</span>
+      <h2>Papan Kenangan</h2>
+      <p>Tinggalkan sapaan, kenangan lucu, atau sekadar "kangen!" untuk teman-teman angkatan 87 &mdash; buat diri sendiri saja atau tujukan ke orang tertentu. Kalau kamu tahu nomor WA-nya, form juga bisa kasih tombol kirim langsung supaya temanmu pasti lihat. Yuk mulai akrab lagi sebelum hari-H!</p>
+    </div>
+
+    <div class="rsvp-form-wrap reveal">
+      <!--
+        CARA PASANG GOOGLE FORM PAPAN KENANGAN:
+        1. Buat form baru di https://forms.google.com dengan field:
+           - "Nama Kamu" -> isian bebas (wajib)
+           - "Untuk Siapa?" -> Dropdown, isi 459 nama alumni (opsional — boleh kosong kalau pesan untuk semua)
+           - "Pesan/Ucapan" -> paragraph/isian panjang (wajib)
+           - "Nomor WhatsApp Teman Ini" -> isian bebas (opsional) — kalau pengirim tahu nomornya, akan
+             muncul tombol "Kirim juga ke WhatsApp" di kartu pesan itu (link wa.me otomatis, teks pesan
+             sudah terisi). Kalau dikosongkan, kartu tetap tampil normal tanpa tombol itu.
+        2. Tambahkan Description singkat di bagian atas form, misal: "Harap jaga kesopanan — pesan ini akan
+           tampil publik di website reuni."
+        3. Klik "Send" -> tab ikon "<>" (embed) -> copy nilai "src" dari kode iframe.
+        4. Ganti GANTI_DENGAN_LINK_FORM_PAPAN_KENANGAN di bawah dengan URL itu (2 tempat: iframe & tombol).
+        5. Untuk menampilkan pesan otomatis di bawah: publish sheet respons form ini sebagai CSV
+           (File -> Share -> Publish to web -> CSV), lalu isi MESSAGE_CSV_URL di bagian script bawah
+           (cari komentar "MESSAGE_CSV_URL").
+      -->
+      <iframe
+        src="https://docs.google.com/forms/d/e/1FAIpQLSe4-0FSQin65gJ-5CK64Bot8AejTc1GoCmyWjsQqvGI_jSvSQ/viewform?embedded=true"
+        width="100%"
+        height="520"
+        frameborder="0"
+        marginheight="0"
+        marginwidth="0"
+        title="Form Papan Kenangan">
+        Memuat form&hellip;
+      </iframe>
+      <div class="rsvp-fallback">
+        Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe4-0FSQin65gJ-5CK64Bot8AejTc1GoCmyWjsQqvGI_jSvSQ/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
+      </div>
+      <div class="rsvp-note">Pesan akan tampil publik di bawah ini &mdash; mohon jaga kesopanan.</div>
+    </div>
+
+    <div class="papan-search reveal" style="margin-top:32px;">
+      <input type="text" id="papanSearch" placeholder="Cari pesan untuk nama tertentu...">
+    </div>
+
+    <div id="papanGrid" class="papan-grid reveal">
+      <div class="papan-empty">Memuat pesan&hellip;</div>
     </div>
   </div>
 </section>
@@ -1237,6 +1378,134 @@
   Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => {
     renderAlumniList('');
     renderClassSummary();
+  });
+
+  // ---------- PAPAN KENANGAN ----------
+  // CARA HUBUNGKAN PESAN OTOMATIS:
+  // 1. Buka Google Sheet hasil respons form Papan Kenangan.
+  // 2. File -> Share -> Publish to web -> pilih sheet responses -> format CSV -> Publish.
+  // 3. Copy link CSV yang muncul, tempel ke variabel MESSAGE_CSV_URL di bawah (ganti null).
+  const MESSAGE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vRihBswNyCCI3yl3odOmB50j95yH9xdEa2jB9OllV1OwfuH9dM__fypSh2rqPdO2n8Em0jz6Y_73TkW/pub?gid=165464190&single=true&output=csv";
+
+  let papanMessages = [];
+
+  function parseCsvLine(line){
+    // parser CSV sederhana yang menangani koma di dalam tanda kutip
+    const result = [];
+    let cur = '', inQuotes = false;
+    for(let i=0;i<line.length;i++){
+      const ch = line[i];
+      if(ch === '"'){
+        if(inQuotes && line[i+1] === '"'){ cur += '"'; i++; }
+        else inQuotes = !inQuotes;
+      } else if(ch === ',' && !inQuotes){
+        result.push(cur); cur = '';
+      } else {
+        cur += ch;
+      }
+    }
+    result.push(cur);
+    return result;
+  }
+
+  async function loadPapanMessages(){
+    const grid = document.getElementById('papanGrid');
+    if(!MESSAGE_CSV_URL){
+      grid.innerHTML = '<div class="papan-empty">Papan kenangan akan aktif begitu form terhubung. Cek lagi nanti!</div>';
+      return;
+    }
+    try{
+      const res = await fetch(MESSAGE_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2){
+        grid.innerHTML = '<div class="papan-empty">Belum ada pesan. Jadilah yang pertama menyapa!</div>';
+        return;
+      }
+      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const fromIdx = header.findIndex(h => h.includes('nama kamu') || h.includes('nama pengirim'));
+      const toIdx = header.findIndex(h => h.includes('untuk siapa'));
+      const msgIdx = header.findIndex(h => h.includes('pesan') || h.includes('ucapan'));
+      const waIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
+      const tsIdx = 0; // kolom pertama selalu Timestamp dari Google Form
+
+      papanMessages = lines.slice(1).map(line => {
+        const cols = parseCsvLine(line);
+        return {
+          from: (cols[fromIdx] || '').replace(/"/g,'').trim(),
+          to: (cols[toIdx] || '').replace(/"/g,'').trim(),
+          msg: (cols[msgIdx] || '').replace(/"/g,'').trim(),
+          wa: waIdx > -1 ? (cols[waIdx] || '').replace(/"/g,'').trim() : '',
+          ts: cols[tsIdx] || '',
+        };
+      }).filter(m => m.msg).reverse(); // terbaru di atas
+
+      renderPapan('');
+    }catch(err){
+      console.error('Gagal memuat papan kenangan', err);
+      grid.innerHTML = '<div class="papan-empty">Pesan belum bisa dimuat. Coba muat ulang halaman.</div>';
+    }
+  }
+
+  function cleanWaNumber(raw){
+    let n = (raw || '').replace(/[^\d+]/g, '');
+    if(!n) return '';
+    if(n.startsWith('+')) n = n.slice(1);
+    if(n.startsWith('0')) n = '62' + n.slice(1);
+    return n;
+  }
+
+  function escapeHtmlPapan(str){
+    const d = document.createElement('div');
+    d.textContent = str || '';
+    return d.innerHTML;
+  }
+
+  function renderPapan(filter){
+    const grid = document.getElementById('papanGrid');
+    const term = (filter || '').toLowerCase().trim();
+    const filtered = papanMessages.filter(m =>
+      !term || m.to.toLowerCase().includes(term) || m.from.toLowerCase().includes(term)
+    );
+    if(filtered.length === 0){
+      grid.innerHTML = '<div class="papan-empty">Tidak ada pesan yang cocok.</div>';
+      return;
+    }
+    grid.innerHTML = filtered.map(m => {
+      const waNum = cleanWaNumber(m.wa);
+      const waText = encodeURIComponent(`Halo ${m.to || ''}! Ada pesan buat kamu di Papan Kenangan Reuni Rubi '87 dari ${m.from || 'teman'}: "${m.msg}" — cek juga di reunikosayu87.com 🎉`);
+      const waBtn = waNum ? `<a class="papan-wa-btn" href="https://wa.me/${waNum}?text=${waText}" target="_blank" rel="noopener">&#128241; Kirim juga ke WhatsApp</a>` : '';
+      return `
+      <div class="papan-card">
+        <div class="papan-from">${escapeHtmlPapan(m.from) || 'Alumni 87'}</div>
+        ${m.to ? `<div class="papan-to">untuk ${escapeHtmlPapan(m.to)}</div>` : `<div class="papan-to">untuk semua teman-teman</div>`}
+        <div class="papan-msg">${escapeHtmlPapan(m.msg)}</div>
+        ${m.ts ? `<div class="papan-time">${escapeHtmlPapan(m.ts)}</div>` : ''}
+        ${waBtn}
+      </div>
+    `;
+    }).join('');
+  }
+
+  document.getElementById('papanSearch').addEventListener('input', (e) => {
+    renderPapan(e.target.value);
+  });
+
+  loadPapanMessages();
+
+
+  // Hamburger menu (mobile)
+  const navToggle = document.getElementById('navToggle');
+  const navLinks = document.getElementById('navLinks');
+  navToggle.addEventListener('click', () => {
+    navToggle.classList.toggle('open');
+    navLinks.classList.toggle('open');
+  });
+  navLinks.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => {
+      navToggle.classList.remove('open');
+      navLinks.classList.remove('open');
+    });
   });
 
   // Countdown
