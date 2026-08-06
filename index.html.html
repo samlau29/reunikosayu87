@@ -670,6 +670,83 @@
     padding:30px; font-style:italic; font-size:0.9rem;
     grid-column:1/-1;
   }
+
+  /* ---------- GERBANG PASSWORD (dipakai di beberapa section) ---------- */
+  .gate-locked{
+    min-height:220px;
+    display:flex; align-items:center; justify-content:center;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(199,154,62,0.12), transparent 45%),
+      var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:10px;
+  }
+  .gate-box{ text-align:center; padding:32px 24px; max-width:320px; }
+  .gate-icon{
+    width:52px; height:52px; margin:0 auto 14px;
+    background:var(--ruby); border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1.4rem; color:var(--cream-white);
+    border:2px solid var(--gold);
+  }
+  .gate-box h3{ font-family:'Fraunces',serif; font-size:1.1rem; color:var(--ruby-deep); margin-bottom:6px; }
+  .gate-box p{ font-size:0.85rem; color:rgba(37,28,24,0.65); margin:0 0 16px; }
+  .gate-input-row{ display:flex; gap:8px; }
+  .gate-input-row input{
+    flex:1; padding:10px 12px;
+    border:1.5px solid var(--stamp-line); border-radius:6px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:0.9rem;
+    background:var(--cream-white);
+  }
+  .gate-input-row input:focus{ outline:none; border-color:var(--ruby); }
+  .gate-btn{
+    background:var(--ruby); color:var(--cream-white);
+    border:none; border-radius:6px; padding:10px 18px;
+    font-weight:600; font-size:0.85rem; cursor:pointer;
+    font-family:'IBM Plex Sans',sans-serif;
+  }
+  .gate-btn:hover{ background:var(--ruby-deep); }
+  .gate-error{
+    margin-top:10px; font-size:0.78rem; color:var(--ruby);
+    font-weight:600; display:none;
+  }
+  .gate-error.show{ display:block; }
+  .gate-hint{ margin-top:12px; font-size:0.75rem; color:rgba(37,28,24,0.45); }
+  .gate-content{ display:none; }
+  .gate-content.unlocked{ display:block; }
+  .gate-locked.hidden{ display:none; }
+
+  /* WA number protection (per-item, dalam kartu panitia) */
+  .wa-number{ display:none; }
+  .wa-locked-note{
+    display:inline; font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    color:rgba(37,28,24,0.4); font-style:italic;
+  }
+  body.is-unlocked .wa-number{ display:block; }
+  body.is-unlocked .wa-locked-note{ display:none; }
+
+  /* Mini gate (gerbang kecil, dipakai di section Panitia) */
+  .mini-gate{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-radius:8px;
+    padding:14px 18px;
+    margin-bottom:24px;
+    display:flex; align-items:center; gap:14px; flex-wrap:wrap;
+  }
+  body.is-unlocked .mini-gate{ display:none; }
+  .mini-gate-label{
+    font-size:0.85rem; color:var(--ruby-deep); font-weight:600;
+    white-space:nowrap;
+  }
+  .mini-gate-input-row{ display:flex; gap:8px; flex:1; min-width:220px; }
+  .mini-gate-input-row input{
+    flex:1; padding:8px 10px;
+    border:1.5px solid var(--stamp-line); border-radius:6px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:0.88rem;
+  }
+  .mini-gate-input-row input:focus{ outline:none; border-color:var(--ruby); }
+  .mini-gate .gate-error{ width:100%; margin-top:4px; }
   .class-summary-card .cs-bar{
     height:4px; background:rgba(51,73,63,0.12); border-radius:2px;
     margin-top:8px; overflow:hidden;
@@ -941,17 +1018,34 @@
 
     <div id="classSummary" class="class-summary reveal"></div>
 
-    <div class="alumni-search reveal">
-      <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
-      <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 459 sudah konfirmasi</div>
-    </div>
+    <div class="reveal" id="gate-alumni-wrap">
+      <div class="gate-locked" id="gate-alumni-locked">
+        <div class="gate-box">
+          <div class="gate-icon">&#128274;</div>
+          <h3>Daftar Nama Terkunci</h3>
+          <p>Untuk jaga privasi alumni, daftar nama & kota hanya bisa dilihat dengan password. Password dibagikan secara otomatis saat registrasi. Anda juga bisa cek grup WA panitia kalau belum punya.</p>
+          <div class="gate-input-row">
+            <input type="password" id="gate-alumni-input" placeholder="Masukkan password">
+            <button class="gate-btn" onclick="tryUnlock('gate-alumni-input')">Buka</button>
+          </div>
+          <div class="gate-error" id="gate-alumni-error">Password salah, coba lagi.</div>
+          <div class="gate-hint">Password sama berlaku untuk semua bagian terkunci di situs ini.</div>
+        </div>
+      </div>
+      <div class="gate-content" id="gate-alumni-content">
+        <div class="alumni-search reveal">
+          <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
+          <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 459 sudah konfirmasi</div>
+        </div>
 
-    <div id="alumniClasses" class="reveal"></div>
+        <div id="alumniClasses" class="reveal"></div>
 
-    <div class="alumni-legend reveal">
-      <span><span class="alumni-tick confirmed" style="background:var(--pine);border-color:var(--pine);color:var(--cream-white);display:inline-flex;align-items:center;justify-content:center;">&#10003;</span> Sudah konfirmasi hadir</span>
-      <span><span class="alumni-tick" style="display:inline-flex;"></span> Belum konfirmasi</span>
-      <span style="opacity:0.55;">Nama &#10014; &mdash; Telah berpulang</span>
+        <div class="alumni-legend reveal">
+          <span><span class="alumni-tick confirmed" style="background:var(--pine);border-color:var(--pine);color:var(--cream-white);display:inline-flex;align-items:center;justify-content:center;">&#10003;</span> Sudah konfirmasi hadir</span>
+          <span><span class="alumni-tick" style="display:inline-flex;"></span> Belum konfirmasi</span>
+          <span style="opacity:0.55;">Nama &#10014; &mdash; Telah berpulang</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -1168,54 +1262,64 @@
       <h2>Hubungi Kami</h2>
       <p>Ada pertanyaan soal reuni? Hubungi panitia berikut.</p>
     </div>
+
+    <div class="mini-gate reveal" id="mini-gate-panitia">
+      <span class="mini-gate-label">&#128274; Nomor WA panitia diproteksi password</span>
+      <div class="mini-gate-input-row">
+        <input type="password" id="gate-panitia-input" placeholder="Masukkan password">
+        <button class="gate-btn" onclick="tryUnlock('gate-panitia-input')">Buka</button>
+      </div>
+      <div class="gate-error" id="gate-panitia-error">Password salah, coba lagi.</div>
+    </div>
+
     <div class="panitia-grid">
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#128081;</div>
         <div class="panitia-role">Ketua Panitia</div>
-        <div class="panitia-name">Sam Lau <span class="panitia-wa">WA: +61 433 678 700</span></div>
+        <div class="panitia-name">Sam Lau <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +61 433 678 700</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#129508;</div>
         <div class="panitia-role">Wakil Ketua</div>
-        <div class="panitia-name">Leonard Lauw / Sing Liang <span class="panitia-wa">WA: +1 909 225 8565</span></div>
+        <div class="panitia-name">Leonard Lauw / Sing Liang <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +1 909 225 8565</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#9997;&#65039;</div>
         <div class="panitia-role">Sekretaris &amp; Humas</div>
-        <div class="panitia-name">Leonard Lauw / Sing Liang <span class="panitia-wa">WA: +1 909 225 8565</span></div>
-        <div class="panitia-name">Fany Tendeyong <span class="panitia-wa">WA: +1 240 483 9969</span></div>
-        <div class="panitia-name">Rifan <span class="panitia-wa">WA: +62 816 983 359</span></div>
+        <div class="panitia-name">Leonard Lauw / Sing Liang <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +1 909 225 8565</span></div>
+        <div class="panitia-name">Fany Tendeyong <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +1 240 483 9969</span></div>
+        <div class="panitia-name">Rifan <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 816 983 359</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#128176;</div>
         <div class="panitia-role">Bendahara</div>
-        <div class="panitia-name">Fany Tendeyong <span class="panitia-wa">WA: +1 240 483 9969</span></div>
-        <div class="panitia-name">Mee Hwa <span class="panitia-wa">WA: +62 895 3937 99929</span></div>
+        <div class="panitia-name">Fany Tendeyong <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +1 240 483 9969</span></div>
+        <div class="panitia-name">Mee Hwa <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 895 3937 99929</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#127881;</div>
         <div class="panitia-role">Acara, Program &amp; Venue</div>
-        <div class="panitia-name">Lilik Teranggono <span class="panitia-wa">WA: +62 818 384 595</span></div>
-        <div class="panitia-name">Lily A.G. <span class="panitia-wa">WA: +62 811 361 303</span></div>
-        <div class="panitia-name">Yan Tiong <span class="panitia-wa">WA: +62 812 1717 688</span></div>
+        <div class="panitia-name">Lilik Teranggono <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 818 384 595</span></div>
+        <div class="panitia-name">Lily A.G. <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 811 361 303</span></div>
+        <div class="panitia-name">Yan Tiong <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 812 1717 688</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#127869;&#65039;</div>
         <div class="panitia-role">Konsumsi</div>
-        <div class="panitia-name">Lilik Teranggono <span class="panitia-wa">WA: +62 818 384 595</span></div>
-        <div class="panitia-name">Lie Sien <span class="panitia-wa">WA: +62 811 300 115</span></div>
+        <div class="panitia-name">Lilik Teranggono <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 818 384 595</span></div>
+        <div class="panitia-name">Lie Sien <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 811 300 115</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#128247;</div>
         <div class="panitia-role">Dokumentasi &amp; Sponsorship</div>
-        <div class="panitia-name">Mee Hwa <span class="panitia-wa">WA: +62 895 3937 99929</span></div>
-        <div class="panitia-name">Pei Qing <span class="panitia-wa">WA: +62 818 0354 8158</span></div>
+        <div class="panitia-name">Mee Hwa <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 895 3937 99929</span></div>
+        <div class="panitia-name">Pei Qing <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 818 0354 8158</span></div>
       </div>
       <div class="panitia-card reveal">
         <div class="panitia-avatar">&#128230;</div>
         <div class="panitia-role">Perlengkapan</div>
-        <div class="panitia-name">Lie Sien <span class="panitia-wa">WA: +62 811 300 115</span></div>
-        <div class="panitia-name">Yan Tiong <span class="panitia-wa">WA: +62 812 1717 688</span></div>
+        <div class="panitia-name">Lie Sien <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 811 300 115</span></div>
+        <div class="panitia-name">Yan Tiong <span class="wa-locked-note">&#128274; password diperlukan</span><span class="wa-number">WA: +62 812 1717 688</span></div>
       </div>
     </div>
   </div>
@@ -1516,6 +1620,46 @@
 
   loadPapanMessages();
 
+
+  // ---------- GERBANG PASSWORD (unlock 1x untuk semua bagian terkunci) ----------
+  // GANTI password di bawah ini sesuai keinginan panitia, lalu bagikan ke grup WA
+  const SITE_PASSWORD = "reuni87";
+  const UNLOCK_KEY = "reuni1987_unlocked";
+
+  function revealAllGates(){
+    document.querySelectorAll('.gate-locked').forEach(el => el.classList.add('hidden'));
+    document.querySelectorAll('.gate-content').forEach(el => el.classList.add('unlocked'));
+    document.body.classList.add('is-unlocked');
+  }
+
+  function tryUnlock(inputId){
+    const input = document.getElementById(inputId);
+    const val = input.value;
+    if(val === SITE_PASSWORD){
+      try{ sessionStorage.setItem(UNLOCK_KEY, 'true'); }catch(e){}
+      revealAllGates();
+    } else {
+      // tampilkan pesan error di gerbang terkait (cari error box terdekat)
+      const errorEl = input.closest('.gate-box, .mini-gate').querySelector('.gate-error');
+      if(errorEl) errorEl.classList.add('show');
+    }
+  }
+
+  // Enter key juga bisa submit
+  document.querySelectorAll('.gate-input-row input').forEach(inp => {
+    inp.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter') tryUnlock(inp.id);
+    });
+  });
+
+  // Kalau sudah pernah unlock di sesi browser ini, langsung buka semua tanpa minta password lagi
+  (function checkExistingUnlock(){
+    try{
+      if(sessionStorage.getItem(UNLOCK_KEY) === 'true'){
+        revealAllGates();
+      }
+    }catch(e){}
+  })();
 
   // Hamburger menu (mobile)
   const navToggle = document.getElementById('navToggle');
