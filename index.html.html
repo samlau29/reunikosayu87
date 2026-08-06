@@ -1785,7 +1785,7 @@
 
   // MODE TESTING: isi angka (menit) untuk uji coba, undian akan "buka" sekian menit dari saat halaman
   // dibuka. GANTI JADI null SEBELUM DIBAGIKAN LUAS, supaya kembali ke jadwal bulanan normal.
-  const TEST_MODE_MINUTES = 1;
+  const TEST_MODE_MINUTES = null;
   // Target waktu testing dihitung SEKALI saja saat script dimuat (supaya tidak bergeser tiap refresh)
   const TEST_DRAW_TIME = (TEST_MODE_MINUTES !== null) ? new Date(Date.now() + TEST_MODE_MINUTES * 60 * 1000) : null;
 
