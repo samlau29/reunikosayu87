@@ -1477,6 +1477,28 @@
     return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/[^a-z\s]/g,'').trim();
   }
 
+  // Cari kolom "Nama Lengkap" di header CSV. Kalau ada beberapa kolom judul sama (bisa terjadi kalau
+  // pertanyaan pernah dihapus & dibuat ulang di Google Form — Sheets tidak menimpa kolom lama, malah
+  // bikin kolom baru), pilih yang PALING KANAN (kolom terbaru/aktif), bukan yang pertama ditemukan.
+  function findNameColumnIndex(header, opts){
+    opts = opts || {};
+    const exclude = opts.exclude || [];
+    for(let i = header.length - 1; i >= 0; i--){
+      const h = header[i];
+      if(h.includes('nama') && h.includes('lengkap') && !exclude.some(x => h.includes(x))){
+        return i;
+      }
+    }
+    // fallback: kolom apapun yang mengandung "nama" (dari kanan juga, biar konsisten)
+    for(let i = header.length - 1; i >= 0; i--){
+      const h = header[i];
+      if(h.includes('nama') && !exclude.some(x => h.includes(x))){
+        return i;
+      }
+    }
+    return -1;
+  }
+
   // Dropdown Google Form formatnya "Nama (dulu: NamaLama) — Kelas I-X" — ambil bagian nama bersihnya saja
   function extractPlainName(raw){
     let s = raw || '';
@@ -1493,7 +1515,7 @@
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
       const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
-      const nameIdx = header.findIndex(h => h.includes('nama'));
+      const nameIdx = findNameColumnIndex(header);
       if(nameIdx === -1) return;
       confirmedNames = lines.slice(1).map(line => {
         const cols = line.split(',');
@@ -1537,7 +1559,7 @@
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
       const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
-      const nameIdx = header.findIndex(h => h.includes('nama') && !h.includes('panggilan') && !h.includes('kamu'));
+      const nameIdx = findNameColumnIndex(header, {exclude: ['panggilan', 'kamu']});
       const statusIdx = header.findIndex(h => h.includes('status'));
       if(nameIdx === -1 || statusIdx === -1) return;
       deceasedNames = lines.filter((line, i) => {
@@ -1779,7 +1801,7 @@
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
       const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
-      const nameIdx = header.findIndex(h => h.includes('nama'));
+      const nameIdx = findNameColumnIndex(header);
       const paidIdx = header.findIndex(h => h.includes('bayar'));
       if(nameIdx === -1 || paidIdx === -1) return;
       paidNames = lines.slice(1).filter(line => {
