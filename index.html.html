@@ -1514,11 +1514,11 @@
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
-      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header);
       if(nameIdx === -1) return;
       confirmedNames = lines.slice(1).map(line => {
-        const cols = line.split(',');
+        const cols = parseCsvLine(line);
         return normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
       }).filter(Boolean);
     }catch(err){
@@ -1558,16 +1558,16 @@
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
-      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header, {exclude: ['panggilan', 'kamu']});
       const statusIdx = header.findIndex(h => h.includes('status'));
       if(nameIdx === -1 || statusIdx === -1) return;
       deceasedNames = lines.filter((line, i) => {
         if(i === 0) return false;
-        const cols = line.split(',');
+        const cols = parseCsvLine(line);
         const status = (cols[statusIdx] || '').toLowerCase();
         return status.includes('meninggal') || status.includes('almarhum');
-      }).map(line => normalizeName(extractPlainName(line.split(',')[nameIdx].replace(/"/g,''))));
+      }).map(line => normalizeName(extractPlainName((parseCsvLine(line)[nameIdx] || '').replace(/"/g,''))));
     }catch(err){
       console.error('Gagal memuat data status alumni', err);
     }
@@ -1696,7 +1696,7 @@
         grid.innerHTML = '<div class="papan-empty">Belum ada pesan. Jadilah yang pertama menyapa!</div>';
         return;
       }
-      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const fromIdx = header.findIndex(h => h.includes('nama kamu') || h.includes('nama pengirim'));
       const toIdx = header.findIndex(h => h.includes('untuk siapa'));
       const msgIdx = header.findIndex(h => h.includes('pesan') || h.includes('ucapan'));
@@ -1800,15 +1800,15 @@
       const text = await res.text();
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
-      const header = lines[0].split(',').map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header);
       const paidIdx = header.findIndex(h => h.includes('bayar'));
       if(nameIdx === -1 || paidIdx === -1) return;
       paidNames = lines.slice(1).filter(line => {
-        const cols = line.split(',');
+        const cols = parseCsvLine(line);
         const val = (cols[paidIdx] || '').toLowerCase();
         return val.includes('ya') || val.includes('sudah') || val.includes('lunas');
-      }).map(line => normalizeName(extractPlainName(line.split(',')[nameIdx].replace(/"/g,''))));
+      }).map(line => normalizeName(extractPlainName((parseCsvLine(line)[nameIdx] || '').replace(/"/g,''))));
     }catch(err){
       console.error('Gagal memuat data pembayaran', err);
     }
