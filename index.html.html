@@ -1034,7 +1034,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel">442 yang aktif, 17 sudah berpulang</div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel">441 aktif, 18 sudah berpulang</div></a>
   </div>
 </div>
 
@@ -1178,12 +1178,15 @@
            SUDAH DITAMBAHKAN oleh panitia — opsi "Alumni SMP Kosayu (bukan Alumni SMA Kosayu 87)" di
            dropdown "Nama", plus 1 field baru "Kalau pilih 'Alumni SMP Kosayu' di atas, tulis nama kamu
            di sini" (isian bebas, opsional).
+           TOLONG PINDAHKAN opsi ini ke PALING ATAS dropdown (bukan paling bawah) — drag pakai ikon
+           titik enam (⣿) di kiri opsi tersebut di halaman edit form. Lebih gampang ditemukan orang
+           daripada scroll ke bawah 459 nama dulu.
            Catatan: peserta kategori ini TIDAK akan muncul di Daftar Alumni & tidak ikut terhitung di
            angka "X/459 Terdaftar" (karena itu khusus 459 alumni SMA) — tapi tetap tercatat di
            spreadsheet respons untuk keperluan logistik panitia (booking hotel, catering, dll).
       -->
-      <div style="background:rgba(199,154,62,0.12); border:1px solid rgba(199,154,62,0.35); border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:0.85rem; color:var(--ruby-deep);">
-        &#128070; <strong>Untuk Alumni SMP Kosayu:</strong> scroll ke pilihan paling bawah di dropdown Nama, lalu pilih <strong>"Alumni SMP Kosayu"</strong>.
+      <div style="background:#7C1F2B; border:2px solid #C79A3E; border-radius:10px; padding:16px 20px; margin-bottom:18px; font-size:1rem; color:#FBF7ED; text-align:center;">
+        &#128070; <strong style="color:#F5D98A;">Untuk Alumni SMP Kosayu:</strong> di dropdown Nama, pilih <strong style="color:#F5D98A;">"Alumni SMP Kosayu"</strong> (ada di paling atas pilihan).
       </div>
       <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform?embedded=true"
@@ -1243,7 +1246,7 @@
         <div class="alumni-search reveal">
           <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
           <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 459 sudah konfirmasi</div>
-          <div class="alumni-stats-note">(dari 442 alumni yang masih aktif &mdash; 459 termasuk 17 yang sudah berpulang &#10014;)</div>
+          <div class="alumni-stats-note">(dari 441 alumni yang masih aktif &mdash; 459 termasuk 18 yang sudah berpulang &#10014;)</div>
         </div>
 
         <div id="alumniClasses" class="reveal"></div>
@@ -1294,10 +1297,11 @@
         script bawah (cari komentar "UPDATE_CSV_URL").
         UNTUK ALUMNI SMP KOSAYU (bukan Alumni SMA Kosayu 87, open invite): sama seperti Form RSVP —
         tambahkan opsi "Alumni SMP Kosayu (bukan Alumni SMA Kosayu 87)" di dropdown "Nama", plus 1
-        field opsional "Kalau pilih 'Alumni SMP Kosayu', tulis nama kamu".
+        field opsional "Kalau pilih 'Alumni SMP Kosayu', tulis nama kamu". PINDAHKAN opsi ini ke
+        PALING ATAS dropdown (drag ikon titik enam ⣿ di kiri opsi), bukan paling bawah.
       -->
-      <div style="background:rgba(199,154,62,0.12); border:1px solid rgba(199,154,62,0.35); border-radius:8px; padding:12px 16px; margin-bottom:16px; font-size:0.85rem; color:var(--ruby-deep);">
-        &#128070; <strong>Untuk Alumni SMP Kosayu:</strong> scroll ke pilihan paling bawah di dropdown Nama, lalu pilih <strong>"Alumni SMP Kosayu"</strong>.
+      <div style="background:#7C1F2B; border:2px solid #C79A3E; border-radius:10px; padding:16px 20px; margin-bottom:18px; font-size:1rem; color:#FBF7ED; text-align:center;">
+        &#128070; <strong style="color:#F5D98A;">Untuk Alumni SMP Kosayu:</strong> di dropdown Nama, pilih <strong style="color:#F5D98A;">"Alumni SMP Kosayu"</strong> (ada di paling atas pilihan).
       </div>
       <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform?embedded=true"
@@ -1673,7 +1677,8 @@
     "Ang Soen Tie", "Suwatio", "Triwantoro", "Agus Budianto", "Dwi Iswandi",
     "Bong Su An", "Indahyu Lingsih", "The Hsi Hwie", "Koe The Chen",
     "Johny Sudarso B.", "Juniar Rusli", "Linawati", "Tjioe Djing Jing",
-    "Welly Djulaidy", "Karuniawan Boleng", "Budi Harjo Kartono", "Go Hwie Lie"
+    "Welly Djulaidy", "Karuniawan Boleng", "Budi Harjo Kartono", "Go Hwie Lie",
+    "Djoko Wiyono"
   ].map(normalizeName);
   let deceasedNames = [];
 
