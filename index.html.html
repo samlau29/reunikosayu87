@@ -240,6 +240,10 @@
   }
   .cd-item-link:hover{ opacity:0.85; transform:translateY(-2px); }
   .cd-item-link .cd-label{ color:var(--gold); font-weight:600; }
+  .cd-sublabel{
+    font-family:'IBM Plex Mono',monospace; font-size:0.6rem;
+    color:rgba(251,247,237,0.55); margin-top:2px;
+  }
   .cd-item-link .cd-num{ font-size:2.4rem; color:var(--gold); }
   .cd-caption{
     order:-1;
@@ -343,6 +347,53 @@
   .practical-box p{
     font-size:0.86rem; line-height:1.6; color:rgba(37,28,24,0.7);
     margin:0;
+  }
+
+  /* ---------- QUICK FIND (pencarian nama cepat sebelum isi form) ---------- */
+  .quick-find-box{
+    background:var(--cream-white);
+    border:1.5px solid var(--gold);
+    border-radius:12px;
+    padding:20px 22px;
+    margin-bottom:20px;
+  }
+  .quick-find-label{
+    display:block; font-family:'Fraunces',serif; font-weight:600; font-size:1rem;
+    color:var(--ruby-deep); margin-bottom:10px;
+  }
+  .quick-find-input{
+    width:100%; padding:12px 14px;
+    border:1.5px solid var(--stamp-line); border-radius:6px;
+    font-family:'IBM Plex Sans',sans-serif; font-size:1rem;
+    background:var(--paper);
+  }
+  .quick-find-input:focus{ outline:none; border-color:var(--ruby); }
+  .quick-find-results{
+    margin-top:10px;
+    display:flex; flex-direction:column; gap:6px;
+    max-height:280px; overflow-y:auto;
+  }
+  .quick-find-item{
+    display:flex; justify-content:space-between; align-items:center;
+    background:var(--paper-warm);
+    border:1px solid var(--stamp-line);
+    border-radius:6px;
+    padding:10px 14px;
+    text-decoration:none; color:var(--ink);
+    font-size:0.92rem;
+    transition:background .15s ease;
+  }
+  .quick-find-item:hover{ background:rgba(199,154,62,0.18); }
+  .quick-find-item .qf-name{ font-weight:600; }
+  .quick-find-item .qf-meta{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    color:var(--ruby); white-space:nowrap; margin-left:10px;
+  }
+  .quick-find-empty{
+    font-size:0.85rem; color:rgba(37,28,24,0.45); font-style:italic; padding:8px 4px;
+  }
+  .quick-find-hint{
+    margin-top:10px; font-size:0.78rem; color:rgba(37,28,24,0.5);
   }
 
   /* ---------- TIMELINE / RUNDOWN ---------- */
@@ -502,6 +553,10 @@
     color:var(--ruby-deep); white-space:nowrap;
   }
   .alumni-stats strong{ color:var(--ruby); font-size:1rem; }
+  .alumni-stats-note{
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    color:rgba(37,28,24,0.45); margin-top:2px;
+  }
   .alumni-class{
     border:1px solid var(--stamp-line);
     border-radius:10px;
@@ -979,7 +1034,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel">dari 442 yang aktif</div></a>
   </div>
 </div>
 
@@ -1098,6 +1153,14 @@
       <p>Isi form di bawah untuk konfirmasi kehadiran sekaligus update data diri kamu (kota, WhatsApp, email) &mdash; cukup sekali isi.</p>
       <p style="font-size:0.85rem; color:rgba(37,28,24,0.6); margin-top:8px;">Teman-teman <strong>Alumni SMP Kosayu</strong> (bukan Alumni SMA Kosayu 87) juga boleh ikut &mdash; pilih opsi <strong>"Alumni SMP Kosayu"</strong> di dropdown Nama, lalu isi nama kamu di kolom yang tersedia. <em>(Data tetap tercatat panitia untuk logistik, walau tidak masuk hitungan Daftar Alumni/459.)</em></p>
     </div>
+
+    <div class="quick-find-box reveal">
+      <label for="quickFindInput" class="quick-find-label">&#128269; Cara Cepat: Ketik Nama Kamu (2-3 huruf cukup)</label>
+      <input type="text" id="quickFindInput" class="quick-find-input" placeholder="Contoh: Sam, Fany, Rifan...">
+      <div id="quickFindResults" class="quick-find-results"></div>
+      <p class="quick-find-hint">Klik nama kamu di hasil pencarian, form akan otomatis kebuka dengan nama sudah terisi &mdash; tidak perlu scroll dropdown panjang lagi.</p>
+    </div>
+
     <div class="rsvp-form-wrap reveal">
       <!--
         CARA UPDATE GOOGLE FORM INI (form sudah live, edit langsung di forms.google.com, TIDAK perlu ganti link):
@@ -1180,6 +1243,7 @@
         <div class="alumni-search reveal">
           <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
           <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 459 sudah konfirmasi</div>
+          <div class="alumni-stats-note">(dari 442 alumni yang masih aktif &mdash; 459 termasuk 17 yang sudah berpulang &#10014;)</div>
         </div>
 
         <div id="alumniClasses" class="reveal"></div>
@@ -1201,6 +1265,14 @@
       <h2>Update Data &mdash; Diri Sendiri atau Teman</h2>
       <p>Belum siap konfirmasi hadir tapi mau data kontak kamu tetap ter-update? Atau tahu kontak teman angkatan 87 yang tidak aktif di grup WhatsApp? Pakai form ini &mdash; tidak perlu daftar hadir dulu. Cukup pilih nama dari daftar (diri sendiri atau teman), kamu tidak perlu tahu siapa saja yang datanya masih kosong. Tahu lebih dari satu teman? Isi form ini beberapa kali.</p>
     </div>
+
+    <div class="quick-find-box reveal">
+      <label for="quickFindInput2" class="quick-find-label">&#128269; Cara Cepat: Ketik Nama (Kamu atau Teman)</label>
+      <input type="text" id="quickFindInput2" class="quick-find-input" placeholder="Contoh: Sam, Fany, Rifan...">
+      <div id="quickFindResults2" class="quick-find-results"></div>
+      <p class="quick-find-hint">Klik nama yang dicari, form akan otomatis kebuka dengan nama sudah terisi &mdash; tidak perlu scroll dropdown panjang lagi.</p>
+    </div>
+
     <div class="rsvp-form-wrap reveal">
       <!--
         CARA UPDATE GOOGLE FORM INI (form sudah live, edit langsung di forms.google.com, TIDAK perlu ganti link):
@@ -1601,7 +1673,7 @@
     "Ang Soen Tie", "Suwatio", "Triwantoro", "Agus Budianto", "Dwi Iswandi",
     "Bong Su An", "Indahyu Lingsih", "The Hsi Hwie", "Koe The Chen",
     "Johny Sudarso B.", "Juniar Rusli", "Linawati", "Tjioe Djing Jing",
-    "Welly Djulaidy", "Karuniawan Boleng", "Budi Harjo Kartono"
+    "Welly Djulaidy", "Karuniawan Boleng", "Budi Harjo Kartono", "Go Hwie Lie"
   ].map(normalizeName);
   let deceasedNames = [];
 
@@ -2042,6 +2114,78 @@
       }
     }catch(e){}
   })();
+
+  // ---------- QUICK FIND (pencarian nama cepat + pre-fill link Google Form) ----------
+  // Kode "entry.xxxxx" ini diambil dari fitur "Get pre-filled link" Google Form, khusus
+  // field "Nama Lengkap" di Form RSVP. Kalau field-nya diubah/dibuat ulang di form, kode
+  // ini bisa berubah — ambil ulang kodenya dan ganti nilai di bawah kalau pencarian ini
+  // berhenti berfungsi (link jadi tidak ke-isi otomatis).
+  const FORM1_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform";
+  const FORM1_NAME_ENTRY_ID = "1256059965";
+
+  function buildDropdownValue(a){
+    return a.d ? `${a.n} (dulu: ${a.d}) \u2014 Kelas ${a.k}` : `${a.n} \u2014 Kelas ${a.k}`;
+  }
+
+  function buildPrefillUrl(a){
+    const value = buildDropdownValue(a);
+    return `${FORM1_BASE_URL}?usp=pp_url&entry.${FORM1_NAME_ENTRY_ID}=${encodeURIComponent(value)}`;
+  }
+
+  const quickFindInput = document.getElementById('quickFindInput');
+  const quickFindResults = document.getElementById('quickFindResults');
+  if(quickFindInput){
+    quickFindInput.addEventListener('input', (e) => {
+      const term = normalizeName(e.target.value);
+      quickFindResults.innerHTML = '';
+      if(term.length < 2){ return; }
+      const matches = alumniData.filter(a =>
+        normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term))
+      ).slice(0, 8);
+      if(matches.length === 0){
+        quickFindResults.innerHTML = '<div class="quick-find-empty">Nama tidak ditemukan. Coba ejaan lain, atau isi manual lewat dropdown di form.</div>';
+        return;
+      }
+      quickFindResults.innerHTML = matches.map(a => `
+        <a class="quick-find-item" href="${buildPrefillUrl(a)}" target="_blank" rel="noopener">
+          <span class="qf-name">${escapeHtmlAlumni(a.n)}${a.d ? ` <span style="font-weight:400;opacity:0.6;">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : ''}</span>
+          <span class="qf-meta">Kelas ${escapeHtmlAlumni(a.k)} &#8594;</span>
+        </a>
+      `).join('');
+    });
+  }
+
+  // Form 2 (Update Data) — pencarian cepat versi kedua
+  const FORM2_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform";
+  const FORM2_NAME_ENTRY_ID = "208475454";
+
+  function buildPrefillUrl2(a){
+    const value = buildDropdownValue(a);
+    return `${FORM2_BASE_URL}?usp=pp_url&entry.${FORM2_NAME_ENTRY_ID}=${encodeURIComponent(value)}`;
+  }
+
+  const quickFindInput2 = document.getElementById('quickFindInput2');
+  const quickFindResults2 = document.getElementById('quickFindResults2');
+  if(quickFindInput2){
+    quickFindInput2.addEventListener('input', (e) => {
+      const term = normalizeName(e.target.value);
+      quickFindResults2.innerHTML = '';
+      if(term.length < 2){ return; }
+      const matches = alumniData.filter(a =>
+        normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term))
+      ).slice(0, 8);
+      if(matches.length === 0){
+        quickFindResults2.innerHTML = '<div class="quick-find-empty">Nama tidak ditemukan. Coba ejaan lain, atau isi manual lewat dropdown di form.</div>';
+        return;
+      }
+      quickFindResults2.innerHTML = matches.map(a => `
+        <a class="quick-find-item" href="${buildPrefillUrl2(a)}" target="_blank" rel="noopener">
+          <span class="qf-name">${escapeHtmlAlumni(a.n)}${a.d ? ` <span style="font-weight:400;opacity:0.6;">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : ''}</span>
+          <span class="qf-meta">Kelas ${escapeHtmlAlumni(a.k)} &#8594;</span>
+        </a>
+      `).join('');
+    });
+  }
 
   // Hamburger menu (mobile)
   const navToggle = document.getElementById('navToggle');
