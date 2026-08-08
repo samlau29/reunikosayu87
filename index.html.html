@@ -608,6 +608,16 @@
     font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
     color:rgba(37,28,24,0.4); margin-left:4px;
   }
+  .alumni-wa-link{
+    display:inline-flex; align-items:center; gap:3px;
+    margin-left:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:#1a7a4c; text-decoration:none;
+    background:rgba(37,168,105,0.1);
+    padding:2px 8px; border-radius:10px;
+    white-space:nowrap;
+  }
+  a.alumni-wa-link:hover{ background:rgba(37,168,105,0.2); }
   .alumni-kota{
     font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
     color:rgba(37,28,24,0.45);
@@ -1462,6 +1472,7 @@
           <span><span class="alumni-tick" style="display:inline-flex;"></span> Belum konfirmasi</span>
           <span style="opacity:0.55;">Nama &#10014; &mdash; Telah berpulang</span>
         </div>
+        <p style="text-align:center; margin-top:10px; font-size:0.78rem; color:rgba(37,28,24,0.5);">&#128241; Nomor WA (kalau muncul di sebelah nama) khusus untuk panitia &mdash; buat invite manual ke grup WA kalau ada yang belum sempat klik link undangan.</p>
       </div>
     </div>
   </div>
@@ -1861,6 +1872,7 @@
   }
 
   let totalAttending = 0;
+  let waNumberMap = {};
   let smpNames = [];
   let kelas23Names = [];
 
@@ -1874,11 +1886,23 @@
       const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header);
       const jumlahIdx = header.findIndex(h => h.includes('jumlah'));
+      const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
       if(nameIdx === -1) return;
       confirmedNames = lines.slice(1).map(line => {
         const cols = parseCsvLine(line);
         return normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
       }).filter(Boolean);
+
+      // Simpan nomor WA per nama (dipakai panitia untuk invite manual ke grup, di balik password)
+      waNumberMap = {};
+      if(waColIdx > -1){
+        lines.slice(1).forEach(line => {
+          const cols = parseCsvLine(line);
+          const nm = normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
+          const wa = (cols[waColIdx] || '').replace(/"/g,'').trim();
+          if(nm && wa) waNumberMap[nm] = wa;
+        });
+      }
 
       totalAttending = 0;
       if(jumlahIdx > -1){
@@ -2030,9 +2054,19 @@
         const confirmed = !deceased && isConfirmed(a.n, a.d);
         if(confirmed) totalConfirmed++;
         const duluTag = a.d ? ` <span class="alumni-dulu">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : '';
+        let waHtml = '';
+        if(confirmed){
+          const rawWa = waNumberMap[normalizeName(a.n)] || (a.d ? waNumberMap[normalizeName(a.d)] : '');
+          if(rawWa){
+            const cleanWa = cleanWaNumber(rawWa);
+            waHtml = cleanWa
+              ? `<a class="alumni-wa-link" href="https://wa.me/${cleanWa}" target="_blank" rel="noopener">&#128241; ${escapeHtmlAlumni(rawWa)}</a>`
+              : `<span class="alumni-wa-link">&#128241; ${escapeHtmlAlumni(rawWa)}</span>`;
+          }
+        }
         return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
           <div class="alumni-tick">&#10003;</div>
-          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}</div>
+          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${waHtml}</div>
           <div class="alumni-kota">${escapeHtmlAlumni(a.a || '')}</div>
         </div>`;
       }).join('');
