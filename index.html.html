@@ -2018,7 +2018,14 @@
     classKeys.forEach(k => {
       const members = classes[k].filter(a => !term || normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term)));
       if(members.length === 0) return;
-      const rows = members.map(a => {
+      // Urutkan: yang sudah konfirmasi hadir muncul PALING ATAS, sisanya alfabetis di bawahnya
+      const membersSorted = members.slice().sort((a, b) => {
+        const aConfirmed = !isDeceased(a.n) && isConfirmed(a.n, a.d);
+        const bConfirmed = !isDeceased(b.n) && isConfirmed(b.n, b.d);
+        if(aConfirmed !== bConfirmed) return aConfirmed ? -1 : 1;
+        return a.n.localeCompare(b.n);
+      });
+      const rows = membersSorted.map(a => {
         const deceased = isDeceased(a.n);
         const confirmed = !deceased && isConfirmed(a.n, a.d);
         if(confirmed) totalConfirmed++;
