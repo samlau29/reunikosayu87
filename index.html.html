@@ -920,22 +920,6 @@
     font-family:'Fraunces',serif; font-size:1rem; color:var(--ruby-deep);
     text-align:center; margin-bottom:14px;
   }
-  .tsa-example-box{
-    margin-top:24px; max-width:600px; margin-left:auto; margin-right:auto;
-    background:rgba(199,154,62,0.08);
-    border:1.5px dashed var(--gold);
-    border-radius:12px;
-    padding:22px 24px;
-    text-align:center;
-  }
-  .tsa-example-label{
-    font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
-    letter-spacing:0.06em; text-transform:uppercase; color:var(--gold);
-    margin-bottom:12px;
-  }
-  .tsa-example-note{
-    margin-top:14px; font-size:0.8rem; color:rgba(37,28,24,0.6);
-  }
 
   /* WA number protection (per-item, dalam kartu panitia) */
   .wa-number{
@@ -1606,21 +1590,6 @@
 
     <div class="tsa-box reveal" id="tsaBox">
       <div class="tsa-loading">Memuat petunjuk hari ini&hellip;</div>
-    </div>
-
-    <div class="tsa-example-box reveal">
-      <div class="tsa-example-label">&#128161; Contoh: Fun Fact yang Menarik</div>
-      <div class="tsa-facts" style="background:var(--paper);">
-        &#127968; <strong>Asal kota:</strong> Malang<br><br>
-        &#127939; <strong>Ekskul favorit dulu:</strong> Basket<br><br>
-        &#128221; <strong>Fun fact:</strong> Dulu pernah kabur dari pelajaran matematika buat nonton pertandingan basket antar sekolah, sekarang malah jadi akuntan. Suka masak, dan pernah keliling 5 negara Asia Tenggara naik motor sendirian!
-      </div>
-      <button class="tsa-reveal-btn" id="tsaExampleBtn2" type="button">Lihat Jawaban (Contoh)</button>
-      <div class="tsa-answer" id="tsaExampleAnswer2">
-        <div class="tsa-answer-name">Budi Santoso</div>
-        <div class="tsa-answer-kelas">Kelas I-6 (nama contoh, bukan orang sungguhan)</div>
-      </div>
-      <p class="tsa-example-note">Isi Fun Fact kamu sendiri lewat form di bawah &mdash; makin unik/lucu, makin seru ditebak teman-teman!</p>
     </div>
 
     <div class="tsa-funfact-form reveal">
@@ -2567,15 +2536,6 @@
   }
 
   loadTsa();
-
-  // Tombol "Lihat Jawaban" di kotak Contoh Fun Fact (permanen, selalu tampil)
-  const tsaExampleBtn2 = document.getElementById('tsaExampleBtn2');
-  if(tsaExampleBtn2){
-    tsaExampleBtn2.addEventListener('click', () => {
-      document.getElementById('tsaExampleAnswer2').classList.add('show');
-      tsaExampleBtn2.style.display = 'none';
-    });
-  }
 
 
 
