@@ -608,6 +608,15 @@
     font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
     color:rgba(37,28,24,0.4); margin-left:4px;
   }
+  .alumni-jumlah{
+    display:inline-flex; align-items:center; gap:3px;
+    margin-left:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:var(--ruby); 
+    background:rgba(124,31,43,0.08);
+    padding:2px 8px; border-radius:10px;
+    white-space:nowrap;
+  }
   .alumni-wa-link{
     display:inline-flex; align-items:center; gap:3px;
     margin-left:8px;
@@ -1903,6 +1912,7 @@
 
   let totalAttending = 0;
   let waNumberMap = {};
+  let jumlahHadirMap = {};
   let waNumberMapForm2 = {};
   let smpNames = [];
   let kelas23Names = [];
@@ -1919,33 +1929,38 @@
       const jumlahIdx = header.findIndex(h => h.includes('jumlah'));
       const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
       if(nameIdx === -1) return;
-      confirmedNames = lines.slice(1).map(line => {
+
+      // Kumpulkan per-nama (bukan per-baris) — kalau nama sama muncul lebih dari sekali (misal
+      // sebelum fitur "edit respons" aktif, orang sempat submit ulang manual), yang dipakai
+      // adalah baris PALING BAWAH/TERAKHIR untuk nama itu, supaya revisi terbaru yang menang.
+      const perNama = {};
+      lines.slice(1).forEach(line => {
         const cols = parseCsvLine(line);
-        return normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
-      }).filter(Boolean);
+        const nm = normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
+        if(!nm) return;
+        const rawJumlah = jumlahIdx > -1 ? (cols[jumlahIdx] || '').replace(/"/g,'').trim() : '';
+        const jumlah = rawJumlah === '' ? 1 : parseInt(rawJumlah, 10); // kosong = anggap 1 orang
+        const wa = waColIdx > -1 ? (cols[waColIdx] || '').replace(/"/g,'').trim() : '';
+        perNama[nm] = {
+          jumlah: isNaN(jumlah) ? 1 : jumlah,
+          wa: wa
+        };
+      });
 
-      // Simpan nomor WA per nama (dipakai panitia untuk invite manual ke grup, di balik password)
+      // Batal hadir: kalau orang edit Jumlah Hadir jadi 0, dianggap batal (tidak ikut hitungan,
+      // tidak tercentang lagi di Daftar Alumni)
+      confirmedNames = Object.keys(perNama).filter(nm => perNama[nm].jumlah !== 0);
+
       waNumberMap = {};
-      if(waColIdx > -1){
-        lines.slice(1).forEach(line => {
-          const cols = parseCsvLine(line);
-          const nm = normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
-          const wa = (cols[waColIdx] || '').replace(/"/g,'').trim();
-          if(nm && wa) waNumberMap[nm] = wa;
-        });
-      }
-
+      jumlahHadirMap = {};
       totalAttending = 0;
-      if(jumlahIdx > -1){
-        lines.slice(1).forEach(line => {
-          const cols = parseCsvLine(line);
-          const raw = (cols[jumlahIdx] || '').replace(/"/g,'').trim();
-          const num = parseInt(raw, 10);
-          totalAttending += isNaN(num) ? 1 : num; // kalau tidak ada angka, anggap 1 orang
-        });
-      } else {
-        totalAttending = confirmedNames.length; // fallback kalau kolom jumlah tidak ada
-      }
+      Object.keys(perNama).forEach(nm => {
+        const entry = perNama[nm];
+        if(entry.jumlah === 0) return; // batal hadir, tidak dihitung/ditampilkan
+        if(entry.wa) waNumberMap[nm] = entry.wa;
+        jumlahHadirMap[nm] = entry.jumlah;
+        totalAttending += entry.jumlah;
+      });
     }catch(err){
       console.error('Gagal memuat data konfirmasi', err);
     }
@@ -2103,8 +2118,13 @@
         const confirmed = !deceased && isConfirmed(a.n, a.d);
         if(confirmed) totalConfirmed++;
         const duluTag = a.d ? ` <span class="alumni-dulu">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : '';
+        let jumlahHtml = '';
         let waHtml = '';
         if(confirmed){
+          const jml = jumlahHadirMap[normalizeName(a.n)] || (a.d ? jumlahHadirMap[normalizeName(a.d)] : null);
+          if(jml){
+            jumlahHtml = `<span class="alumni-jumlah">&#128101; ${jml} orang</span>`;
+          }
           const rawWa = waNumberMap[normalizeName(a.n)] || (a.d ? waNumberMap[normalizeName(a.d)] : '');
           if(rawWa){
             const cleanWa = cleanWaNumber(rawWa);
@@ -2115,7 +2135,7 @@
         }
         return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
           <div class="alumni-tick">&#10003;</div>
-          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${waHtml}</div>
+          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}</div>
           <div class="alumni-kota">${escapeHtmlAlumni(a.a || '')}</div>
         </div>`;
       }).join('');
