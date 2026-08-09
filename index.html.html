@@ -823,6 +823,36 @@
   .gate-locked.hidden{ display:none; }
 
   /* ---------- ULANG TAHUN MINGGU INI ---------- */
+  .bday-grid{
+    display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr));
+    gap:14px;
+  }
+  .bday-card{
+    background:var(--cream-white);
+    border:1px solid var(--stamp-line);
+    border-left:3px solid var(--gold);
+    border-radius:8px;
+    padding:14px 16px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .bday-icon{ font-size:1.4rem; line-height:1; }
+  .bday-name{ font-family:'Fraunces',serif; font-weight:600; font-size:0.95rem; color:var(--ruby-deep); }
+  .bday-date{ font-family:'IBM Plex Mono',monospace; font-size:0.75rem; color:var(--pine); margin-top:2px; }
+  .bday-empty{
+    text-align:center; color:rgba(37,28,24,0.5);
+    padding:30px; font-style:italic; font-size:0.9rem;
+    grid-column:1/-1;
+  }
+  .bday-update-link{
+    display:inline-block; margin-top:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
+    color:var(--ruby); text-decoration:none;
+    background:rgba(124,31,43,0.08);
+    padding:3px 9px; border-radius:8px;
+  }
+  .bday-update-link:hover{ background:rgba(124,31,43,0.16); }
+  .bday-card .wa-locked-note{ display:block; margin-top:6px; font-size:0.68rem; }
+  .bday-card .wa-number{ margin-top:6px; margin-left:0; }
 
   /* ---------- TEBAK SIAPA AKU ---------- */
   .tsa-box{
@@ -1571,13 +1601,13 @@
 <section id="tebak-siapa-aku" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">&#129300; Setiap Minggu</span>
+      <span class="eyebrow">&#129300; Setiap Hari</span>
       <h2>Tebak Siapa Aku</h2>
-      <p>Baca petunjuknya (kota asal, ekskul dulu, fun fact), coba tebak dulu di kepala sebelum klik jawabannya! Sudah daftar duluan tapi belum sempat isi Fun Fact? Isi lewat form kecil di bawah ini, kapan saja.</p>
+      <p>Baca petunjuknya (kota asal, ekskul dulu, fun fact), coba tebak dulu di kepala sebelum klik jawabannya! Ganti tiap hari, semua orang kebagian giliran sebelum ada yang berulang. Sudah daftar duluan tapi belum sempat isi Fun Fact? Isi lewat form kecil di bawah ini, kapan saja.</p>
     </div>
 
     <div class="tsa-box reveal" id="tsaBox">
-      <div class="tsa-loading">Memuat petunjuk minggu ini&hellip;</div>
+      <div class="tsa-loading">Memuat petunjuk hari ini&hellip;</div>
     </div>
 
     <div class="tsa-funfact-form reveal">
@@ -1613,7 +1643,7 @@
     </div>
 
     <div class="tsa-archive-wrap reveal">
-      <h3 class="tsa-archive-title">&#128220; Arsip Minggu-Minggu Sebelumnya</h3>
+      <h3 class="tsa-archive-title">&#128220; Arsip Hari-Hari Sebelumnya</h3>
       <div id="tsaArchiveGrid" class="tsa-archive-grid">
         <div class="tsa-empty">Memuat arsip&hellip;</div>
       </div>
@@ -1873,6 +1903,7 @@
 
   let totalAttending = 0;
   let waNumberMap = {};
+  let waNumberMapForm2 = {};
   let smpNames = [];
   let kelas23Names = [];
 
@@ -1934,7 +1965,7 @@
   // 1. Buka Google Sheet hasil respons form Update Data (terhubung otomatis dari Google Form gabungan).
   // 2. File -> Share -> Publish to web -> pilih sheet responses -> format CSV -> Publish.
   // 3. Copy link CSV yang muncul, tempel ke variabel UPDATE_CSV_URL di bawah (ganti null).
-  const UPDATE_CSV_URL = null; // contoh: "https://docs.google.com/spreadsheets/d/e/XXXX/pub?output=csv"
+  const UPDATE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQyMDqwqFwZP2He-lzyxlao1AUiUfXaMD3PmgJw7p5ihUKO3V8Oz-FGpZ5m_9pPBJEBspVbAfmO_aKH/pub?gid=1148213944&single=true&output=csv";
 
   // Daftar manual alumni yang telah berpulang (dikonfirmasi via kolom "Meninggal" di data gabungan)
   const manualDeceased = [
@@ -1956,6 +1987,7 @@
       const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header, {exclude: ['panggilan', 'kamu']});
       const statusIdx = header.findIndex(h => h.includes('status'));
+      const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
       if(nameIdx === -1 || statusIdx === -1) return;
       deceasedNames = lines.filter((line, i) => {
         if(i === 0) return false;
@@ -1963,6 +1995,19 @@
         const status = (cols[statusIdx] || '').toLowerCase();
         return status.includes('meninggal') || status.includes('almarhum');
       }).map(line => normalizeName(extractPlainName((parseCsvLine(line)[nameIdx] || '').replace(/"/g,''))));
+
+      // Nomor WA dari Form 2 (Update Data) — disimpan terpisah, digabung ke waNumberMap setelah
+      // loadConfirmedNames (Form 1) juga selesai, supaya Form 2 (lebih baru) selalu menang kalau
+      // ada bentrok, apa pun urutan selesainya proses async ini.
+      waNumberMapForm2 = {};
+      if(waColIdx > -1){
+        lines.slice(1).forEach(line => {
+          const cols = parseCsvLine(line);
+          const nm = normalizeName(extractPlainName((cols[nameIdx] || '').replace(/"/g,'')));
+          const wa = (cols[waColIdx] || '').replace(/"/g,'').trim();
+          if(nm && wa) waNumberMapForm2[nm] = wa;
+        });
+      }
     }catch(err){
       console.error('Gagal memuat data status alumni', err);
     }
@@ -2140,8 +2185,10 @@
 
 
   Promise.all([loadConfirmedNames(), loadDeceasedNames(), loadAllSpecialCategories()]).then(() => {
+    Object.assign(waNumberMap, waNumberMapForm2); // Form 2 (lebih baru) menang kalau ada bentrok
     renderAlumniList('');
     renderClassSummary();
+    renderBirthdays();
   });
 
   // ---------- PAPAN KENANGAN ----------
@@ -2317,7 +2364,7 @@
       if(!a.bday || isDeceased(a.n)) return;
       const [mm, dd] = a.bday.split('-').map(Number);
       if(isInWibBirthdayWeek(mm, dd, mondayMs, sundayMs)){
-        matches.push({name: a.n, month: mm, day: dd});
+        matches.push({name: a.n, dulu: a.d || '', month: mm, day: dd});
       }
     });
     matches.sort((a,b) => a.day - b.day);
@@ -2326,18 +2373,34 @@
       grid.innerHTML = '<div class="bday-empty">Tidak ada yang berulang tahun minggu ini. Cek lagi minggu depan!</div>';
       return;
     }
-    grid.innerHTML = matches.map(m => `
+    grid.innerHTML = matches.map(m => {
+      const rawWa = waNumberMap[normalizeName(m.name)] || (m.dulu ? waNumberMap[normalizeName(m.dulu)] : '');
+      let waHtml = '';
+      if(rawWa){
+        const cleanWa = cleanWaNumber(rawWa);
+        waHtml = `
+          <span class="wa-locked-note">&#128274; nomor WA (password diperlukan)</span>
+          ${cleanWa
+            ? `<a class="wa-number alumni-wa-link" href="https://wa.me/${cleanWa}" target="_blank" rel="noopener">&#128241; Kirim ucapan WA</a>`
+            : `<span class="wa-number alumni-wa-link">&#128241; ${escapeHtmlAlumni(rawWa)}</span>`}
+        `;
+      } else {
+        waHtml = `<a class="bday-update-link" href="#update-data">&#9997;&#65039; Nomor WA belum ada &mdash; update di sini</a>`;
+      }
+      return `
       <div class="bday-card">
         <div class="bday-icon">&#127874;</div>
         <div>
           <div class="bday-name">${escapeHtmlAlumni(m.name)}</div>
           <div class="bday-date">${m.day} ${BULAN_NAMA[m.month-1]}</div>
+          ${waHtml}
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
   }
 
-  renderBirthdays();
+  // (renderBirthdays() dipanggil dari Promise.all di atas, supaya nomor WA sudah siap dulu)
 
   // ---------- TEBAK SIAPA AKU ----------
   // Fun fact diambil dari kolom "Fun Fact Tentang Aku" — digabung dari Form 1 (RSVP, untuk
@@ -2371,6 +2434,34 @@
       console.error('Gagal memuat fun fact dari', csvUrl, err);
       return [];
     }
+  }
+
+  // ---------- Sistem rotasi harian "tanpa berulang sampai semua kebagian" ----------
+  // Caranya: urutan orang di-KOCOK SEKALI dengan seed tetap (jadi urutannya selalu sama, tapi
+  // terlihat acak), lalu tiap hari maju 1 posisi di urutan itu. Begitu semua orang sudah kebagian
+  // (1 putaran penuh), otomatis mulai putaran baru dari awal urutan kocokan yang sama.
+  function mulberry32(seed){
+    return function(){
+      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  function seededShuffle(arr, seedStr){
+    const rand = mulberry32(seedFromString(seedStr));
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(rand() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function getWibDayIndex(){
+    const wibMs = Date.now() + WIB_OFFSET_MS;
+    return Math.floor(wibMs / 86400000); // hari ke-berapa sejak 1 Jan 1970, dihitung dari WIB
   }
 
   async function loadTsa(){
@@ -2412,12 +2503,13 @@
         return;
       }
 
-      // Pilih 1 orang secara deterministik berdasarkan minggu berjalan (ISO week), sama untuk semua
-      const now = new Date();
-      const {monday} = getWeekRange(now);
-      const seedStr = `${monday.getFullYear()}-${monday.getMonth()+1}-${monday.getDate()}-tebak-siapa-aku`;
-      const seed = seedFromString(seedStr);
-      const chosen = entries[seed % entries.length];
+      // Urutkan dulu biar stabil (sebelum dikocok), lalu kocok sekali dengan seed tetap, lalu
+      // pilih berdasarkan hari ke-berapa sekarang -> setiap orang kebagian giliran 1x per putaran,
+      // baru berulang setelah semua orang habis.
+      const sortedEntries = entries.slice().sort((a, b) => normalizeName(a.rawName).localeCompare(normalizeName(b.rawName)));
+      const shuffled = seededShuffle(sortedEntries, 'tebak-siapa-aku-rotasi-v1');
+      const dayIndex = getWibDayIndex();
+      const chosen = shuffled[dayIndex % shuffled.length];
 
       // Cocokkan nama ke alumniData untuk dapat nama+kelas+kota asal resmi
       const normChosen = normalizeName(chosen.rawName);
@@ -2434,7 +2526,7 @@
       clues.push(`&#128221; <strong>Fun fact:</strong> ${escapeHtmlAlumni(chosen.fact)}`);
 
       box.innerHTML = `
-        <div class="tsa-eyebrow">Petunjuk minggu ini</div>
+        <div class="tsa-eyebrow">Petunjuk hari ini</div>
         <div class="tsa-facts">${clues.join('<br><br>')}</div>
         <button class="tsa-reveal-btn" id="tsaRevealBtn">Lihat Jawaban</button>
         <div class="tsa-answer" id="tsaAnswer">
@@ -2500,7 +2592,7 @@
         if(matched && matched.a) clueParts.push(`Asal: ${matched.a}`);
         if(r.ekskul) clueParts.push(`Ekskul: ${r.ekskul}`);
         return `<div class="tsa-archive-card">
-          <div class="tsa-archive-week">Minggu ${escapeHtmlAlumni(r.week)}</div>
+          <div class="tsa-archive-week">${escapeHtmlAlumni(r.week)}</div>
           <div class="tsa-archive-name">${escapeHtmlAlumni(displayName)}</div>
           ${clueParts.length ? `<div class="tsa-archive-clues">${escapeHtmlAlumni(clueParts.join(' &middot; '))}</div>` : ''}
         </div>`;
