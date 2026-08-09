@@ -909,7 +909,6 @@
     font-family:'IBM Plex Mono',monospace; font-size:0.78rem;
     color:rgba(37,28,24,0.6); margin-top:4px;
   }
-  .tsa-archive-wrap{ margin-top:32px; }
   .tsa-funfact-form{
     margin-top:28px; max-width:600px; margin-left:auto; margin-right:auto;
     background:var(--cream-white);
@@ -921,31 +920,21 @@
     font-family:'Fraunces',serif; font-size:1rem; color:var(--ruby-deep);
     text-align:center; margin-bottom:14px;
   }
-  .tsa-archive-title{
-    text-align:center; font-size:1rem; color:var(--ruby-deep);
-    margin-bottom:16px;
+  .tsa-example-box{
+    margin-top:24px; max-width:600px; margin-left:auto; margin-right:auto;
+    background:rgba(199,154,62,0.08);
+    border:1.5px dashed var(--gold);
+    border-radius:12px;
+    padding:22px 24px;
+    text-align:center;
   }
-  .tsa-archive-grid{
-    display:grid; grid-template-columns:repeat(auto-fill, minmax(260px, 1fr));
-    gap:14px; max-width:760px; margin:0 auto;
+  .tsa-example-label{
+    font-family:'IBM Plex Mono',monospace; font-size:0.72rem;
+    letter-spacing:0.06em; text-transform:uppercase; color:var(--gold);
+    margin-bottom:12px;
   }
-  .tsa-archive-card{
-    background:var(--cream-white);
-    border:1px solid var(--stamp-line);
-    border-left:3px solid var(--pine);
-    border-radius:8px;
-    padding:14px 16px;
-  }
-  .tsa-archive-week{
-    font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
-    color:rgba(37,28,24,0.45); margin-bottom:6px;
-  }
-  .tsa-archive-name{
-    font-family:'Fraunces',serif; font-weight:600; font-size:0.95rem;
-    color:var(--pine);
-  }
-  .tsa-archive-clues{
-    font-size:0.8rem; color:rgba(37,28,24,0.7); margin-top:6px; line-height:1.5;
+  .tsa-example-note{
+    margin-top:14px; font-size:0.8rem; color:rgba(37,28,24,0.6);
   }
 
   /* WA number protection (per-item, dalam kartu panitia) */
@@ -1619,6 +1608,21 @@
       <div class="tsa-loading">Memuat petunjuk hari ini&hellip;</div>
     </div>
 
+    <div class="tsa-example-box reveal">
+      <div class="tsa-example-label">&#128161; Contoh: Fun Fact yang Menarik</div>
+      <div class="tsa-facts" style="background:var(--paper);">
+        &#127968; <strong>Asal kota:</strong> Malang<br><br>
+        &#127939; <strong>Ekskul favorit dulu:</strong> Basket<br><br>
+        &#128221; <strong>Fun fact:</strong> Dulu pernah kabur dari pelajaran matematika buat nonton pertandingan basket antar sekolah, sekarang malah jadi akuntan. Suka masak, dan pernah keliling 5 negara Asia Tenggara naik motor sendirian!
+      </div>
+      <button class="tsa-reveal-btn" id="tsaExampleBtn2" type="button">Lihat Jawaban (Contoh)</button>
+      <div class="tsa-answer" id="tsaExampleAnswer2">
+        <div class="tsa-answer-name">Budi Santoso</div>
+        <div class="tsa-answer-kelas">Kelas I-6 (nama contoh, bukan orang sungguhan)</div>
+      </div>
+      <p class="tsa-example-note">Isi Fun Fact kamu sendiri lewat form di bawah &mdash; makin unik/lucu, makin seru ditebak teman-teman!</p>
+    </div>
+
     <div class="tsa-funfact-form reveal">
       <!--
         CARA PASANG GOOGLE FORM KECIL "TAMBAH FUN FACT" (form terpisah, khusus 1 tujuan — supaya
@@ -1648,13 +1652,6 @@
       </iframe>
       <div class="rsvp-fallback">
         Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSdiZHc79e0J8e7EePtacWPB1iVIY70RRCQE6kdrt_ulh0CZ4w/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
-      </div>
-    </div>
-
-    <div class="tsa-archive-wrap reveal">
-      <h3 class="tsa-archive-title">&#128220; Arsip Hari-Hari Sebelumnya</h3>
-      <div id="tsaArchiveGrid" class="tsa-archive-grid">
-        <div class="tsa-empty">Memuat arsip&hellip;</div>
       </div>
     </div>
   </div>
@@ -1769,6 +1766,48 @@
         <div>Atas Nama: <strong>Fany Tendeyong</strong></div>
       </div>
       <p style="margin-top:12px; font-size:0.82rem; color:rgba(37,28,24,0.55);">Ada pertanyaan atau butuh keringanan lebih lanjut? Hubungi Bendahara langsung &mdash; semua komunikasi bersifat pribadi dan rahasia.</p>
+    </div>
+
+    <div class="prize-box reveal" style="margin-top:20px;">
+      <h3>&#128203; Kebijakan Refund / Pembatalan</h3>
+      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Kalau ternyata tidak bisa hadir setelah bayar/nabung, ini aturan pengembalian dananya &mdash; besarannya mengikuti seberapa dekat waktu pembatalan ke hari-H, karena panitia juga sudah terikat komitmen ke hotel &amp; vendor dll.</p>
+
+      <table style="width:100%; border-collapse:collapse; font-size:0.86rem; margin-top:14px;">
+        <thead>
+          <tr style="border-bottom:2px solid var(--gold);">
+            <th style="text-align:left; padding:8px 6px; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--ruby-deep);">Kapan Membatalkan</th>
+            <th style="text-align:right; padding:8px 6px; font-family:'IBM Plex Mono',monospace; font-size:0.7rem; text-transform:uppercase; color:var(--ruby-deep);">Refund</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25);">Sebelum 30 April 2027</td>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25); text-align:right; font-weight:700; color:var(--pine);">100%</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25);">1 Mei &ndash; 30 Juni 2027</td>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25); text-align:right; font-weight:700; color:var(--gold);">50%</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25);">1 &ndash; 16 Juli 2027</td>
+            <td style="padding:8px 6px; border-bottom:1px solid rgba(199,154,62,0.25); text-align:right; font-weight:700; color:var(--gold);">25%</td>
+          </tr>
+          <tr>
+            <td style="padding:8px 6px;">17 Juli 2027 atau sesudahnya</td>
+            <td style="padding:8px 6px; text-align:right; font-weight:700; color:var(--ruby);">0%</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div style="margin-top:16px; padding:14px 16px; background:rgba(51,73,63,0.08); border:1px solid rgba(51,73,63,0.25); border-radius:8px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--pine); margin-bottom:6px;">&#128101; Alternatif: Transfer Slot</div>
+        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Daripada refund, kamu juga bisa <strong>tawarkan slot-mu ke alumni lain</strong> yang belum daftar (kapan saja, tidak terikat tabel di atas) &mdash; hubungi Bendahara untuk bantu proses ini.</p>
+      </div>
+
+      <p style="margin-top:14px; font-size:0.82rem; color:rgba(37,28,24,0.65); line-height:1.6;">
+        <strong>Pengecualian:</strong> untuk force majeure (kematian, sakit serius mendadak dengan surat dokter, bencana alam), panitia akan memberikan <strong>full refund</strong> &mdash; hubungi Bendahara langsung.
+      </p>
+      <p style="margin-top:12px; font-size:0.82rem; color:rgba(37,28,24,0.55);">Untuk mengajukan pembatalan/refund, hubungi Bendahara langsung lewat WA.</p>
     </div>
 
     <div class="live-report-box reveal">
@@ -2482,25 +2521,7 @@
       const entries = Object.values(merged);
 
       if(entries.length === 0){
-        box.innerHTML = `
-          <div class="tsa-eyebrow">&#128161; Contoh Tampilan (bukan data asli)</div>
-          <div class="tsa-facts">
-            &#127968; <strong>Asal kota:</strong> Malang<br><br>
-            &#127939; <strong>Ekskul favorit dulu:</strong> Basket<br><br>
-            &#128221; <strong>Fun fact:</strong> Dulu pernah kabur dari pelajaran matematika buat nonton pertandingan basket antar sekolah, sekarang malah jadi akuntan. Suka masak, dan pernah keliling 5 negara Asia Tenggara naik motor sendirian!
-          </div>
-          <button class="tsa-reveal-btn" id="tsaExampleBtn">Lihat Jawaban</button>
-          <div class="tsa-answer" id="tsaExampleAnswer">
-            <div class="tsa-answer-name">Budi Santoso</div>
-            <div class="tsa-answer-kelas">Kelas I-6</div>
-          </div>
-          <p style="margin-top:16px; font-size:0.8rem; color:rgba(37,28,24,0.5);">Belum ada yang isi fun fact sungguhan. Yuk isi lewat form konfirmasi kehadiran, atau lewat form kecil di bawah kalau sudah daftar duluan!</p>
-        `;
-        const exBtn = document.getElementById('tsaExampleBtn');
-        if(exBtn) exBtn.addEventListener('click', () => {
-          document.getElementById('tsaExampleAnswer').classList.add('show');
-          exBtn.style.display = 'none';
-        });
+        box.innerHTML = '<div class="tsa-empty">Belum ada yang isi Fun Fact hari ini. Lihat contoh di bawah, terus isi Fun Fact kamu sendiri lewat form!</div>';
         return;
       }
 
@@ -2547,64 +2568,14 @@
 
   loadTsa();
 
-  // ---------- ARSIP TEBAK SIAPA AKU ----------
-  // Diisi OTOMATIS tiap minggu oleh Google Apps Script (lihat file script-arsip-tebak-siapa-aku.gs)
-  // yang mencatat siapa yang tampil minggu itu ke Google Sheet arsip terpisah. Isi link CSV-nya di
-  // bawah setelah Apps Script-nya kamu pasang (lihat instruksi di file .gs).
-  const TSA_ARCHIVE_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQr0SXQMS9U9CYPPk0ppjFA2I5LhbcdrJOfPDo8jHUptb9DWI2uxNKtzYLBXdU-BgsuEssSTYZURTmB/pub?gid=0&single=true&output=csv";
-
-  async function loadTsaArchive(){
-    const grid = document.getElementById('tsaArchiveGrid');
-    if(!grid) return;
-    if(!TSA_ARCHIVE_CSV_URL){
-      grid.innerHTML = '<div class="tsa-empty">Arsip akan mulai terisi otomatis tiap minggu setelah fitur ini aktif berjalan.</div>';
-      return;
-    }
-    try{
-      const res = await fetch(TSA_ARCHIVE_CSV_URL);
-      const text = await res.text();
-      const lines = text.split(/\r?\n/).filter(Boolean);
-      if(lines.length < 2){
-        grid.innerHTML = '<div class="tsa-empty">Belum ada arsip minggu sebelumnya.</div>';
-        return;
-      }
-      // Kolom arsip: Minggu, Nama (mentah dari dropdown), Ekskul, Fun Fact
-      const rows = lines.slice(1).map(line => {
-        const cols = parseCsvLine(line);
-        return {
-          week: (cols[0] || '').replace(/"/g,'').trim(),
-          rawName: (cols[1] || '').replace(/"/g,'').trim(),
-          ekskul: (cols[2] || '').replace(/"/g,'').trim(),
-          fact: (cols[3] || '').replace(/"/g,'').trim(),
-        };
-      }).filter(r => r.rawName).reverse(); // terbaru di atas
-
-      if(rows.length === 0){
-        grid.innerHTML = '<div class="tsa-empty">Belum ada arsip minggu sebelumnya.</div>';
-        return;
-      }
-
-      grid.innerHTML = rows.map(r => {
-        const cleanName = extractPlainName(r.rawName);
-        const normName = normalizeName(cleanName);
-        const matched = alumniData.find(a => normalizeName(a.n) === normName || (a.d && normalizeName(a.d) === normName));
-        const displayName = matched ? matched.n : cleanName;
-        const clueParts = [];
-        if(matched && matched.a) clueParts.push(`Asal: ${matched.a}`);
-        if(r.ekskul) clueParts.push(`Ekskul: ${r.ekskul}`);
-        return `<div class="tsa-archive-card">
-          <div class="tsa-archive-week">${escapeHtmlAlumni(r.week)}</div>
-          <div class="tsa-archive-name">${escapeHtmlAlumni(displayName)}</div>
-          ${clueParts.length ? `<div class="tsa-archive-clues">${escapeHtmlAlumni(clueParts.join(' &middot; '))}</div>` : ''}
-        </div>`;
-      }).join('');
-    }catch(err){
-      console.error('Gagal memuat arsip Tebak Siapa Aku', err);
-      grid.innerHTML = '<div class="tsa-empty">Arsip belum bisa dimuat. Coba muat ulang halaman.</div>';
-    }
+  // Tombol "Lihat Jawaban" di kotak Contoh Fun Fact (permanen, selalu tampil)
+  const tsaExampleBtn2 = document.getElementById('tsaExampleBtn2');
+  if(tsaExampleBtn2){
+    tsaExampleBtn2.addEventListener('click', () => {
+      document.getElementById('tsaExampleAnswer2').classList.add('show');
+      tsaExampleBtn2.style.display = 'none';
+    });
   }
-
-  loadTsaArchive();
 
 
 
