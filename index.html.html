@@ -1598,9 +1598,9 @@
 <section id="ulang-tahun">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">&#127874; Setiap Minggu</span>
-      <h2>Ulang Tahun Minggu Ini</h2>
-      <p>Sapa teman-teman yang berulang tahun minggu ini! Hanya tanggal &amp; bulan yang ditampilkan (tanpa tahun), dan cuma untuk yang ulang tahunnya jatuh minggu ini.</p>
+      <span class="eyebrow">&#127874; Update Tiap Hari</span>
+      <h2>Ulang Tahun 7 Hari ke Depan</h2>
+      <p>Sapa teman-teman yang ulang tahunnya jatuh dalam 7 hari ke depan! Hanya tanggal &amp; bulan yang ditampilkan (tanpa tahun). Daftar ini update tiap hari, jadi makin dekat harinya, makin sering muncul di sini.</p>
     </div>
 
     <div id="bdayList" class="bday-grid reveal"></div>
@@ -2335,46 +2335,23 @@
 
   const WIB_OFFSET_MS = 7 * 60 * 60 * 1000;
 
-  // Dipakai oleh Tebak Siapa Aku — dipatok ke tanggal kalender WIB (bukan zona waktu pengunjung),
-  // supaya konsisten dengan perhitungan yang sama di script arsip Apps Script.
-  function getWeekRange(date){
-    const baseMs = (date instanceof Date ? date.getTime() : Date.now());
-    const wibNow = new Date(baseMs + WIB_OFFSET_MS);
-    const day = wibNow.getUTCDay(); // 0=Minggu, 1=Senin, ...
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    const monday = new Date(wibNow.getUTCFullYear(), wibNow.getUTCMonth(), wibNow.getUTCDate() + diffToMonday);
-    monday.setHours(0,0,0,0);
-    const sunday = new Date(monday);
-    sunday.setDate(monday.getDate() + 6);
-    sunday.setHours(23,59,59,999);
-    return {monday, sunday};
-  }
+  // Perhitungan KHUSUS untuk Ulang Tahun, dipatok WIB (bukan zona waktu pengunjung), supaya semua
+  // orang (di kota/negara manapun) lihat daftar yang SAMA. Jendela GESER 7 hari ke depan (hari ini
+  // + 6 hari berikutnya), update tiap tengah malam WIB — sama waktunya dengan Tebak Siapa Aku.
 
-  // Perhitungan minggu KHUSUS untuk Ulang Tahun, dipatok WIB (bukan zona waktu pengunjung),
-  // supaya semua orang (di kota/negara manapun) lihat daftar minggu yang SAMA. Minggu baru mulai
-  // ditampilkan tepat Senin jam 01:00 WIB (bukan tengah malam), sesuai permintaan panitia.
-
-  function getWibBirthdayWeekRange(){
+  function getWibTodayMs(){
     const wibNowMs = Date.now() + WIB_OFFSET_MS;
-    const wibNow = new Date(wibNowMs); // pakai method getUTC* untuk baca "jam dinding WIB"
-    const day = wibNow.getUTCDay(); // 0=Minggu, 1=Senin, ...
-    const diffToMonday = day === 0 ? -6 : 1 - day;
-    let mondayMs = Date.UTC(wibNow.getUTCFullYear(), wibNow.getUTCMonth(), wibNow.getUTCDate() + diffToMonday, 0, 0, 0, 0);
-    const mondayThresholdMs = mondayMs + (60 * 60 * 1000); // Senin jam 01:00 WIB
-    if(wibNowMs < mondayThresholdMs){
-      // Belum lewat jam 01:00 Senin WIB -> masih pakai minggu SEBELUMNYA
-      mondayMs -= 7 * 24 * 60 * 60 * 1000;
-    }
-    const sundayMs = mondayMs + (7 * 24 * 60 * 60 * 1000) - 1; // Minggu 23:59:59.999 WIB
-    return {mondayMs, sundayMs};
+    const wibNow = new Date(wibNowMs);
+    return Date.UTC(wibNow.getUTCFullYear(), wibNow.getUTCMonth(), wibNow.getUTCDate(), 0, 0, 0, 0);
   }
 
-  function isInWibBirthdayWeek(month, day, mondayMs, sundayMs){
-    const yr = new Date(mondayMs).getUTCFullYear();
-    // Coba beberapa tahun (buat jaga-jaga kalau minggu ini melewati batas Desember->Januari)
+  function isInNext7Days(month, day, todayMs){
+    const endMs = todayMs + (7 * 24 * 60 * 60 * 1000) - 1; // hari ini + 6 hari, sampai 23:59:59.999
+    const yr = new Date(todayMs).getUTCFullYear();
+    // Coba beberapa tahun (buat jaga-jaga kalau jendela 7 hari melewati batas Desember->Januari)
     for(const y of [yr, yr + 1, yr - 1]){
       const candidateMs = Date.UTC(y, month - 1, day, 12, 0, 0, 0);
-      if(candidateMs >= mondayMs && candidateMs <= sundayMs) return true;
+      if(candidateMs >= todayMs && candidateMs <= endMs) return true;
     }
     return false;
   }
@@ -2382,19 +2359,19 @@
   function renderBirthdays(){
     const grid = document.getElementById('bdayList');
     if(!grid) return;
-    const {mondayMs, sundayMs} = getWibBirthdayWeekRange();
+    const todayMs = getWibTodayMs();
     const matches = [];
     alumniData.forEach(a => {
       if(!a.bday || isDeceased(a.n)) return;
       const [mm, dd] = a.bday.split('-').map(Number);
-      if(isInWibBirthdayWeek(mm, dd, mondayMs, sundayMs)){
+      if(isInNext7Days(mm, dd, todayMs)){
         matches.push({name: a.n, dulu: a.d || '', month: mm, day: dd});
       }
     });
     matches.sort((a,b) => a.day - b.day);
 
     if(matches.length === 0){
-      grid.innerHTML = '<div class="bday-empty">Tidak ada yang berulang tahun minggu ini. Cek lagi minggu depan!</div>';
+      grid.innerHTML = '<div class="bday-empty">Tidak ada yang berulang tahun dalam 7 hari ke depan. Cek lagi besok!</div>';
       return;
     }
     grid.innerHTML = matches.map(m => {
