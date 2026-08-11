@@ -2177,7 +2177,9 @@
     const countEl = document.getElementById('wajahCount');
     if(!grid) return;
     const term = normalizeName(filter || '');
-    const withPhoto = alumniData.filter(a => a.photo);
+    // Tidak tampilkan foto alumni yang sudah berpulang di galeri publik ini (baik dari daftar
+    // manual maupun dari update status via Form 2) — sebagai bentuk penghormatan.
+    const withPhoto = alumniData.filter(a => a.photo && !isDeceased(a.n));
     const filtered = withPhoto.filter(a => !term || normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term)));
     filtered.sort((a,b) => a.n.localeCompare(b.n));
 
