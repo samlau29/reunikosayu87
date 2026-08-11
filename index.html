@@ -2089,6 +2089,7 @@
     html += buildSpecialGroupHtml('Alumni SMP Kosayu', smpNames, term);
 
     container.innerHTML = html || '<p style="text-align:center;color:rgba(37,28,24,0.5);padding:20px;">Nama tidak ditemukan.</p>';
+    forceRepaint(container);
     document.getElementById('alumniConfirmedCount').textContent = totalConfirmed;
     const attendingEl = document.getElementById('alumniTotalAttending');
     if(attendingEl) attendingEl.textContent = totalAttending;
@@ -2151,6 +2152,19 @@
   // Galeri dinamis, otomatis ambil dari alumniData yang punya field 'photo' — jadi begitu foto
   // baru ditambahkan ke database (field photo diisi), otomatis muncul di sini tanpa perlu edit
   // section ini lagi.
+  // Trik paksa browser "melukis ulang" (repaint) elemen — dibutuhkan karena beberapa WebView
+  // (misalnya browser dalam-aplikasi WhatsApp) kadang gagal render konten yang baru disuntikkan
+  // lewat innerHTML sampai ada interaksi sentuhan dari user. Toggle display supaya browser
+  // dipaksa hitung ulang layout & gambar begitu konten baru masuk, tanpa perlu disentuh.
+  function forceRepaint(el){
+    requestAnimationFrame(() => {
+      const original = el.style.display;
+      el.style.display = 'none';
+      void el.offsetHeight; // trigger reflow
+      el.style.display = original;
+    });
+  }
+
   function renderWajahGrid(filter){
     const grid = document.getElementById('wajahGrid');
     const countEl = document.getElementById('wajahCount');
@@ -2172,6 +2186,7 @@
         <div class="wajah-card-name">${escapeHtmlAlumni(a.n)}</div>
       </div>
     `).join('');
+    forceRepaint(grid);
   }
 
   const wajahSearchInput = document.getElementById('wajahSearch');
