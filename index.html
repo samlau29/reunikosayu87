@@ -1193,7 +1193,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel">427 aktif, 33 sudah berpulang</div><div class="cd-sublabel" id="cd-total-attending"></div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div></a>
   </div>
 </div>
 
@@ -1425,7 +1425,7 @@
           <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
           <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 460 sudah konfirmasi</div>
           <div class="alumni-stats-note">(dari 427 alumni yang masih aktif &mdash; 460 termasuk 33 yang sudah berpulang &#10014;)</div>
-          <div class="alumni-stats" style="margin-top:6px; white-space:normal; line-height:1.5;">&#128101; TOTAL HADIR termasuk tamu = <strong id="alumniTotalAttending">0</strong></div>
+          <div class="alumni-stats" style="margin-top:6px; white-space:normal; line-height:1.5;">&#128101; TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong id="alumniTotalAttending" style="font-size:1.15rem; color:var(--ruby);">0</strong></div>
         </div>
 
         <div class="reveal" style="text-align:center; margin-bottom:14px;">
@@ -2100,7 +2100,7 @@
     const cdConfirmed = document.getElementById('cd-confirmed');
     if(cdConfirmed) cdConfirmed.textContent = totalConfirmed + '/460';
     const cdTotalAttending = document.getElementById('cd-total-attending');
-    if(cdTotalAttending) cdTotalAttending.textContent = `TOTAL HADIR termasuk tamu = ${totalAttending}`;
+    if(cdTotalAttending) cdTotalAttending.innerHTML = `TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong style="font-size:1.15rem;">${totalAttending}</strong>`;
   }
 
   function renderClassSummary(){
