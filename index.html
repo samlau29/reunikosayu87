@@ -1208,7 +1208,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div><div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-label">Alumni Terdaftar</div><div class="cd-num" id="cd-confirmed">--</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div><div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div></a>
   </div>
 </div>
 
@@ -1403,7 +1403,7 @@
 <section id="daftar-alumni" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">460 Alumni &middot; 9 Kelas</span>
+      <span class="eyebrow">427 Alumni Aktif &middot; 9 Kelas</span>
       <h2>Daftar Alumni Angkatan 87</h2>
       <p>Ringkasan di bawah menunjukkan jumlah alumni yang sudah konfirmasi hadir per kelas (kelas dengan <strong>persentase konfirmasi tertinggi</strong> ditandai emas). Cari nama kamu atau teman-teman di daftar lengkap di bawahnya. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
     </div>
@@ -1438,8 +1438,8 @@
       <div class="gate-content" id="gate-alumni-content">
         <div class="alumni-search reveal">
           <input type="text" id="alumniSearch" placeholder="Cari nama alumni...">
-          <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 460 sudah konfirmasi</div>
-          <div class="alumni-stats-note">(dari 427 alumni yang masih aktif &mdash; 460 termasuk 33 yang sudah berpulang &#10014;)</div>
+          <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 427 sudah konfirmasi</div>
+          <div class="alumni-stats-note">(dihitung dari 427 alumni yang masih aktif &mdash; 33 alumni lainnya sudah berpulang &#10014;)</div>
           <div class="alumni-stats" style="margin-top:6px; white-space:normal; line-height:1.5;">&#128101; TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong id="alumniTotalAttending" style="font-size:1.15rem; color:var(--ruby);">0</strong></div>
         </div>
 
@@ -1543,7 +1543,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">&#127775; Bulanan</span>
       <h2>Undian Bulanan</h2>
-      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 460 alumni angkatan 87. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai cicil, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
+      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 427 alumni angkatan 87 yang masih aktif. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai cicil, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
     </div>
 
     <div class="undian-box reveal">
@@ -2113,7 +2113,7 @@
     const attendingEl = document.getElementById('alumniTotalAttending');
     if(attendingEl) attendingEl.textContent = totalAttending;
     const cdConfirmed = document.getElementById('cd-confirmed');
-    if(cdConfirmed) cdConfirmed.textContent = totalConfirmed + '/460';
+    if(cdConfirmed) cdConfirmed.textContent = totalConfirmed + '/427';
     const cdTotalAttending = document.getElementById('cd-total-attending');
     if(cdTotalAttending) cdTotalAttending.innerHTML = `TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong style="font-size:1.15rem;">${totalAttending}</strong>`;
   }
@@ -2665,10 +2665,12 @@
     }
 
     // Sudah waktunya -> hitung pemenang (deterministik, sama untuk semua orang)
+    // Kolam undian HANYA dari alumni yang masih aktif (bukan yang sudah berpulang)
+    const activePool = alumniData.filter(a => !isDeceased(a.n));
     const seedStr = `${year}-${String(monthIndex+1).padStart(2,'0')}-undian-reuni87`;
     const seed = seedFromString(seedStr);
-    const winnerIndex = seed % alumniData.length;
-    const winner = alumniData[winnerIndex];
+    const winnerIndex = seed % activePool.length;
+    const winner = activePool[winnerIndex];
 
     countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}`;
 
@@ -2694,7 +2696,7 @@
       // Fase 2: putar roda + nama berganti cepat (gaya slot machine) selama 15 detik
       wheel.classList.add('spinning');
       const flickerInterval = setInterval(() => {
-        const randomAlumni = alumniData[Math.floor(Math.random() * alumniData.length)];
+        const randomAlumni = activePool[Math.floor(Math.random() * activePool.length)];
         nameDisplay.textContent = randomAlumni.n;
       }, 90);
 
