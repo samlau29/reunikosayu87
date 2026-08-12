@@ -240,6 +240,21 @@
   }
   .cd-item-link:hover{ opacity:0.85; transform:translateY(-2px); }
   .cd-item-link .cd-label{ color:var(--gold); font-weight:600; }
+  .cd-cta-hint{
+    display:inline-block;
+    margin-top:8px;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:0.62rem; font-weight:700; letter-spacing:0.02em;
+    color:var(--ruby-deep);
+    background:var(--gold);
+    padding:4px 12px;
+    border-radius:999px;
+    animation:cd-cta-pulse 2.2s ease-in-out infinite;
+  }
+  @keyframes cd-cta-pulse{
+    0%, 100%{ transform:scale(1); }
+    50%{ transform:scale(1.05); }
+  }
   .cd-sublabel{
     font-family:'IBM Plex Mono',monospace; font-size:0.6rem;
     color:rgba(251,247,237,0.55); margin-top:2px;
@@ -1193,7 +1208,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div></a>
+    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-num" id="cd-confirmed">--</div><div class="cd-label">Alumni Terdaftar &#8594;</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div><div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div></a>
   </div>
 </div>
 
