@@ -221,7 +221,7 @@
     padding:22px 0;
   }
   .countdown-strip .wrap{
-    display:flex; align-items:center; justify-content:center; gap:0;
+    display:flex; align-items:stretch; justify-content:center; gap:0;
     flex-wrap:wrap;
   }
   .cd-item{
@@ -237,6 +237,7 @@
     padding-top:8px; padding-bottom:8px;
     border:1px solid rgba(199,154,62,0.35);
     order:-2;
+    display:flex; flex-direction:column; justify-content:center;
   }
   .cd-item-link:hover{ opacity:0.85; transform:translateY(-2px); }
   .cd-item-link .cd-label{ color:var(--gold); font-weight:600; }
@@ -271,7 +272,7 @@
   }
   @media (max-width:640px){
     .cd-item{ padding:0 12px; }
-    .cd-item-link{ flex-basis:100%; margin-bottom:10px; }
+    .cd-item-link{ flex-basis:100%; width:100%; margin-bottom:10px; }
     .cd-item-link .cd-num{ font-size:1.8rem; }
   }
   .cd-num{
@@ -2784,7 +2785,7 @@
       if(lines.length < 2) return;
       const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header);
-      const paidIdx = header.findIndex(h => h.includes('bayar'));
+      const paidIdx = header.findIndex(h => h.includes('sudah') && h.includes('bayar'));
       if(nameIdx === -1 || paidIdx === -1) return;
       paidNames = lines.slice(1).filter(line => {
         const cols = parseCsvLine(line);
