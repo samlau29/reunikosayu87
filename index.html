@@ -1251,7 +1251,7 @@
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
     <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-label">Alumni Terdaftar</div><div class="cd-num" id="cd-confirmed">--</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">427 Alumni aktif, 33 sudah berpulang</div><div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div></a>
-    <a href="#keuangan" class="cd-item cd-item-link"><div class="cd-label">Early Bird</div><div class="cd-num" id="cd-paid-count">--</div><div class="cd-sublabel" style="font-weight:700; color:var(--gold); font-size:0.72rem;">sudah mulai bayar/cicil</div><div class="cd-sublabel">Gelombang berjalan berurutan</div><div class="cd-cta-hint">&#128176; Cek Progress Early Bird</div></a>
+    <a href="#keuangan" class="cd-item cd-item-link"><div class="cd-label">Early Bird</div><div class="cd-num" id="cd-paid-count">--</div><div class="cd-sublabel" style="font-weight:700; color:var(--gold); font-size:0.72rem;">sudah mulai bayar/nabung</div><div class="cd-sublabel">Gelombang berjalan berurutan</div><div class="cd-cta-hint">&#128176; Cek Progress Early Bird</div></a>
   </div>
 </div>
 
@@ -1588,7 +1588,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">&#127775; Bulanan</span>
       <h2>Undian Bulanan</h2>
-      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 427 alumni angkatan 87 yang masih aktif. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai cicil, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
+      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 427 alumni angkatan 87 yang masih aktif. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai nabung, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
     </div>
 
     <div class="undian-box reveal">
@@ -1701,11 +1701,11 @@
 
     <div class="prize-box reveal" style="margin-top:20px;">
       <h3>&#128176; Program Tabungan Reuni</h3>
-      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Supaya pembayaran tidak memberatkan, tersedia opsi mencicil <strong>Rp 200.000 per bulan</strong> mulai sekarang sampai mendekati hari-H &mdash; terbuka untuk semua alumni yang ingin membayar bertahap. Bayar lunas sekaligus juga tetap bisa, sesuai kenyamanan masing-masing.</p>
+      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Supaya pembayaran tidak memberatkan, tersedia opsi menabung <strong>Rp 200.000 per bulan</strong> mulai sekarang sampai mendekati hari-H &mdash; terbuka untuk semua alumni yang ingin membayar bertahap. Bayar lunas sekaligus juga tetap bisa, sesuai kenyamanan masing-masing.</p>
 
       <div style="margin-top:14px; padding:16px 18px; background:rgba(199,154,62,0.1); border:1.5px solid var(--gold); border-radius:8px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); margin-bottom:10px;">&#11088; Early Bird &mdash; Gelombang Bertingkat</div>
-        <p style="font-size:0.86rem; color:rgba(37,28,24,0.75); margin:0 0 12px;">Reward berdasarkan <strong>urutan mulai transfer/cicilan</strong> (bukan urutan daftar) &mdash; jadi begitu kamu mulai nabung, urutan gelombangmu langsung terkunci.</p>
+        <p style="font-size:0.86rem; color:rgba(37,28,24,0.75); margin:0 0 12px;">Reward berdasarkan <strong>urutan mulai transfer/nabung</strong> (bukan urutan daftar) &mdash; jadi begitu kamu mulai nabung, urutan gelombangmu langsung terkunci.</p>
 
         <div style="display:flex; flex-direction:column; gap:10px;">
           <div style="background:var(--cream-white); border:1px solid rgba(199,154,62,0.4); border-radius:8px; padding:12px 14px;">
@@ -2890,7 +2890,7 @@
           if(registered && paidStatus === true){
             statusLine.textContent = 'Verifikasi selesai';
             resultEl.className = 'undian-result show win';
-            resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> terverifikasi sudah terdaftar &amp; sudah bayar/cicil! Selamat, dapat potongan Rp 200.000 dari biaya reuni (atau goodie bag kalau sudah lunas). Panitia akan hubungi langsung.`;
+            resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> terverifikasi sudah terdaftar &amp; sudah bayar/nabung! Selamat, dapat potongan Rp 200.000 dari biaya reuni (atau goodie bag kalau sudah lunas). Panitia akan hubungi langsung.`;
           } else if(registered && paidStatus === null){
             statusLine.textContent = 'Verifikasi selesai (sebagian)';
             resultEl.className = 'undian-result show win';
