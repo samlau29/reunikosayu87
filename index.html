@@ -1763,7 +1763,7 @@
 
     <div class="prize-box reveal" style="margin-top:20px;">
       <h3>&#128156; Dana Solidaritas</h3>
-      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Kita ingin semua teman angkatan 87 bisa hadir, terlepas dari kondisi masing-masing. Dana Solidaritas ini dikumpulkan dari sumbangan sukarela alumni, dipakai untuk bantu teman-teman yang kesulitan biaya supaya tetap bisa ikut reuni &mdash; gratis atau dengan biaya yang jauh lebih ringan.</p>
+      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Kita ingin semua teman angkatan 87 bisa hadir, terlepas dari kondisi masing-masing. Dana Solidaritas ini dikumpulkan dari sumbangan sukarela alumni, dipakai untuk bantu teman-teman yang kesulitan biaya supaya tetap bisa ikut reuni &mdash; gratis atau dengan biaya yang jauh lebih ringan. <strong>Alokasinya (ke alumni yang butuh atau ke tunjangan guru di bawah) diputuskan oleh panitia</strong> sesuai kebutuhan yang ada saat itu.</p>
 
       <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:16px;">
         <div style="text-align:center; background:var(--paper-warm); border-radius:8px; padding:12px 8px;">
@@ -1790,6 +1790,29 @@
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--pine); margin-bottom:6px;">&#128156; Mau Ikut Menyumbang?</div>
         <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Sumbangan ke Dana Solidaritas bisa ditransfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan "Dana Solidaritas" saat transfer, atau kabari Bendahara langsung.</p>
       </div>
+    </div>
+
+    <div class="prize-box reveal" style="margin-top:20px;">
+      <h3>&#127891; Dana Tunjangan Guru</h3>
+      <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Sebagai bentuk terima kasih ke guru-guru yang dulu mendidik kita, panitia juga membuka kesempatan menyumbang khusus untuk tunjangan guru. Sumbangan ini terpisah dari Dana Solidaritas di atas &mdash; kalau kamu mau dana kamu spesifik untuk guru (bukan untuk alumni), ini tempatnya.</p>
+
+      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-top:16px;">
+        <div style="text-align:center; background:var(--paper-warm); border-radius:8px; padding:12px 8px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem; text-transform:uppercase; color:rgba(37,28,24,0.5); margin-bottom:4px;">Terkumpul</div>
+          <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:var(--pine);" id="guruTerkumpul">Rp 0</div>
+        </div>
+        <div style="text-align:center; background:var(--paper-warm); border-radius:8px; padding:12px 8px;">
+          <div style="font-family:'IBM Plex Mono',monospace; font-size:0.65rem; text-transform:uppercase; color:rgba(37,28,24,0.5); margin-bottom:4px;">Dialokasikan</div>
+          <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:var(--ruby);" id="guruAlokasi">Rp 0</div>
+        </div>
+      </div>
+      <p style="margin-top:10px; font-size:0.75rem; color:rgba(37,28,24,0.5); text-align:center;">Angka di atas diupdate manual oleh Bendahara secara berkala.</p>
+
+      <div style="margin-top:16px; padding:14px 16px; background:rgba(51,73,63,0.08); border:1px solid rgba(51,73,63,0.25); border-radius:8px;">
+        <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--pine); margin-bottom:6px;">&#127891; Mau Menyumbang untuk Guru?</div>
+        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Transfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan <strong>"Dana Tunjangan Guru"</strong> saat transfer supaya jelas ini spesifik untuk guru (bukan Dana Solidaritas umum), atau kabari Bendahara langsung.</p>
+      </div>
+      <p style="margin-top:10px; font-size:0.78rem; color:rgba(37,28,24,0.55);">Tidak yakin mau pilih yang mana? Tidak masalah &mdash; transfer saja ke Dana Solidaritas umum di atas, panitia akan bantu alokasikan sesuai kebutuhan (termasuk kemungkinan ke tunjangan guru).</p>
     </div>
 
     <div class="live-report-box reveal" id="totalDanaBox">
@@ -3204,9 +3227,11 @@
       const lines = text.split(/\r?\n/).filter(Boolean);
       if(lines.length < 2) return;
       const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
-      const totalIdx = header.findIndex(h => h.includes('terkumpul') && !h.includes('solidaritas'));
+      const totalIdx = header.findIndex(h => h.includes('terkumpul') && !h.includes('solidaritas') && !h.includes('guru'));
       const solTerkumpulIdx = header.findIndex(h => h.includes('solidaritas') && h.includes('terkumpul'));
       const solAlokasiIdx = header.findIndex(h => h.includes('solidaritas') && h.includes('dialokasikan'));
+      const guruTerkumpulIdx = header.findIndex(h => h.includes('guru') && h.includes('terkumpul'));
+      const guruAlokasiIdx = header.findIndex(h => h.includes('guru') && h.includes('dialokasikan'));
       const catatanIdx = header.findIndex(h => h.includes('catatan'));
 
       // Ambil baris PALING BAWAH (submission terbaru) sebagai angka yang dipakai
@@ -3216,6 +3241,8 @@
       const total = totalIdx > -1 ? parseFloat((cols[totalIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
       const solTerkumpul = solTerkumpulIdx > -1 ? parseFloat((cols[solTerkumpulIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
       const solAlokasi = solAlokasiIdx > -1 ? parseFloat((cols[solAlokasiIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
+      const guruTerkumpul = guruTerkumpulIdx > -1 ? parseFloat((cols[guruTerkumpulIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
+      const guruAlokasi = guruAlokasiIdx > -1 ? parseFloat((cols[guruAlokasiIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
       const catatan = catatanIdx > -1 ? (cols[catatanIdx] || '').replace(/"/g,'').trim() : '';
 
       if(!isNaN(solTerkumpul)){
@@ -3229,6 +3256,14 @@
       if(!isNaN(solTerkumpul) && !isNaN(solAlokasi)){
         const solSisaEl = document.getElementById('solidaritasSisa');
         if(solSisaEl) solSisaEl.textContent = formatRupiah(solTerkumpul - solAlokasi);
+      }
+      if(!isNaN(guruTerkumpul)){
+        const guruTerkumpulEl = document.getElementById('guruTerkumpul');
+        if(guruTerkumpulEl) guruTerkumpulEl.textContent = formatRupiah(guruTerkumpul);
+      }
+      if(!isNaN(guruAlokasi)){
+        const guruAlokasiEl = document.getElementById('guruAlokasi');
+        if(guruAlokasiEl) guruAlokasiEl.textContent = formatRupiah(guruAlokasi);
       }
       if(!isNaN(total)){
         const totalDanaText = document.getElementById('totalDanaText');
