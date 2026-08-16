@@ -1743,9 +1743,10 @@
       <span class="budget-status">Sedang disusun oleh divisi Dana &amp; Keuangan</span>
     </div>
 
-    <div class="live-report-box reveal">
+    <div class="live-report-box reveal" id="biayaPerOrangBox">
       <div class="lr-title">Rincian Biaya per Orang</div>
-      <p style="font-size:0.88rem;">Akan diumumkan di sini setelah venue dan vendor (EO, dsb) final dikonfirmasi. Update resmi akan disampaikan oleh Bendahara.</p>
+      <p style="font-size:0.88rem;" id="biayaPerOrangText">Akan diumumkan di sini setelah venue dan vendor (EO, dsb) final dikonfirmasi. Update resmi akan disampaikan oleh Bendahara.</p>
+      <div id="biayaPerOrangBreakdown"></div>
     </div>
 
     <div class="prize-box reveal" style="margin-top:20px;">
@@ -2227,7 +2228,7 @@
     if(cdConfirmed) cdConfirmed.textContent = totalConfirmed + '/427';
     const cdTotalAttending = document.getElementById('cd-total-attending');
     if(cdTotalAttending) cdTotalAttending.innerHTML = `TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong style="font-size:1.15rem;">${totalAttending}</strong>`;
-    renderPerintisBox(totalConfirmed);
+    renderPerintisBox(totalAttending);
   }
 
   // ---------- PROGRESS PENDAFTARAN ----------
@@ -2236,26 +2237,26 @@
   // PEMBAYARAN (section Keuangan) — bukan di sini.
   const REGISTRATION_TARGET = 150;
 
-  function renderPerintisBox(totalConfirmed){
+  function renderPerintisBox(totalPeserta){
     const box = document.getElementById('perintisBox');
     if(!box) return;
-    const count = Math.min(totalConfirmed, REGISTRATION_TARGET);
+    const count = Math.min(totalPeserta, REGISTRATION_TARGET);
     const pct = Math.round((count / REGISTRATION_TARGET) * 100);
-    const remaining = REGISTRATION_TARGET - totalConfirmed;
+    const remaining = REGISTRATION_TARGET - totalPeserta;
 
-    if(totalConfirmed >= REGISTRATION_TARGET){
+    if(totalPeserta >= REGISTRATION_TARGET){
       box.classList.add('full');
       box.innerHTML = `
         <div class="perintis-bar-track"><div class="perintis-bar-fill" style="width:100%;"></div></div>
-        <div class="perintis-count">${REGISTRATION_TARGET} / ${REGISTRATION_TARGET} alumni terdaftar</div>
-        <div class="perintis-note">Target ${REGISTRATION_TARGET} alumni sudah tercapai! Terima kasih buat semua yang sudah konfirmasi kehadiran.</div>
+        <div class="perintis-count">${REGISTRATION_TARGET} / ${REGISTRATION_TARGET} peserta terdaftar <span style="font-weight:400; opacity:0.7;">(Alumni + SMP + Pasangan/Tamu)</span></div>
+        <div class="perintis-note">Target ${REGISTRATION_TARGET} peserta sudah tercapai! Terima kasih buat semua yang sudah konfirmasi kehadiran.</div>
       `;
     } else {
       box.classList.remove('full');
       box.innerHTML = `
         <div class="perintis-bar-track"><div class="perintis-bar-fill" style="width:${pct}%;"></div></div>
-        <div class="perintis-count">${totalConfirmed} / ${REGISTRATION_TARGET} alumni terdaftar</div>
-        <div class="perintis-note">Tinggal <strong>${remaining} orang lagi</strong> menuju target ${REGISTRATION_TARGET} alumni!</div>
+        <div class="perintis-count">${totalPeserta} / ${REGISTRATION_TARGET} peserta terdaftar <span style="font-weight:400; opacity:0.7;">(Alumni + SMP + Pasangan/Tamu)</span></div>
+        <div class="perintis-note">Tinggal <strong>${remaining} orang lagi</strong> menuju target ${REGISTRATION_TARGET} peserta!</div>
         <div class="perintis-note" style="margin-top:8px;">&#128176; Early Bird &amp; merchandise eksklusif ada di gelombang pembayaran &mdash; <a href="#keuangan" style="color:var(--ruby); font-weight:600;">Cek Transparansi Keuangan &darr;</a></div>
       `;
     }
@@ -3241,6 +3242,98 @@
   }
 
   loadKeuanganData();
+
+  // ---------- RINCIAN BIAYA PER ORANG (dari tab "Budget vs Actual") ----------
+  // Ambil "Anggaran per Peserta" + breakdown per kelompok kategori (digabung jadi garis besar,
+  // bukan 12 kategori detail spreadsheet) dari sheet Budget vs Actual. Belum ada data Realisasi
+  // yang dipakai di sini — murni dari Anggaran (rencana), sesuai kesepakatan karena proses
+  // vendor belum final.
+  const BUDGET_CSV_URL = null; // isi setelah tab "Budget vs Actual" di-publish sebagai CSV
+
+  // Kelompokkan 12 kategori detail spreadsheet jadi 4 kelompok garis besar buat publik
+  function mapKategoriToGroup(kategori){
+    const k = (kategori || '').toLowerCase();
+    if(k.includes('akomodasi') || k.includes('konsumsi')) return 'Akomodasi & Konsumsi';
+    if(k.includes('dekorasi') || k.includes('mc') || k.includes('hiburan') || k.includes('sound') || k.includes('dokumentasi')) return 'Acara, Dekorasi & Hiburan';
+    if(k.includes('merchandise')) return 'Merchandise & Perlengkapan';
+    return 'Lain-lain';
+  }
+
+  async function loadBudgetData(){
+    if(!BUDGET_CSV_URL) return;
+    try{
+      const res = await fetch(BUDGET_CSV_URL);
+      const text = await res.text();
+      const rows = text.split(/\r?\n/).filter(Boolean).map(parseCsvLine);
+      if(rows.length < 2) return;
+
+      // Cari nilai ringkasan lewat label teks (bukan posisi baris/kolom tetap), supaya lebih
+      // tahan kalau Bendahara sisipkan baris baru di spreadsheet.
+      function findLabelValue(labelText){
+        for(const r of rows){
+          for(let i = 0; i < r.length; i++){
+            if((r[i] || '').replace(/"/g,'').trim().toLowerCase() === labelText.toLowerCase()){
+              const raw = (r[i+1] || '').replace(/"/g,'').replace(/[^\d.-]/g,'');
+              const num = parseFloat(raw);
+              return isNaN(num) ? null : num;
+            }
+          }
+        }
+        return null;
+      }
+
+      const anggaranPerPeserta = findLabelValue('Anggaran per Peserta');
+      const jumlahPeserta = findLabelValue('Jumlah Peserta');
+
+      // Cari baris header tabel (yang punya kolom "Kategori" DAN "Anggaran (Rp)")
+      let headerRowIdx = -1, kategoriIdx = -1, anggaranIdx = -1, noIdx = -1;
+      for(let r = 0; r < rows.length; r++){
+        const cleaned = rows[r].map(c => (c || '').replace(/"/g,'').trim().toLowerCase());
+        const kIdx = cleaned.findIndex(c => c === 'kategori');
+        const aIdx = cleaned.findIndex(c => c.includes('anggaran'));
+        const nIdx = cleaned.findIndex(c => c === 'no');
+        if(kIdx > -1 && aIdx > -1){
+          headerRowIdx = r; kategoriIdx = kIdx; anggaranIdx = aIdx; noIdx = nIdx;
+          break;
+        }
+      }
+
+      const groupTotals = {};
+      if(headerRowIdx > -1){
+        for(let r = headerRowIdx + 1; r < rows.length; r++){
+          const row = rows[r];
+          const noVal = (row[noIdx] || '').replace(/"/g,'').trim();
+          if(!/^\d+$/.test(noVal)) continue; // skip baris kategori/kosong/TOTAL (kolom No harus angka bulat)
+          const kategori = (row[kategoriIdx] || '').replace(/"/g,'').trim();
+          const anggaranVal = parseFloat((row[anggaranIdx] || '').replace(/"/g,'').replace(/[^\d.-]/g,''));
+          if(isNaN(anggaranVal)) continue;
+          const group = mapKategoriToGroup(kategori);
+          groupTotals[group] = (groupTotals[group] || 0) + anggaranVal;
+        }
+      }
+
+      const textEl = document.getElementById('biayaPerOrangText');
+      const breakdownEl = document.getElementById('biayaPerOrangBreakdown');
+      if(anggaranPerPeserta && textEl){
+        textEl.innerHTML = `Estimasi biaya per orang (berdasarkan anggaran rencana): <strong style="color:var(--pine); font-size:1.05rem;">${formatRupiah(anggaranPerPeserta)}</strong>` + (jumlahPeserta ? ` <span style="font-size:0.8rem; color:rgba(37,28,24,0.55);">(dihitung dari estimasi ${jumlahPeserta} peserta)</span>` : '') + `<br><span style="font-size:0.78rem; color:rgba(37,28,24,0.5); font-style:italic;">Ini masih angka rencana (anggaran), belum realisasi aktual — bisa berubah setelah vendor final dikonfirmasi.</span>`;
+      }
+      if(breakdownEl && Object.keys(groupTotals).length > 0){
+        const groupOrder = ['Akomodasi & Konsumsi', 'Acara, Dekorasi & Hiburan', 'Merchandise & Perlengkapan', 'Lain-lain'];
+        const total = Object.values(groupTotals).reduce((a,b) => a+b, 0);
+        breakdownEl.innerHTML = `<div style="margin-top:14px; display:grid; gap:8px;">` + groupOrder.filter(g => groupTotals[g]).map(g => {
+          const pct = total > 0 ? Math.round((groupTotals[g]/total)*100) : 0;
+          return `<div style="display:flex; justify-content:space-between; font-size:0.85rem; padding:8px 12px; background:var(--paper-warm); border-radius:6px;">
+            <span>${escapeHtmlAlumni(g)}</span>
+            <span style="font-weight:600; color:var(--ruby-deep);">${formatRupiah(groupTotals[g])} <span style="color:rgba(37,28,24,0.45); font-weight:400;">(${pct}%)</span></span>
+          </div>`;
+        }).join('') + `</div>`;
+      }
+    }catch(err){
+      console.error('Gagal memuat data budget', err);
+    }
+  }
+
+  loadBudgetData();
 </script>
 
 </body>
