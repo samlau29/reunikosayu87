@@ -2655,26 +2655,16 @@
   }
 
   // ---------- Sistem rotasi harian "tanpa berulang sampai semua kebagian" ----------
-  // Caranya: urutan orang di-KOCOK SEKALI dengan seed tetap (jadi urutannya selalu sama, tapi
-  // terlihat acak), lalu tiap hari maju 1 posisi di urutan itu. Begitu semua orang sudah kebagian
-  // (1 putaran penuh), otomatis mulai putaran baru dari awal urutan kocokan yang sama.
-  function mulberry32(seed){
-    return function(){
-      seed |= 0; seed = (seed + 0x6D2B79F5) | 0;
-      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
-      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-    };
-  }
-
-  function seededShuffle(arr, seedStr){
-    const rand = mulberry32(seedFromString(seedStr));
-    const a = arr.slice();
-    for(let i = a.length - 1; i > 0; i--){
-      const j = Math.floor(rand() * (i + 1));
-      [a[i], a[j]] = [a[j], a[i]];
-    }
-    return a;
+  // Caranya: tiap ORANG dapat posisi tetap berdasarkan hash nama mereka sendiri (bukan hasil
+  // kocok seluruh array) — jadi kalau ada orang baru isi Fun Fact, cuma dia yang "nyempil" di
+  // posisinya sendiri, urutan orang lain TIDAK ikut berubah. Ini beda dari pendekatan lama
+  // (kocok seluruh array pakai Fisher-Yates) yang bikin urutan semua orang berantakan ulang
+  // setiap kali ada 1 nama baru masuk — itu penyebab kenapa dulu ada yang keulang 2-3x sementara
+  // yang baru daftar belum pernah kebagian giliran.
+  // Hash tetap per-orang, dipakai sebagai "kunci urutan" — hasilnya selalu sama untuk nama yang
+  // sama, tidak peduli siapa saja orang lain yang ada di daftar atau berapa panjang daftarnya.
+  function personRotationKey(name, seedStr){
+    return seedFromString(seedStr + '::' + normalizeName(name));
   }
 
   function getWibDayIndex(){
@@ -2703,11 +2693,9 @@
         return;
       }
 
-      // Urutkan dulu biar stabil (sebelum dikocok), lalu kocok sekali dengan seed tetap, lalu
-      // pilih berdasarkan hari ke-berapa sekarang -> setiap orang kebagian giliran 1x per putaran,
-      // baru berulang setelah semua orang habis.
-      const sortedEntries = entries.slice().sort((a, b) => normalizeName(a.rawName).localeCompare(normalizeName(b.rawName)));
-      const shuffled = seededShuffle(sortedEntries, 'tebak-siapa-aku-rotasi-v1');
+      // Urutkan berdasarkan hash tetap per-orang (bukan kocok seluruh array) — supaya urutan
+      // orang yang sudah ada TIDAK berubah waktu ada nama baru masuk daftar.
+      const shuffled = entries.slice().sort((a, b) => personRotationKey(a.rawName, 'tebak-siapa-aku-rotasi-v1') - personRotationKey(b.rawName, 'tebak-siapa-aku-rotasi-v1'));
       const dayIndex = getWibDayIndex();
       const chosen = shuffled[dayIndex % shuffled.length];
 
