@@ -803,6 +803,31 @@
     font-weight:700; color:var(--ruby-deep);
     border-top:2px solid var(--ink);
   }
+  /* Di layar sempit (HP), ubah dari tabel 3-kolom kaku jadi kartu bertumpuk — supaya tidak
+     perlu geser horizontal, dan tetap kebaca penuh tanpa terpotong. */
+  @media (max-width:640px){
+    .budget-table thead{ display:none; }
+    .budget-table, .budget-table tbody, .budget-table tr, .budget-table td{
+      display:block; width:100%;
+    }
+    .budget-table tr{
+      padding:12px 14px; border-bottom:1px solid var(--stamp-line);
+    }
+    .budget-table tr.total-row{
+      border-top:2px solid var(--ink); border-bottom:none;
+    }
+    .budget-table td{
+      padding:2px 0; border-bottom:none; font-size:0.88rem;
+    }
+    .budget-table td:first-child{
+      font-weight:700; color:var(--ruby-deep); font-size:0.95rem;
+    }
+    .budget-table td.amount{
+      text-align:left; margin-top:4px; font-size:1rem; font-weight:700;
+      color:var(--ruby);
+    }
+    .budget-table tr.total-row td.amount{ font-size:1.1rem; }
+  }
   .budget-status{
     display:inline-flex; align-items:center; gap:6px;
     font-family:'IBM Plex Mono',monospace; font-size:0.68rem;
