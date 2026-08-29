@@ -2676,15 +2676,19 @@
     return Date.UTC(wibNow.getUTCFullYear(), wibNow.getUTCMonth(), wibNow.getUTCDate(), 0, 0, 0, 0);
   }
 
-  function isInNext7Days(month, day, todayMs){
+  // Mengembalikan timestamp (ms) kemunculan ulang tahun berikutnya dalam jendela 7 hari,
+  // atau null kalau tidak masuk jendela. Dipakai juga untuk urutan SORT yang benar (bukan
+  // cuma angka tanggal mentah, supaya "29 Agustus" tidak kalah urut dari "1 September"
+  // hanya karena 29 > 1 — padahal 29 Agustus itu lebih dulu secara kronologis).
+  function getNextBirthdayMs(month, day, todayMs){
     const endMs = todayMs + (7 * 24 * 60 * 60 * 1000) - 1; // hari ini + 6 hari, sampai 23:59:59.999
     const yr = new Date(todayMs).getUTCFullYear();
     // Coba beberapa tahun (buat jaga-jaga kalau jendela 7 hari melewati batas Desember->Januari)
     for(const y of [yr, yr + 1, yr - 1]){
       const candidateMs = Date.UTC(y, month - 1, day, 12, 0, 0, 0);
-      if(candidateMs >= todayMs && candidateMs <= endMs) return true;
+      if(candidateMs >= todayMs && candidateMs <= endMs) return candidateMs;
     }
-    return false;
+    return null;
   }
 
   function renderBirthdays(){
@@ -2695,11 +2699,12 @@
     alumniData.forEach(a => {
       if(!a.bday || isDeceased(a.n)) return;
       const [mm, dd] = a.bday.split('-').map(Number);
-      if(isInNext7Days(mm, dd, todayMs)){
-        matches.push({name: a.n, dulu: a.d || '', month: mm, day: dd});
+      const occurrenceMs = getNextBirthdayMs(mm, dd, todayMs);
+      if(occurrenceMs !== null){
+        matches.push({name: a.n, dulu: a.d || '', month: mm, day: dd, occurrenceMs});
       }
     });
-    matches.sort((a,b) => a.day - b.day);
+    matches.sort((a,b) => a.occurrenceMs - b.occurrenceMs);
 
     if(matches.length === 0){
       grid.innerHTML = '<div class="bday-empty">Tidak ada yang berulang tahun dalam 7 hari ke depan. Cek lagi besok!</div>';
