@@ -1616,7 +1616,7 @@
     <div class="section-head reveal">
       <span class="eyebrow">&#127775; Bulanan</span>
       <h2>Undian Bulanan</h2>
-      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 427 alumni angkatan 87 yang masih aktif. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai nabung, kamu dapat potongan <strong>Rp 200.000</strong> dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya).</p>
+      <p>Tiap akhir bulan jam 20.00 WIB, 1 nama diundi dari 427 alumni angkatan 87 yang masih aktif. Kalau namamu keluar <strong>dan</strong> kamu sudah terdaftar &amp; sudah bayar lunas / mulai nabung, kamu dapat potongan dari biaya reuni (kalau sudah lunas, diganti goodie bag atau uang tunai, sesuai pilihannya). <strong>Hadiahnya turun tiap bulan</strong> &mdash; mulai Rp 800.000 di Agustus 2026, turun Rp 100.000 tiap bulan, sampai minimum Rp 200.000 mulai Februari 2027. Makin cepat mulai bayar, makin besar peluang dapat hadiah gede!</p>
     </div>
 
     <div class="undian-box reveal">
@@ -2972,12 +2972,23 @@
   // Target waktu testing dihitung SEKALI saja saat script dimuat (supaya tidak bergeser tiap refresh)
   const TEST_DRAW_TIME = (TEST_MODE_MINUTES !== null) ? new Date(Date.now() + TEST_MODE_MINUTES * 60 * 1000) : null;
 
+  // ---------- HADIAH UNDIAN BERTINGKAT (turun tiap bulan, minimum Rp 200.000) ----------
+  // Agustus 2026 = Rp 800.000, turun Rp 100.000 tiap bulan berikutnya, berhenti turun di
+  // minimum Rp 200.000 (tercapai mulai Februari 2027 dan seterusnya sampai hari-H).
+  function getUndianPrizeAmount(year, monthIndex){
+    const monthsSinceStart = (year - 2026) * 12 + (monthIndex - 7); // Agustus 2026 = bulan ke-0
+    const prize = 800000 - (monthsSinceStart * 100000);
+    return Math.max(prize, 200000);
+  }
+
   function runUndian(){
     const now = new Date();
     const year = now.getUTCFullYear();
     const monthIndex = now.getUTCMonth();
     const monthNames = ['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'];
     const drawTime = TEST_DRAW_TIME || getDrawDateTime(year, monthIndex);
+    const prizeAmount = getUndianPrizeAmount(year, monthIndex);
+    const prizeFormatted = 'Rp ' + prizeAmount.toLocaleString('id-ID');
     const nameDisplay = document.getElementById('undianNameDisplay');
     const statusLine = document.getElementById('undianStatusLine');
     const countdownEl = document.getElementById('undianCountdown');
@@ -2993,7 +3004,7 @@
       const d = Math.floor(diff / (1000*60*60*24));
       const h = Math.floor((diff / (1000*60*60)) % 24);
       const m = Math.floor((diff / (1000*60)) % 60);
-      countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}: ${d} hari ${h} jam ${m} menit lagi`;
+      countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year} (hadiah ${prizeFormatted}): ${d} hari ${h} jam ${m} menit lagi`;
       setTimeout(runUndian, Math.min(diff + 500, 2147000000)); // auto re-check pas waktunya tiba
       return;
     }
@@ -3006,7 +3017,7 @@
     const winnerIndex = seed % activePool.length;
     const winner = activePool[winnerIndex];
 
-    countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year}`;
+    countdownEl.textContent = `Undian bulan ${monthNames[monthIndex]} ${year} — hadiah ${prizeFormatted}`;
 
     // Fase 1: alarm 5 detik sebelum roda berputar
     let alarmCount = 10;
@@ -3048,7 +3059,7 @@
           if(registered && paidStatus === true){
             statusLine.textContent = 'Verifikasi selesai';
             resultEl.className = 'undian-result show win';
-            resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> terverifikasi sudah terdaftar &amp; sudah bayar/nabung! Selamat, dapat potongan Rp 200.000 dari biaya reuni (atau goodie bag kalau sudah lunas). Panitia akan hubungi langsung.`;
+            resultEl.innerHTML = `&#127881; <strong>${escapeHtmlAlumni(winner.n)}</strong> terverifikasi sudah terdaftar &amp; sudah bayar/nabung! Selamat, dapat potongan ${prizeFormatted} dari biaya reuni (atau goodie bag kalau sudah lunas). Panitia akan hubungi langsung.`;
           } else if(registered && paidStatus === null){
             statusLine.textContent = 'Verifikasi selesai (sebagian)';
             resultEl.className = 'undian-result show win';
