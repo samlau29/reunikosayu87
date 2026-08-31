@@ -3067,7 +3067,12 @@
           } else {
             statusLine.textContent = 'Verifikasi selesai';
             resultEl.className = 'undian-result show nowin';
-            resultEl.innerHTML = `${escapeHtmlAlumni(winner.n)} keluar sebagai nama undian, tapi belum terdaftar/bayar &mdash; <strong>tidak ada pemenang bulan ini</strong>. Undian lanjut lagi bulan depan!`;
+            const halfPrize = 'Rp ' + Math.round(prizeAmount / 2).toLocaleString('id-ID');
+            // CATATAN UNTUK BENDAHARA: situs tidak bisa otomatis melacak siapa yang klaim
+            // dalam 3 hari — begitu ada nama keluar tapi belum terdaftar, Bendahara perlu
+            // hubungi orang itu langsung & catat manual tenggat 3 harinya (misal di
+            // spreadsheet Transaksi, kolom Catatan: "Klaim undian [bulan] — tenggat [tanggal]").
+            resultEl.innerHTML = `${escapeHtmlAlumni(winner.n)} keluar sebagai nama undian, tapi belum terdaftar/bayar. <strong>Masih ada kesempatan!</strong> Daftar &amp; mulai bayar dalam <strong>3 hari ke depan</strong>, tetap dapat <strong>${halfPrize}</strong> (50% dari hadiah bulan ini). Hubungi Bendahara sekarang sebelum kesempatan ini hangus.`;
           }
         }, 5000);
       }, 20000);
