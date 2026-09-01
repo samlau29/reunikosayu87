@@ -1919,6 +1919,8 @@
       </div>
       <p style="margin-top:10px; font-size:0.75rem; color:rgba(37,28,24,0.5); text-align:center;">Angka di atas diupdate manual oleh Bendahara secara berkala &mdash; agregat total saja, tanpa nama penerima, untuk jaga privasi.</p>
 
+      <div id="solidaritasNamesBox" style="margin-top:12px;"></div>
+
       <div style="margin-top:16px; padding:14px 16px; background:rgba(199,154,62,0.1); border:1px solid rgba(199,154,62,0.35); border-radius:8px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">&#128149; Butuh Bantuan?</div>
         <p style="font-size:0.88rem; color:rgba(37,28,24,0.8); margin:0;">Kalau biaya jadi kendala untuk hadir, jangan sungkan hubungi <strong>Ketua, Wakil Ketua, atau Bendahara secara pribadi</strong> lewat WA. <strong>Tidak perlu cerita alasan apa pun</strong> &mdash; cukup bilang "saya perlu keringanan biaya", kami bantu secepatnya tanpa banyak tanya. Obrolan dijamin rahasia, dan tidak perlu isi form apa pun.</p>
@@ -1927,7 +1929,7 @@
 
       <div style="margin-top:14px; padding:14px 16px; background:rgba(51,73,63,0.08); border:1px solid rgba(51,73,63,0.25); border-radius:8px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--pine); margin-bottom:6px;">&#128156; Mau Ikut Menyumbang?</div>
-        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Sumbangan ke Dana Solidaritas bisa ditransfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan "Dana Solidaritas" saat transfer, atau kabari Bendahara langsung.</p>
+        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Sumbangan ke Dana Solidaritas bisa ditransfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan "Dana Solidaritas" saat transfer, atau kabari Bendahara langsung. Nama kamu akan ditampilkan di situs ini sebagai bentuk apresiasi (tanpa jumlah sumbangan) &mdash; kabari Bendahara kalau kamu mau tetap privat.</p>
       </div>
     </div>
 
@@ -1947,9 +1949,11 @@
       </div>
       <p style="margin-top:10px; font-size:0.75rem; color:rgba(37,28,24,0.5); text-align:center;">Angka di atas diupdate manual oleh Bendahara secara berkala.</p>
 
+      <div id="guruNamesBox" style="margin-top:12px;"></div>
+
       <div style="margin-top:16px; padding:14px 16px; background:rgba(51,73,63,0.08); border:1px solid rgba(51,73,63,0.25); border-radius:8px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--pine); margin-bottom:6px;">&#127891; Mau Menyumbang untuk Guru?</div>
-        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Transfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan <strong>"Dana Tunjangan Guru"</strong> saat transfer supaya jelas ini spesifik untuk guru (bukan Dana Solidaritas umum), atau kabari Bendahara langsung.</p>
+        <p style="font-size:0.86rem; color:rgba(37,28,24,0.8); margin:0;">Transfer ke rekening yang sama seperti Program Tabungan &mdash; kasih catatan <strong>"Dana Tunjangan Guru"</strong> saat transfer supaya jelas ini spesifik untuk guru (bukan Dana Solidaritas umum), atau kabari Bendahara langsung. Nama kamu akan ditampilkan di situs ini sebagai bentuk apresiasi (tanpa jumlah sumbangan) &mdash; kabari Bendahara kalau kamu mau tetap privat.</p>
       </div>
       <p style="margin-top:10px; font-size:0.92rem; color:rgba(37,28,24,0.8); font-weight:600;">Tidak yakin mau pilih yang mana? Tidak masalah &mdash; transfer saja ke Dana Solidaritas umum di atas, panitia akan bantu alokasikan sesuai kebutuhan (termasuk kemungkinan ke tunjangan guru).</p>
     </div>
@@ -1982,7 +1986,16 @@
 
           TAB "RINGKASAN" — otomatis terhitung dari Transaksi lewat formula SUMIF/MINIFS,
           Bendahara TIDAK perlu sentuh ini:
-          Kolom: Nama | Total Dibayar | Sudah Bayar | Tanggal Bayar Pertama
+          Kolom: Nama | Total Dibayar | Sudah Bayar | Tanggal Bayar Pertama | Kontribusi Solidaritas | Kontribusi Tunjangan Guru
+
+          2 kolom terakhir itu BARU (buat fitur "Terima Kasih kepada" di kotak Dana Solidaritas
+          & Dana Tunjangan Guru — nama otomatis muncul di situs, TANPA nominal). Formula di
+          kolom "Kontribusi Solidaritas" (contoh, sesuaikan kolom):
+            =SUMIFS(Transaksi!C:C, Transaksi!A:A, A2, Transaksi!D:D, "*Solidaritas*")
+          Dan "Kontribusi Tunjangan Guru":
+            =SUMIFS(Transaksi!C:C, Transaksi!A:A, A2, Transaksi!D:D, "*Tunjangan Guru*")
+          (situs cuma baca APAKAH kolom ini > 0 buat nampilin nama, jumlahnya tidak ditampilkan
+          ke publik meski datanya ikut kebawa di file CSV yang dipublish)
 
           TAB "LAPORAN KEUANGAN" — Bendahara edit LANGSUNG angkanya, tanpa form:
           Kolom: Tanggal Update | Total Dana Terkumpul | Dana Solidaritas Terkumpul |
@@ -2973,6 +2986,29 @@
       // Dedupe (kalau ada nama yang kebetulan tercatat dobel) sebelum dihitung jumlahnya
       paidNames = Array.from(new Set(paidNames));
       renderGelombangBayar(paidNames.length);
+
+      // ---- "Terima Kasih kepada" — nama penyumbang Dana Solidaritas & Tunjangan Guru ----
+      // Baca dari kolom "Kontribusi Solidaritas" / "Kontribusi Tunjangan Guru" (kalau ada &
+      // isinya > 0) — cuma tampilkan NAMA, jumlahnya sengaja tidak ditampilkan ke publik.
+      const solKontribIdx = header.findIndex(h => h.includes('kontribusi') && h.includes('solidaritas'));
+      const guruKontribIdx = header.findIndex(h => h.includes('kontribusi') && h.includes('guru'));
+      function extractContributorNames(colIdx){
+        if(colIdx === -1) return [];
+        const names = lines.slice(1).filter(line => {
+          const cols = parseCsvLine(line);
+          const val = parseFloat((cols[colIdx] || '0').replace(/[^\d.]/g,''));
+          return !isNaN(val) && val > 0;
+        }).map(line => extractPlainName((parseCsvLine(line)[nameIdx] || '').replace(/"/g,'')));
+        return Array.from(new Set(names)).sort((a,b) => a.localeCompare(b));
+      }
+      function renderNamesBox(elId, names){
+        const el = document.getElementById(elId);
+        if(!el) return;
+        if(names.length === 0){ el.innerHTML = ''; return; }
+        el.innerHTML = `<p style="font-size:0.78rem; color:rgba(37,28,24,0.55); text-align:center; margin-bottom:6px;">&#128591; Terima kasih kepada:</p><p style="font-size:0.82rem; color:rgba(37,28,24,0.75); text-align:center; line-height:1.6;">${names.map(escapeHtmlAlumni).join(', ')}</p>`;
+      }
+      renderNamesBox('solidaritasNamesBox', extractContributorNames(solKontribIdx));
+      renderNamesBox('guruNamesBox', extractContributorNames(guruKontribIdx));
     }catch(err){
       console.error('Gagal memuat data pembayaran', err);
     }
