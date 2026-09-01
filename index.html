@@ -873,6 +873,19 @@
     gap:16px;
   }
   @media (max-width:720px){ .papan-grid{ grid-template-columns:1fr; } }
+  .stat-grid-3{
+    display:grid; grid-template-columns:repeat(3, 1fr);
+    gap:10px; margin-top:16px;
+  }
+  .stat-grid-2{
+    display:grid; grid-template-columns:repeat(2, 1fr);
+    gap:10px; margin-top:16px;
+  }
+  .stat-grid-3 > div, .stat-grid-2 > div{ min-width:0; }
+  @media (max-width:480px){
+    .stat-grid-3{ grid-template-columns:1fr; }
+    .stat-grid-2{ grid-template-columns:1fr; }
+  }
   .papan-card{
     background:var(--cream-white);
     border:1px solid var(--stamp-line);
@@ -1768,7 +1781,7 @@
           </div>
           <div style="display:flex; justify-content:space-between; padding:6px 0;">
             <span>Upgrade ke Premier + Single Occupancy</span>
-            <strong style="color:var(--ruby-deep);">+Rp 1.400.000 /orang</strong>
+            <strong style="color:var(--ruby-deep);">+Rp 1.600.000 /orang</strong>
           </div>
         </div>
         <p style="font-size:0.76rem; color:rgba(37,28,24,0.5); margin:10px 0 0; font-style:italic;">Sudah untuk 2 malam, per orang. Untuk upgrade Premier twin share, berlaku per orang di kamar itu (kalau berdua sama-sama upgrade, masing-masing bayar tambahan ini). Kabari Bendahara saat transfer kalau mau pilih salah satu opsi ini.</p>
@@ -1785,8 +1798,15 @@
     </div>
 
     <div class="live-report-box reveal" id="biayaPerOrangBox" style="text-align:left; border-style:solid;">
-      <div class="lr-title" style="text-align:center;">Rincian Biaya per Orang</div>
-      <p style="font-size:0.85rem; color:rgba(37,28,24,0.65); text-align:center; margin-top:4px; line-height:1.6;">Meskipun target kita 150 peserta, estimasi biaya dasar (cost) per orang di bawah ini dihitung dari skenario konservatif <strong>120 peserta</strong>. Harga Early Bird (Rp 3.200.000) dan Normal (Rp 3.500.000) adalah <strong>harga bersubsidi</strong> &mdash; semakin banyak yang hadir, semakin kecil subsidi yang dibutuhkan per orang. Panitia berharap kekurangannya dapat tertutup dari Dana Solidaritas.</p>
+      <div class="lr-title" style="text-align:center;">Estimasi Biaya Dasar Acara</div>
+      <p style="font-size:0.78rem; color:rgba(37,28,24,0.5); text-align:center; margin-top:2px; font-style:italic;">(bukan harga tiket yang kamu bayar)</p>
+
+      <div style="margin:14px 0; padding:14px 16px; background:rgba(124,31,43,0.1); border:2px solid var(--ruby); border-radius:8px; text-align:center;">
+        <p style="font-size:0.95rem; color:var(--ruby-deep); margin:0; font-weight:700;">&#9888;&#65039; Tabel di bawah ini BUKAN harga yang kamu bayar</p>
+        <p style="font-size:0.88rem; color:rgba(37,28,24,0.8); margin:6px 0 0;">Harga yang benar-benar kamu bayar: <strong style="color:var(--ruby-deep);">Early Bird Rp 3.200.000</strong> atau <strong style="color:var(--ruby-deep);">Normal Rp 3.500.000</strong> &mdash; cek <a href="#keuangan" style="color:var(--ruby); font-weight:600;">detail Early Bird &amp; Normal di atas &uarr;</a></p>
+      </div>
+
+      <p style="font-size:0.85rem; color:rgba(37,28,24,0.65); text-align:center; margin-top:4px; line-height:1.6;">Tabel di bawah cuma perkiraan biaya dasar (cost) yang dipakai panitia untuk menghitung harga tiket &mdash; dihitung dari skenario konservatif <strong>120 peserta</strong>, meski target kita 150. Harga Early Bird &amp; Normal di atas sengaja dipatok <strong>lebih rendah</strong> dari angka di tabel ini (harga bersubsidi) &mdash; semakin banyak yang hadir, semakin kecil subsidi yang dibutuhkan per orang. Panitia berharap kekurangannya dapat tertutup dari Dana Solidaritas.</p>
 
       <table class="budget-table" style="margin-top:18px;">
         <thead>
@@ -1828,13 +1848,13 @@
             <td class="amount">Rp 150.000</td>
           </tr>
           <tr class="total-row">
-            <td colspan="2">TOTAL per orang</td>
+            <td colspan="2">TOTAL ESTIMASI BIAYA DASAR <span style="font-weight:400; font-style:italic; font-size:0.8em;">(bukan harga tiket)</span></td>
             <td class="amount">Rp 3.900.000</td>
           </tr>
         </tbody>
       </table>
 
-      <p style="font-size:0.78rem; color:rgba(37,28,24,0.5); margin-top:14px; font-style:italic; text-align:center;">Angka ini sudah termasuk dana cadangan.</p>
+      <p style="font-size:0.78rem; color:rgba(37,28,24,0.5); margin-top:14px; font-style:italic; text-align:center;">Angka ini sudah termasuk dana cadangan. Ingat: yang kamu bayar tetap <strong>Rp 3.200.000 (Early Bird) atau Rp 3.500.000 (Normal)</strong> &mdash; bukan Rp 3.900.000 di atas.</p>
 
       <div id="biayaPerOrangBreakdown"></div>
     </div>
@@ -1883,7 +1903,7 @@
       <h3>&#128156; Dana Solidaritas</h3>
       <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Kita ingin semua teman angkatan 87 bisa hadir, terlepas dari kondisi masing-masing. Dana Solidaritas ini dikumpulkan dari sumbangan sukarela alumni, dipakai untuk bantu teman-teman yang kesulitan biaya supaya tetap bisa ikut reuni &mdash; gratis atau dengan biaya yang jauh lebih ringan. <strong>Alokasinya (ke alumni yang butuh atau ke tunjangan guru di bawah) diputuskan oleh panitia</strong> sesuai kebutuhan yang ada saat itu.</p>
 
-      <div style="display:grid; grid-template-columns:repeat(3, 1fr); gap:10px; margin-top:16px;">
+      <div class="stat-grid-3">
         <div style="text-align:center; background:var(--paper-warm); border-radius:8px; padding:12px 8px;">
           <div style="font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:rgba(37,28,24,0.65); margin-bottom:6px;">Terkumpul</div>
           <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:var(--pine);" id="solidaritasTerkumpul">Rp 0</div>
@@ -1901,7 +1921,7 @@
 
       <div style="margin-top:16px; padding:14px 16px; background:rgba(199,154,62,0.1); border:1px solid rgba(199,154,62,0.35); border-radius:8px;">
         <div style="font-family:'IBM Plex Mono',monospace; font-size:0.68rem; letter-spacing:0.06em; text-transform:uppercase; color:var(--gold); margin-bottom:6px;">&#128149; Butuh Bantuan?</div>
-        <p style="font-size:0.88rem; color:rgba(37,28,24,0.8); margin:0;">Kalau biaya jadi kendala untuk hadir, jangan sungkan hubungi <strong>Ketua atau Bendahara secara pribadi</strong> lewat WA. <strong>Tidak perlu cerita alasan apa pun</strong> &mdash; cukup bilang "saya perlu keringanan biaya", kami bantu secepatnya tanpa banyak tanya. Obrolan dijamin rahasia, dan tidak perlu isi form apa pun.</p>
+        <p style="font-size:0.88rem; color:rgba(37,28,24,0.8); margin:0;">Kalau biaya jadi kendala untuk hadir, jangan sungkan hubungi <strong>Ketua, Wakil Ketua, atau Bendahara secara pribadi</strong> lewat WA. <strong>Tidak perlu cerita alasan apa pun</strong> &mdash; cukup bilang "saya perlu keringanan biaya", kami bantu secepatnya tanpa banyak tanya. Obrolan dijamin rahasia, dan tidak perlu isi form apa pun.</p>
         <p style="font-size:0.82rem; color:rgba(37,28,24,0.65); margin:10px 0 0; font-style:italic;">Punya teman seangkatan yang kelihatannya keberatan tapi sungkan ngomong? Tolong duluan yang tanya secara halus, atau kabari panitia &mdash; kita ingin semua bisa hadir, tidak perlu menunggu mereka buka mulut duluan.</p>
       </div>
 
@@ -1915,7 +1935,7 @@
       <h3>&#127891; Dana Tunjangan Guru</h3>
       <p style="margin-top:6px; font-size:0.88rem; color:rgba(37,28,24,0.75);">Sebagai bentuk terima kasih ke guru-guru yang dulu mendidik kita, panitia juga membuka kesempatan menyumbang khusus untuk tunjangan guru. Sumbangan ini terpisah dari Dana Solidaritas di atas &mdash; kalau kamu mau dana kamu spesifik untuk guru (bukan untuk alumni), ini tempatnya.</p>
 
-      <div style="display:grid; grid-template-columns:repeat(2, 1fr); gap:10px; margin-top:16px;">
+      <div class="stat-grid-2">
         <div style="text-align:center; background:var(--paper-warm); border-radius:8px; padding:12px 8px;">
           <div style="font-family:'IBM Plex Mono',monospace; font-size:0.78rem; font-weight:600; letter-spacing:0.03em; text-transform:uppercase; color:rgba(37,28,24,0.65); margin-bottom:6px;">Terkumpul</div>
           <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:var(--pine);" id="guruTerkumpul">Rp 0</div>
