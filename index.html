@@ -3440,9 +3440,19 @@
       const guruAlokasiIdx = header.findIndex(h => h.includes('guru') && h.includes('dialokasikan'));
       const catatanIdx = header.findIndex(h => h.includes('catatan'));
 
-      // Ambil baris PALING BAWAH (submission terbaru) sebagai angka yang dipakai
-      const lastLine = lines[lines.length - 1];
-      const cols = parseCsvLine(lastLine);
+      // Ambil baris TERAKHIR YANG BENAR-BENAR ADA DATANYA (bukan asal baris paling bawah) —
+      // supaya kalau ada baris catatan/kosong nyempil di bawah data asli (misal komentar
+      // penjelasan yang ditambahkan Bendahara), situs tidak salah ambil baris kosong itu.
+      let cols = [];
+      for(let i = lines.length - 1; i >= 1; i--){
+        const candidateCols = parseCsvLine(lines[i]);
+        const totalVal = totalIdx > -1 ? (candidateCols[totalIdx] || '').trim() : '';
+        if(totalVal !== ''){
+          cols = candidateCols;
+          break;
+        }
+      }
+      if(cols.length === 0) return; // tidak ada baris data valid sama sekali
 
       const total = totalIdx > -1 ? parseFloat((cols[totalIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
       const solTerkumpul = solTerkumpulIdx > -1 ? parseFloat((cols[solTerkumpulIdx] || '0').replace(/[^\d.]/g,'')) : NaN;
