@@ -64,15 +64,26 @@
     font-family:'IBM Plex Mono',monospace; font-size:0.7rem; font-weight:600;
     border:2px solid var(--gold);
   }
-  .navlinks{display:flex; gap:28px; font-size:0.88rem;}
-  .navlinks a{
-    text-decoration:none; color:var(--ink); opacity:0.75;
-    padding-bottom:3px; border-bottom:2px solid transparent;
-    transition:opacity .2s, border-color .2s;
-  }
-  .navlinks a:hover{opacity:1; border-color:var(--gold);}
-  .navtoggle{
+  /* Menu selalu berbentuk dropdown (hamburger) di semua ukuran layar —
+     13 item terlalu banyak untuk muat sebaris tanpa terpotong. */
+  .navlinks{
     display:none;
+    position:absolute; top:64px; left:0; right:0;
+    flex-direction:column; gap:0;
+    background:var(--paper); border-bottom:1px solid var(--stamp-line);
+    box-shadow:0 8px 16px rgba(0,0,0,0.08);
+    max-height:calc(100vh - 64px);
+    overflow-y:auto;
+  }
+  .navlinks.open{ display:flex; }
+  .navlinks a{
+    text-decoration:none; color:var(--ink); opacity:0.85;
+    padding:14px 24px; border-bottom:1px solid var(--stamp-line);
+    transition:opacity .2s, background .2s;
+  }
+  .navlinks a:hover{ opacity:1; background:var(--paper-warm); }
+  .navtoggle{
+    display:flex;
     flex-direction:column; justify-content:center; gap:5px;
     width:36px; height:36px;
     background:none; border:none; cursor:pointer;
@@ -86,21 +97,6 @@
   .navtoggle.open span:nth-child(1){ transform:translateY(7px) rotate(45deg); }
   .navtoggle.open span:nth-child(2){ opacity:0; }
   .navtoggle.open span:nth-child(3){ transform:translateY(-7px) rotate(-45deg); }
-  @media (max-width:720px){
-    .navlinks{
-      display:none;
-      position:absolute; top:64px; left:0; right:0;
-      flex-direction:column; gap:0;
-      background:var(--paper); border-bottom:1px solid var(--stamp-line);
-      box-shadow:0 8px 16px rgba(0,0,0,0.08);
-    }
-    .navlinks.open{ display:flex; }
-    .navlinks a{
-      padding:14px 24px; border-bottom:1px solid var(--stamp-line);
-    }
-    .navlinks a:hover{ border-bottom:1px solid var(--stamp-line); background:var(--paper-warm); }
-    .navtoggle{ display:flex; }
-  }
 
   /* ---------- HERO ---------- */
   .hero{
@@ -1245,7 +1241,7 @@
       <a href="#tebak-siapa-aku">Tebak Siapa Aku</a>
       <a href="#papan-kenangan">Papan Kenangan</a>
       <a href="#undian">Undian</a>
-      <a href="#galeri-angkatan">Wajah-Wajah Angkatan 87</a>
+      <a href="#galeri-angkatan">Wajah Angkatan 87</a>
       <a href="#galeri">Galeri Reuni</a>
       <a href="#keuangan">Keuangan</a>
       <a href="#panitia">Panitia</a>
