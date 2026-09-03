@@ -1869,7 +1869,7 @@
       <div class="polaroid reveal galeri-extra" style="display:none;"><div class="polaroid-photo"><img src="images/foto-51.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;" class="lightbox-trigger" data-group="reuni"></div><div class="polaroid-cap">Bermain di Ombak</div></div>
       <div class="polaroid reveal galeri-extra" style="display:none;"><div class="polaroid-photo"><img src="images/foto-52.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;" class="lightbox-trigger" data-group="reuni"></div><div class="polaroid-cap">Basah-Basahan</div></div>
       <div class="polaroid reveal galeri-extra" style="display:none;"><div class="polaroid-photo"><img src="images/foto-53.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;" class="lightbox-trigger" data-group="reuni"></div><div class="polaroid-cap">Santai di Pantai</div></div>
-      <div class="polaroid reveal galeri-extra" style="display:none;"><div class="polaroid-photo"><img src="images/foto-54.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;" class="lightbox-trigger" data-group="reuni"></div><div class="polaroid-cap">Potret Santai</div></div>      <div class="galeri-extra-btn-wrap" style="grid-column:1/-1; text-align:center; margin-top:8px;">
+      <div class="polaroid reveal galeri-extra" style="display:none;"><div class="polaroid-photo"><img src="images/foto-54.jpg" loading="lazy" style="width:100%;height:100%;object-fit:cover;" class="lightbox-trigger" data-group="reuni"></div><div class="polaroid-cap">Potret Santai</div></div>      <div class="galeri-extra-btn-wrap" id="galeriExtraBtnWrap" style="grid-column:1/-1; text-align:center; margin-top:8px;">
         <button type="button" id="galeriShowMoreBtn" class="btn btn-ghost" style="font-size:0.85rem; padding:8px 18px;">&#128248; Tampilkan Semua Foto Galeri (53)</button>
       </div>
 
@@ -3439,6 +3439,8 @@
       galeriTabBtns.forEach(b => { b.classList.remove('active'); b.style.background='transparent'; b.style.color='var(--ink)'; });
       btn.classList.add('active'); btn.style.background='var(--ruby)'; btn.style.color='var(--cream-white)';
       const cat = btn.getAttribute('data-cat');
+      const extraBtnWrap = document.getElementById('galeriExtraBtnWrap');
+      if(extraBtnWrap){ extraBtnWrap.style.display = (cat === 'semua') ? '' : 'none'; }
       galeriItems.forEach(item => {
         const itemCat = item.getAttribute('data-cat');
         if(cat === 'semua'){
