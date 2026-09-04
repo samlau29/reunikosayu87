@@ -705,6 +705,16 @@
     white-space:nowrap;
   }
   a.alumni-wa-link:hover{ background:rgba(37,168,105,0.2); }
+  .alumni-paid-tick{
+    display:inline-flex; align-items:center; gap:3px;
+    margin-left:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    font-weight:600;
+    color:#1a7a4c;
+    background:rgba(37,168,105,0.15);
+    padding:2px 8px; border-radius:10px;
+    white-space:nowrap;
+  }
   .alumni-kota{
     font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
     color:rgba(37,28,24,0.45);
@@ -1525,7 +1535,7 @@
     <div id="perintisBox" class="perintis-box reveal"></div>
 
     <div class="section-head reveal" style="margin-top:24px;">
-      <p>Ringkasan di bawah menunjukkan jumlah alumni yang sudah konfirmasi hadir per kelas (kelas dengan <strong>persentase konfirmasi tertinggi</strong> ditandai emas). Cari nama kamu atau teman-teman di daftar lengkap di bawahnya. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran.</p>
+      <p>Ringkasan di bawah menunjukkan jumlah alumni yang sudah konfirmasi hadir per kelas (kelas dengan <strong>persentase konfirmasi tertinggi</strong> ditandai emas). Cari nama kamu atau teman-teman di daftar lengkap di bawahnya. Tanda <strong>&#10003;</strong> hijau menandakan sudah konfirmasi kehadiran, dan badge <strong>&#9989; Lunas</strong> menandakan pembayaran sudah lunas (data diinput Bendahara).</p>
     </div>
 
     <div class="prize-box reveal">
@@ -2510,6 +2520,7 @@
         const duluTag = a.d ? ` <span class="alumni-dulu">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : '';
         let jumlahHtml = '';
         let waHtml = '';
+        let paidHtml = '';
         if(confirmed){
           const jml = jumlahHadirMap[normalizeName(a.n)] || (a.d ? jumlahHadirMap[normalizeName(a.d)] : null);
           if(jml){
@@ -2522,6 +2533,9 @@
               ? `<a class="alumni-wa-link" href="https://wa.me/${cleanWa}" target="_blank" rel="noopener">&#128241; ${escapeHtmlAlumni(rawWa)}</a>`
               : `<span class="alumni-wa-link">&#128241; ${escapeHtmlAlumni(rawWa)}</span>`;
           }
+          if(isLunas(a.n, a.d)){
+            paidHtml = `<span class="alumni-paid-tick">&#9989; Lunas</span>`;
+          }
         }
         const photoHtml = a.photo
           ? `<img class="alumni-photo" src="${a.photo}" alt="">`
@@ -2529,7 +2543,7 @@
         return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
           <div class="alumni-tick">&#10003;</div>
           ${photoHtml}
-          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}</div>
+          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}${paidHtml}</div>
           <div class="alumni-kota">${escapeHtmlAlumni(a.a || '')}</div>
         </div>`;
       }).join('');
@@ -3116,6 +3130,14 @@
     }
   }
 
+  let lunasNames = [];
+
+  function parseRupiah(s){
+    if(!s) return 0;
+    const digits = s.replace(/[^\d]/g, '');
+    return digits ? parseInt(digits, 10) : 0;
+  }
+
   async function loadPaidNames(){
     if(!PAYMENT_CSV_URL) return;
     try{
@@ -3126,6 +3148,11 @@
       const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
       const nameIdx = findNameColumnIndex(header);
       const paidIdx = header.findIndex(h => h.includes('sudah') && h.includes('bayar'));
+      // Kolom "Sudah Bayar" cuma berarti ADA pembayaran (>0), bukan lunas — dipakai untuk undian
+      // (aturan undian sengaja mengizinkan "sudah bayar lunas / mulai nabung"). Untuk badge "Lunas"
+      // di Daftar Alumni, kita hitung sendiri: Total Dibayar (kolom J) >= Total Biaya (kolom I).
+      const biayaIdx = header.findIndex(h => h.includes('total') && h.includes('biaya'));
+      const dibayarIdx = header.findIndex(h => h.includes('total') && h.includes('dibayar'));
       if(nameIdx === -1 || paidIdx === -1) return;
       paidNames = lines.slice(1).filter(line => {
         const cols = parseCsvLine(line);
@@ -3135,6 +3162,17 @@
       // Dedupe (kalau ada nama yang kebetulan tercatat dobel) sebelum dihitung jumlahnya
       paidNames = Array.from(new Set(paidNames));
       renderGelombangBayar(paidNames.length);
+
+      // Hitung status LUNAS sungguhan: Total Dibayar >= Total Biaya (bukan cuma "ada bayar")
+      if(biayaIdx !== -1 && dibayarIdx !== -1){
+        lunasNames = lines.slice(1).filter(line => {
+          const cols = parseCsvLine(line);
+          const biaya = parseRupiah(cols[biayaIdx] || '');
+          const dibayar = parseRupiah(cols[dibayarIdx] || '');
+          return biaya > 0 && dibayar >= biaya;
+        }).map(line => normalizeName(extractPlainName((parseCsvLine(line)[nameIdx] || '').replace(/"/g,''))));
+        lunasNames = Array.from(new Set(lunasNames));
+      }
 
       // ---- "Terima Kasih kepada" — nama penyumbang Dana Solidaritas & Tunjangan Guru ----
       // Baca dari kolom "Kontribusi Solidaritas" / "Kontribusi Tunjangan Guru" (kalau ada &
@@ -3168,6 +3206,16 @@
     const norm = normalizeName(nama);
     if(paidNames.some(c => c === norm)) return true;
     if(namaDulu && paidNames.some(c => c === normalizeName(namaDulu))) return true;
+    return false;
+  }
+
+  // Beda dari isPaid() di atas: isLunas() cek pembayaran SUDAH PENUH (Total Dibayar >= Total
+  // Biaya), bukan cuma "ada pembayaran". Dipakai untuk badge "Lunas" di Daftar Alumni.
+  function isLunas(nama, namaDulu){
+    if(!PAYMENT_CSV_URL) return false;
+    const norm = normalizeName(nama);
+    if(lunasNames.some(c => c === norm)) return true;
+    if(namaDulu && lunasNames.some(c => c === normalizeName(namaDulu))) return true;
     return false;
   }
 
@@ -3308,6 +3356,10 @@
   function escapeHtmlAlumni2(str){ return escapeHtmlAlumni(str); }
 
   loadPaidNames().then(() => {
+    // Data pembayaran baru masuk belakangan — render ulang Daftar Alumni supaya
+    // tick "Lunas" langsung kelihatan tanpa perlu reload manual.
+    const searchEl = document.getElementById('alumniSearch');
+    renderAlumniList(searchEl ? searchEl.value : '');
     // Tunggu data alumni & konfirmasi siap juga sebelum jalankan undian
     Promise.all([loadConfirmedNames(), loadDeceasedNames()]).then(() => {
       runUndian();
