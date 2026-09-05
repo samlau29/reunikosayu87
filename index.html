@@ -715,6 +715,25 @@
     padding:2px 8px; border-radius:10px;
     white-space:nowrap;
   }
+  .alumni-shirt-tick{
+    display:inline-flex; align-items:center; gap:3px;
+    margin-left:8px;
+    font-family:'IBM Plex Mono',monospace; font-size:0.7rem;
+    color:#5A4A8A;
+    background:rgba(90,74,138,0.1);
+    padding:2px 8px; border-radius:10px;
+    white-space:nowrap;
+  }
+  .room-group-card{
+    background:var(--paper-warm); border:1px solid var(--stamp-line);
+    border-radius:12px; padding:14px 18px; margin-bottom:10px;
+    display:flex; align-items:center; gap:10px; flex-wrap:wrap;
+  }
+  .room-group-icon{ font-size:1.3rem; }
+  .room-group-names{ font-size:0.9rem; }
+  .room-group-empty{
+    text-align:center; font-size:0.85rem; opacity:0.6; padding:20px;
+  }
   .alumni-qr-btn{
     display:inline-flex; align-items:center; gap:3px;
     margin-left:8px;
@@ -1644,6 +1663,7 @@
           <div class="alumni-stats"><strong id="alumniConfirmedCount">0</strong> / 426 sudah konfirmasi</div>
           <div class="alumni-stats-note">(dihitung dari 426 alumni yang masih aktif &mdash; 33 alumni lainnya sudah berpulang &#10014;)</div>
           <div class="alumni-stats" style="margin-top:6px; white-space:normal; line-height:1.5;">&#128101; TOTAL (ALUMNI + SMP + Pasangan/Tamu) = <strong id="alumniTotalAttending" style="font-size:1.15rem; color:var(--ruby);">0</strong></div>
+          <div class="alumni-stats" id="shirtSizeTally" style="margin-top:6px; white-space:normal; line-height:1.6;"></div>
         </div>
 
         <div class="reveal" style="text-align:center; margin-bottom:14px;">
@@ -1738,6 +1758,30 @@
     <div id="papanGrid" class="papan-grid reveal">
       <div class="papan-empty">Memuat pesan&hellip;</div>
     </div>
+  </div>
+</section>
+
+<section id="teman-kamar">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">&#128274; Insentif Early Bird</span>
+      <h2>Konfirmasi Teman Sekamar</h2>
+      <p>Kalau kamu &amp; temanmu <strong>sudah sepakat</strong> mau sekamar bareng, kabari panitia dari sekarang lewat form di bawah &mdash; supaya panitia tidak perlu bagi-bagi kamar dadakan di hari-H. Yang sudah <strong>Lunas</strong> dapat prioritas duluan, yang belum lunas tetap boleh isi menyusul.</p>
+      <p style="font-size:0.85rem; opacity:0.75;">Yang daftar untuk <strong>2 orang atau lebih</strong> (pasangan/keluarga) otomatis sudah dianggap beres urusan kamarnya &mdash; tidak perlu isi form ini. Form ini khusus untuk yang mau gabung kamar dengan sesama peserta lain (1 kamar maksimal 2 orang). Cukup <strong>salah satu dari kalian saja</strong> yang isi, pilih nama kamu &amp; nama 1 teman sekamarmu.</p>
+    </div>
+
+    <div class="reveal">
+      <label for="roomQuickFindInput" class="quick-find-label">&#128269; Cari Nama Kamu untuk Isi Usulan</label>
+      <input type="text" id="roomQuickFindInput" class="quick-find-input" placeholder="Contoh: Sam, Fany, Rifan...">
+      <div id="roomQuickFindResults" class="quick-find-results"></div>
+    </div>
+
+    <div class="alumni-stats reveal" id="roomProgressStat" style="text-align:center; margin-top:18px;"></div>
+
+    <div class="section-head reveal" style="margin-top:36px; margin-bottom:16px;">
+      <h3 style="font-size:1.1rem;">&#127976; Kelompok Kamar yang Sudah Terbentuk</h3>
+    </div>
+    <div id="roomGroupsList" class="reveal"></div>
   </div>
 </section>
 
@@ -2409,6 +2453,7 @@
   let waNumberMap = {};
   let jumlahHadirMap = {};
   let waNumberMapForm2 = {};
+  let shirtSizeMap = {}; // nama (normalized) -> teks ukuran kaos apa adanya, misal "L, XL"
   let smpNames = [];
   let kelas23Names = [];
 
@@ -2502,6 +2547,7 @@
       const nameIdx = findNameColumnIndex(header, {exclude: ['panggilan', 'kamu']});
       const statusIdx = header.findIndex(h => h.includes('status'));
       const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
+      const sizeIdx = header.findIndex(h => h.includes('ukuran') && h.includes('kaos'));
       if(nameIdx === -1 || statusIdx === -1) return;
       deceasedNames = lines.filter((line, i) => {
         if(i === 0) return false;
@@ -2522,6 +2568,18 @@
           if(nm && wa) waNumberMapForm2[nm] = wa;
         });
       }
+
+      // Ukuran kaos — teks bebas ("L, XL, M" utk beberapa orang), disimpan apa adanya per nama
+      shirtSizeMap = {};
+      if(sizeIdx > -1){
+        lines.slice(1).forEach(line => {
+          const cols = parseCsvLine(line);
+          const nm = normalizeName(extractPlainName((cols[nameIdx] || '').replace(/"/g,'')));
+          const size = (cols[sizeIdx] || '').replace(/"/g,'').trim();
+          if(nm && size) shirtSizeMap[nm] = size;
+        });
+        renderShirtSizeTally();
+      }
     }catch(err){
       console.error('Gagal memuat data status alumni', err);
     }
@@ -2531,6 +2589,40 @@
     const norm = normalizeName(nama);
     if(manualDeceased.some(c => c === norm)) return true;
     return deceasedNames.some(c => c === norm);
+  }
+
+  // Normalisasi 1 token ukuran kaos ("2xl", "xxl", " xl " dll) jadi label standar
+  function normalizeShirtSizeToken(tok){
+    const t = tok.trim().toUpperCase().replace(/\s+/g, '');
+    if(t === '') return null;
+    if(t === 'S' || t === 'M' || t === 'L' || t === 'XL') return t;
+    if(t === 'XXL' || t === '2XL') return 'XXL';
+    if(t === 'XXXL' || t === '3XL') return 'XXXL';
+    return 'Lainnya (' + tok.trim() + ')';
+  }
+
+  function renderShirtSizeTally(){
+    const el = document.getElementById('shirtSizeTally');
+    if(!el) return;
+    const tally = {};
+    let total = 0;
+    Object.values(shirtSizeMap).forEach(raw => {
+      raw.split(/[,\/]/).forEach(tok => {
+        const label = normalizeShirtSizeToken(tok);
+        if(!label) return;
+        tally[label] = (tally[label] || 0) + 1;
+        total++;
+      });
+    });
+    if(total === 0){
+      el.innerHTML = '&#128085; Belum ada data ukuran kaos yang masuk.';
+      return;
+    }
+    const order = ['S','M','L','XL','XXL','XXXL'];
+    const parts = order.filter(k => tally[k]).map(k => `${k}: <strong>${tally[k]}</strong>`);
+    const lainnya = Object.keys(tally).filter(k => k.startsWith('Lainnya'));
+    lainnya.forEach(k => parts.push(`${escapeHtmlAlumni(k)}: <strong>${tally[k]}</strong>`));
+    el.innerHTML = `&#128085; Rekap Ukuran Kaos (total ${total} kaos): ${parts.join(' &middot; ')}`;
   }
 
   // Ambil nama-nama yang daftar sebagai "Alumni SMP Kosayu" atau "Alumni Kelas 2/3" dari respons
@@ -2618,6 +2710,7 @@
         let waHtml = '';
         let paidHtml = '';
         let qrBtnHtml = '';
+        let shirtHtml = '';
         if(confirmed){
           const jml = jumlahHadirMap[normalizeName(a.n)] || (a.d ? jumlahHadirMap[normalizeName(a.d)] : null);
           if(jml){
@@ -2633,6 +2726,10 @@
           if(isLunas(a.n, a.d)){
             paidHtml = `<span class="alumni-paid-tick">&#9989; Lunas</span>`;
           }
+          const shirtSize = shirtSizeMap[normalizeName(a.n)] || (a.d ? shirtSizeMap[normalizeName(a.d)] : '');
+          if(shirtSize){
+            shirtHtml = `<span class="alumni-shirt-tick">&#128085; ${escapeHtmlAlumni(shirtSize)}</span>`;
+          }
           qrBtnHtml = `<button type="button" class="alumni-qr-btn" data-qr-name="${escapeHtmlAlumni(a.n)}">&#127915; QR Saya</button>`;
         }
         const photoHtml = a.photo
@@ -2641,7 +2738,7 @@
         return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
           <div class="alumni-tick">&#10003;</div>
           ${photoHtml}
-          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}${paidHtml}${qrBtnHtml}</div>
+          <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}${paidHtml}${shirtHtml}${qrBtnHtml}</div>
           <div class="alumni-kota">${escapeHtmlAlumni(a.a || '')}</div>
         </div>`;
       }).join('');
@@ -2830,6 +2927,7 @@
     renderAlumniList('');
     renderClassSummary();
     renderBirthdays();
+    if(typeof renderRoomGroups === 'function') renderRoomGroups(); // jumlahHadirMap baru siap di sini
   });
 
   // ---------- PAPAN KENANGAN ----------
@@ -3757,7 +3855,129 @@
     });
   }
 
-  // Tombol "Tampilkan Semua Foto Galeri" — buka semua foto galeri reuni yang tadinya disembunyikan
+  // ========== USULAN TEMAN SEKAMAR ==========
+  // SETUP (sekali saja): buat Google Form baru "Reuni 87 - Usulan Teman Sekamar" dengan 2
+  // pertanyaan short-text: (1) "Nama Kamu" — ambil entry ID-nya lewat "Get pre-filled link"
+  // sama seperti form lain, tempel base URL & entry ID di bawah. (2) "Nama-nama Teman Sekamar
+  // (termasuk kamu sendiri), pisahkan koma" — tidak perlu entry ID (diisi manual oleh alumni).
+  // Lalu sambungkan ke Sheets, Publish to web sebagai CSV, tempel link-nya ke ROOM_CSV_URL.
+  const ROOM_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSezUoFgpvyUjH4eKkqUWRWTwQyQMhlcoHtSncHRYqvOK9glfg/viewform";
+  const ROOM_NAME_ENTRY_ID = "1401954174";
+  const ROOM_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vS1yO60F2pW2-BgFQFqDUaC0e9-aU7j5DfAQ3jNQAg6DORco1Q8Hp6-JGqFabRXGYBJNkldSDKPUw-R/pub?gid=38648738&single=true&output=csv"; // link CSV published dari sheet responses usulan teman sekamar
+
+  function buildRoomPrefillUrl(a){
+    if(!ROOM_FORM_BASE_URL || !ROOM_NAME_ENTRY_ID) return null;
+    return `${ROOM_FORM_BASE_URL}?usp=pp_url&entry.${ROOM_NAME_ENTRY_ID}=${encodeURIComponent(a.n)}`;
+  }
+
+  const roomQuickFindInput = document.getElementById('roomQuickFindInput');
+  const roomQuickFindResults = document.getElementById('roomQuickFindResults');
+  if(roomQuickFindInput){
+    roomQuickFindInput.addEventListener('input', (e) => {
+      const term = normalizeName(e.target.value);
+      roomQuickFindResults.innerHTML = '';
+      if(term.length < 2){ return; }
+      if(!ROOM_FORM_BASE_URL){
+        roomQuickFindResults.innerHTML = '<div class="quick-find-empty">Form belum aktif, coba lagi nanti.</div>';
+        return;
+      }
+      const matches = alumniData.filter(a =>
+        normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term))
+      ).slice(0, 8);
+      if(matches.length === 0){
+        roomQuickFindResults.innerHTML = '<div class="quick-find-empty">Nama tidak ditemukan.</div>';
+        return;
+      }
+      roomQuickFindResults.innerHTML = matches.map(a => `
+        <a class="quick-find-item" href="${buildRoomPrefillUrl(a)}" target="_blank" rel="noopener">
+          <span class="qf-name">${escapeHtmlAlumni(a.n)}${a.d ? ` <span style="font-weight:400;opacity:0.6;">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : ''}</span>
+          <span class="qf-meta">Kelas ${escapeHtmlAlumni(a.k)} &#8594;</span>
+        </a>
+      `).join('');
+    });
+  }
+
+  let roomGroups = []; // array of array-of-nama-mentah (apa adanya, belum dinormalisasi)
+
+  async function loadRoomGroups(){
+    if(!ROOM_CSV_URL){
+      renderRoomGroups(); // tetap render keluarga otomatis walau form manual belum di-setup
+      return;
+    }
+    try{
+      const res = await fetch(ROOM_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2) return;
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const namaKamuIdx = header.findIndex(h => h.includes('nama kamu') || (h.includes('nama') && !h.includes('teman')));
+      const temanIdx = header.findIndex(h => h.includes('teman') && h.includes('kamar'));
+      if(namaKamuIdx === -1 || temanIdx === -1) return;
+      roomGroups = lines.slice(1).map(line => {
+        const cols = parseCsvLine(line);
+        const namaKamu = (cols[namaKamuIdx] || '').replace(/"/g,'').trim();
+        const teman = (cols[temanIdx] || '').replace(/"/g,'').trim();
+        const names = teman.split(',').map(s => s.trim()).filter(Boolean);
+        if(namaKamu && !names.some(n => normalizeName(n) === normalizeName(namaKamu))){
+          names.unshift(namaKamu);
+        }
+        return names;
+      }).filter(g => g.length > 0);
+      renderRoomGroups();
+    }catch(err){
+      console.error('Gagal memuat data usulan teman sekamar', err);
+    }
+  }
+
+  function renderRoomGroups(){
+    const listEl = document.getElementById('roomGroupsList');
+    const statEl = document.getElementById('roomProgressStat');
+
+    // Yang daftar untuk 2 orang atau lebih (pasangan/keluarga) otomatis dianggap sudah beres,
+    // tidak perlu isi form. Kita tidak tahu nama pasangan/anaknya (cuma tahu jumlahnya dari RSVP),
+    // jadi ditampilkan sebagai grup terpisah dengan keterangan "otomatis".
+    const autoFamilyGroups = alumniData.filter(a => {
+      if(isDeceased(a.n)) return false;
+      const jml = jumlahHadirMap[normalizeName(a.n)] || (a.d ? jumlahHadirMap[normalizeName(a.d)] : null);
+      return jml && jml >= 2;
+    });
+
+    if(listEl){
+      const manualHtml = roomGroups.map(names => `
+        <div class="room-group-card">
+          <span class="room-group-icon">&#127976;</span>
+          <span class="room-group-names">${names.map(n => escapeHtmlAlumni(n)).join(', ')}</span>
+        </div>
+      `).join('');
+      const autoHtml = autoFamilyGroups.map(a => {
+        const jml = jumlahHadirMap[normalizeName(a.n)] || jumlahHadirMap[normalizeName(a.d)];
+        return `
+        <div class="room-group-card">
+          <span class="room-group-icon">&#127968;</span>
+          <span class="room-group-names">${escapeHtmlAlumni(a.n)} &amp; keluarga (${jml} orang) <span style="opacity:0.55; font-size:0.78rem;">&mdash; otomatis, terdaftar bersama</span></span>
+        </div>
+      `;
+      }).join('');
+      const combined = autoHtml + manualHtml;
+      listEl.innerHTML = combined || '<div class="room-group-empty">Belum ada kelompok kamar yang terbentuk &mdash; jadilah yang pertama!</div>';
+    }
+    if(statEl){
+      const totalLunas = alumniData.filter(a => !isDeceased(a.n) && isLunas(a.n, a.d)).length;
+      const namesInGroups = new Set();
+      roomGroups.forEach(g => g.forEach(n => namesInGroups.add(normalizeName(n))));
+      autoFamilyGroups.forEach(a => { namesInGroups.add(normalizeName(a.n)); if(a.d) namesInGroups.add(normalizeName(a.d)); });
+      const lunasInGroups = alumniData.filter(a =>
+        !isDeceased(a.n) && isLunas(a.n, a.d) &&
+        (namesInGroups.has(normalizeName(a.n)) || (a.d && namesInGroups.has(normalizeName(a.d))))
+      ).length;
+      statEl.innerHTML = `&#127976; <strong>${lunasInGroups}</strong> dari <strong>${totalLunas}</strong> peserta Lunas sudah beres urusan kamar &middot; ${roomGroups.length} kelompok manual + ${autoFamilyGroups.length} keluarga otomatis`;
+    }
+  }
+
+  loadRoomGroups();
+  setInterval(loadRoomGroups, 60000);
+
+
   const galeriTabBtns = document.querySelectorAll('.galeri-tab-btn');
   const galeriItems = document.querySelectorAll('.galeri-grid .polaroid');
   let galeriExpanded = false;
