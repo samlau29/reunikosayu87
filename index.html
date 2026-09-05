@@ -1322,6 +1322,16 @@
 <script src="https://cdn.jsdelivr.net/npm/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
 <body>
+<div class="qr-modal-overlay" id="qrModalOverlay">
+  <div class="qr-modal-box">
+    <button type="button" class="qr-modal-close" id="qrModalClose">&times;</button>
+    <div class="qr-modal-name" id="qrModalName"></div>
+    <div class="qr-modal-kelas" id="qrModalKelas"></div>
+    <canvas id="qrModalCanvas"></canvas>
+    <div class="qr-modal-hint">Tunjukkan QR ini ke panitia saat check-in di hari-H. Simpan screenshot-nya kalau perlu &mdash; QR ini tidak berubah.</div>
+  </div>
+</div>
+
 
 <nav>
   <div class="wrap">
@@ -4069,14 +4079,4 @@
   loadBudgetData();
 </script>
 
-<div class="qr-modal-overlay" id="qrModalOverlay">
-  <div class="qr-modal-box">
-    <button type="button" class="qr-modal-close" id="qrModalClose">&times;</button>
-    <div class="qr-modal-name" id="qrModalName"></div>
-    <div class="qr-modal-kelas" id="qrModalKelas"></div>
-    <canvas id="qrModalCanvas"></canvas>
-    <div class="qr-modal-hint">Tunjukkan QR ini ke panitia saat check-in di hari-H. Simpan screenshot-nya kalau perlu &mdash; QR ini tidak berubah.</div>
-  </div>
-</div>
-</body>
-</html>
+</body></html>
