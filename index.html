@@ -1327,7 +1327,8 @@
     <button type="button" class="qr-modal-close" id="qrModalClose">&times;</button>
     <div class="qr-modal-name" id="qrModalName"></div>
     <div class="qr-modal-kelas" id="qrModalKelas"></div>
-    <canvas id="qrModalCanvas"></canvas>
+    <canvas id="qrModalCanvas" style="display:none;"></canvas>
+    <img id="qrModalImg" alt="QR Code" style="width:220px;height:220px;margin:14px auto;display:block;border-radius:8px;">
     <div class="qr-modal-hint">Tunjukkan QR ini ke panitia saat check-in di hari-H. Simpan screenshot-nya kalau perlu &mdash; QR ini tidak berubah.</div>
   </div>
 </div>
@@ -3332,11 +3333,20 @@
     if(!a) return;
     qrModalName.textContent = a.n;
     qrModalKelas.textContent = `Kelas ${a.k}`;
-    if(window.QRCode){
-      QRCode.toCanvas(qrModalCanvas, a.n, { width: 220, margin: 1, color: { dark: '#2B1B14', light: '#FBF7ED' } }, (err) => {
-        if(err) console.error(err);
-      });
-    }
+    const qrImg = document.getElementById('qrModalImg');
+    qrImg.style.display = 'block';
+    qrModalCanvas.style.display = 'none';
+    const encoded = encodeURIComponent(a.n);
+    // Layanan gambar QR langsung (tidak perlu library JS, jadi tidak bisa gagal dimuat CDN)
+    qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=${encoded}`;
+    qrImg.onerror = () => {
+      // Kalau layanan utama down, coba fallback ke library QRCode kalau kebetulan sempat termuat
+      qrImg.style.display = 'none';
+      if(window.QRCode){
+        qrModalCanvas.style.display = 'block';
+        QRCode.toCanvas(qrModalCanvas, a.n, { width: 220, margin: 1 }, (err) => { if(err) console.error(err); });
+      }
+    };
     qrModalOverlay.classList.add('open');
   }
 
