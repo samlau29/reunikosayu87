@@ -1789,10 +1789,7 @@
 
     <div class="alumni-stats reveal" id="roomProgressStat" style="text-align:center; margin-top:18px;"></div>
 
-    <div class="section-head reveal" style="margin-top:36px; margin-bottom:16px;">
-      <h3 style="font-size:1.1rem;">&#127976; Kelompok Kamar yang Sudah Terbentuk</h3>
-    </div>
-    <div id="roomGroupsList" class="reveal"></div>
+    <div id="roomGroupsList" class="reveal" style="margin-top:24px;"></div>
   </div>
 </section>
 
@@ -3970,7 +3967,13 @@
       `;
       }).join('');
       const combined = autoHtml + manualHtml;
-      listEl.innerHTML = combined || '<div class="room-group-empty">Belum ada kelompok kamar yang terbentuk &mdash; jadilah yang pertama!</div>';
+      const totalGroups = roomGroups.length + autoFamilyGroups.length;
+      listEl.innerHTML = totalGroups > 0
+        ? `<details class="alumni-class">
+            <summary>Kelompok Kamar yang Sudah Terbentuk <span class="class-count">${totalGroups} kelompok</span></summary>
+            <div class="alumni-rows">${combined}</div>
+          </details>`
+        : '<div class="room-group-empty">Belum ada kelompok kamar yang terbentuk &mdash; jadilah yang pertama!</div>';
     }
     if(statEl){
       const totalLunas = alumniData.filter(a => !isDeceased(a.n) && isLunas(a.n, a.d)).length;
