@@ -1567,11 +1567,9 @@
       <div class="rundown-list">
         <div class="rundown-row"><span class="time">06.00&ndash;07.00</span><span>Pilih salah satu: Jalan Santai &middot; Zumba/Poco-Poco &middot; Yoga &middot; Renang</span></div>
         <div class="rundown-row"><span class="time">07.00&ndash;08.30</span><span>Mandi, bersiap &amp; sarapan</span></div>
-        <div class="rundown-row"><span class="time">08.30&ndash;09.00</span><span>Perjalanan ke Batu</span></div>
-        <div class="rundown-row"><span class="time">09.00&ndash;11.00</span><span>Petik Apel &mdash; Kusuma Agrowisata</span></div>
-        <div class="rundown-row"><span class="time">11.00&ndash;11.30</span><span>Perjalanan ke lokasi makan siang</span></div>
-        <div class="rundown-row"><span class="time">11.30&ndash;13.00</span><span>Makan siang, pemandangan kebun</span></div>
-        <div class="rundown-row"><span class="time">13.00&ndash;15.00</span><span>Selecta &mdash; taman bunga <em>(opsional lanjut kolam air panas)</em></span></div>
+        <div class="rundown-row"><span class="time">08.30&ndash;09.00</span><span>Perjalanan ke Toban Talun / Selecta</span></div>
+        <div class="rundown-row"><span class="time">09.00&ndash;12.00</span><span><strong>Grup 1:</strong> Jeep Tour Toban Talun &middot; <strong>Grup 2:</strong> Selecta &mdash; Taman Bunga <em>(2 rombongan @75 orang, makan siang nasi kotak di lokasi masing-masing)</em></span></div>
+        <div class="rundown-row"><span class="time">12.00&ndash;15.00</span><span><strong>Grup 1:</strong> pindah ke Selecta &mdash; Taman Bunga &middot; <strong>Grup 2:</strong> pindah ke Jeep Tour Toban Talun</span></div>
         <div class="rundown-row"><span class="time">15.00&ndash;15.30</span><span>Perjalanan kembali ke hotel</span></div>
         <div class="rundown-row"><span class="time">15.30&ndash;17.00</span><span>Amazing Race Mini <em>(tim dibagi panitia, 6 pos: Escape Room Mini, Gobak Sodor, Guess Who Suara, Trivia Kosayu, Tebak Foto Jadul vs Sekarang, Foto Formasi Lucu)</em></span></div>
         <div class="rundown-row"><span class="time">17.00&ndash;18.00</span><span>Waktu bebas &mdash; mandi &amp; bersiap busana Gala Dinner</span></div>
@@ -1856,6 +1854,19 @@
     <div class="alumni-stats reveal" id="roomProgressStat" style="text-align:center; margin-top:18px;"></div>
 
     <div id="roomGroupsList" class="reveal" style="margin-top:24px;"></div>
+  </div>
+</section>
+
+<section id="extend-stay" style="background:var(--paper-warm); border-top:1px solid var(--stamp-line); border-bottom:1px solid var(--stamp-line);">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <span class="eyebrow">&#127958; Opsional</span>
+      <h2>Mau Liburan Lebih Lama di Batu?</h2>
+      <p>Mau check-in lebih awal 1-2 hari sebelum acara, atau check-out lebih lama 1-2 hari sesudahnya, buat liburan santai di Batu? Boleh banget &mdash; panitia bantu koordinasi ketersediaan kamar tambahan di hotel yang sama, tapi <strong>booking &amp; pembayaran malam tambahan ditanggung &amp; diurus sendiri langsung ke hotel</strong> (terpisah dari biaya reuni).</p>
+      <p style="font-size:0.85rem; opacity:0.75;">Isi lewat form Update Data (cari nama kamu di section Daftar Alumni). Ada pertanyaan opsional: boleh nama &amp; tanggal extend kamu ditampilkan di sini, supaya sesama alumni yang extend di tanggal berdekatan bisa saling kontak &amp; jalan bareng. Kalau nggak mau ditampilkan, tetap bisa isi &mdash; datanya cuma dipakai panitia buat koordinasi kamar.</p>
+    </div>
+
+    <div id="extendStayList" class="reveal" style="margin-top:20px;"></div>
   </div>
 </section>
 
@@ -2528,6 +2539,7 @@
   let jumlahHadirMap = {};
   let waNumberMapForm2 = {};
   let shirtSizeMap = {}; // nama (normalized) -> teks ukuran kaos apa adanya, misal "L, XL"
+  let extendStayList = []; // [{nama, tanggal}] — cuma yang opt-in "boleh ditampilkan"
   let smpNames = [];
   let kelas23Names = [];
 
@@ -2622,6 +2634,8 @@
       const statusIdx = header.findIndex(h => h.includes('status'));
       const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
       const sizeIdx = header.findIndex(h => h.includes('ukuran') && h.includes('kaos'));
+      const extendTanggalIdx = header.findIndex(h => h.includes('extend') && h.includes('tanggal'));
+      const extendTampilkanIdx = header.findIndex(h => h.includes('extend') && (h.includes('tampil') || h.includes('boleh')));
       if(nameIdx === -1 || statusIdx === -1) return;
       deceasedNames = lines.filter((line, i) => {
         if(i === 0) return false;
@@ -2653,6 +2667,21 @@
           if(nm && size) shirtSizeMap[nm] = size;
         });
         renderShirtSizeTally();
+      }
+
+      // Extend Stay — cuma ditampilkan publik kalau orangnya opt-in ("Ya" di kolom boleh-ditampilkan)
+      extendStayList = [];
+      if(extendTanggalIdx > -1 && extendTampilkanIdx > -1){
+        lines.slice(1).forEach(line => {
+          const cols = parseCsvLine(line);
+          const boleh = (cols[extendTampilkanIdx] || '').toLowerCase();
+          const tanggal = (cols[extendTanggalIdx] || '').replace(/"/g,'').trim();
+          const namaAsli = (cols[nameIdx] || '').replace(/"/g,'').trim();
+          if(boleh.includes('ya') && tanggal && namaAsli){
+            extendStayList.push({ nama: extractPlainName(namaAsli), tanggal });
+          }
+        });
+        renderExtendStayList();
       }
     }catch(err){
       console.error('Gagal memuat data status alumni', err);
@@ -2697,6 +2726,25 @@
     const lainnya = Object.keys(tally).filter(k => k.startsWith('Lainnya'));
     lainnya.forEach(k => parts.push(`${escapeHtmlAlumni(k)}: <strong>${tally[k]}</strong>`));
     el.innerHTML = `&#128085; Rekap Ukuran Kaos (total ${total} kaos): ${parts.join(' &middot; ')}`;
+  }
+
+  function renderExtendStayList(){
+    const el = document.getElementById('extendStayList');
+    if(!el) return;
+    if(extendStayList.length === 0){
+      el.innerHTML = '<div class="room-group-empty">Belum ada yang extend stay &mdash; jadilah yang pertama!</div>';
+      return;
+    }
+    const rows = extendStayList.map(e => `
+      <div class="room-group-card">
+        <span class="room-group-icon">&#127958;</span>
+        <span class="room-group-names">${escapeHtmlAlumni(e.nama)} <span style="opacity:0.6; font-size:0.85rem;">&mdash; ${escapeHtmlAlumni(e.tanggal)}</span></span>
+      </div>
+    `).join('');
+    el.innerHTML = `<details class="alumni-class">
+      <summary>Alumni yang Extend Stay <span class="class-count">${extendStayList.length} orang</span></summary>
+      <div class="alumni-rows">${rows}</div>
+    </details>`;
   }
 
   // Ambil nama-nama yang daftar sebagai "Alumni SMP Kosayu" atau "Alumni Kelas 2/3" dari respons
