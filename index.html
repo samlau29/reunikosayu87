@@ -1354,6 +1354,37 @@
 <body>
 <button type="button" id="pwaInstallBtn" style="display:none; position:fixed; bottom:18px; right:18px; z-index:150; align-items:center; gap:8px; background:var(--ruby-deep); color:var(--cream-white); border:none; border-radius:30px; padding:12px 18px; font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:0.85rem; box-shadow:0 6px 18px rgba(0,0,0,0.25); cursor:pointer;">&#128241; Install App</button>
 
+<button type="button" id="iosInstallBtn" style="display:none; position:fixed; bottom:18px; right:18px; z-index:150; align-items:center; gap:8px; background:var(--ruby-deep); color:var(--cream-white); border:none; border-radius:30px; padding:12px 18px; font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:0.85rem; box-shadow:0 6px 18px rgba(0,0,0,0.25); cursor:pointer;">&#128241; Cara Install App</button>
+
+<div id="iosInstallOverlay" style="display:none; position:fixed; inset:0; z-index:200; background:rgba(20,10,8,0.72); align-items:center; justify-content:center; padding:20px; box-sizing:border-box;">
+  <div style="background:var(--cream-white); border-radius:16px; padding:26px 22px; max-width:340px; width:100%; position:relative; box-shadow:0 20px 50px rgba(0,0,0,0.4);">
+    <button type="button" id="iosInstallClose" style="position:absolute; top:10px; right:14px; background:none; border:none; font-size:1.4rem; cursor:pointer; color:var(--ink); opacity:0.5;">&times;</button>
+    <div style="font-weight:700; font-size:1.1rem; color:var(--ruby-deep); margin-bottom:14px;">&#128241; Cara Install App di iPhone</div>
+    <ol style="margin:0; padding-left:20px; line-height:2; font-size:0.92rem; color:var(--ink);">
+      <li>Buka website ini pakai <strong>Safari</strong> (bukan Chrome)</li>
+      <li>Tap ikon <strong>Share</strong> &#8593; (kotak dengan panah ke atas) di bagian bawah layar</li>
+      <li>Scroll ke bawah, tap <strong>"Add to Home Screen"</strong></li>
+      <li>Tap <strong>"Add"</strong> di pojok kanan atas</li>
+    </ol>
+    <div style="font-size:0.78rem; color:rgba(37,28,24,0.6); margin-top:14px;">Selesai! Ikon "87" akan muncul di layar HP kamu seperti app biasa.</div>
+  </div>
+</div>
+
+<button type="button" id="pwaIosInstallBtn" style="display:none; position:fixed; bottom:18px; right:18px; z-index:150; align-items:center; gap:8px; background:var(--ruby-deep); color:var(--cream-white); border:none; border-radius:30px; padding:12px 18px; font-family:'IBM Plex Sans',sans-serif; font-weight:600; font-size:0.85rem; box-shadow:0 6px 18px rgba(0,0,0,0.25); cursor:pointer;">&#128241; Install App</button>
+
+<div class="qr-modal-overlay" id="pwaIosModalOverlay">
+  <div class="qr-modal-box" style="text-align:left;">
+    <button type="button" class="qr-modal-close" id="pwaIosModalClose">&times;</button>
+    <div class="qr-modal-name" style="text-align:center;">&#128241; Install App di iPhone</div>
+    <div style="font-size:0.9rem; line-height:1.7; margin-top:12px; color:var(--ink);">
+      <p style="margin:0 0 10px;">Safari di iPhone tidak punya tombol install otomatis, tapi tetap bisa &mdash; cuma 2 langkah:</p>
+      <p style="margin:0 0 8px;"><strong>1.</strong> Tap ikon <strong>Share</strong> &#128229; (kotak dengan panah ke atas) di bagian bawah layar Safari</p>
+      <p style="margin:0;"><strong>2.</strong> Scroll ke bawah, tap <strong>"Add to Home Screen"</strong> (Tambah ke Layar Utama)</p>
+    </div>
+    <div class="qr-modal-hint">Setelah itu, ikon Reuni Rubi muncul di layar HP kamu kayak app biasa &mdash; tinggal tap buat buka.</div>
+  </div>
+</div>
+
 <div class="qr-modal-overlay" id="qrModalOverlay">
   <div class="qr-modal-box">
     <button type="button" class="qr-modal-close" id="qrModalClose">&times;</button>
@@ -1527,7 +1558,7 @@
           <br>&bull; Sudut Permainan Santai (Kartu Remi, Gaplek/Domino, Catur/Dam, Jenga Raksasa, Congklak)
           <br>&bull; Welcome Drink + Live Akustik + Papan Kenangan</span></div>
         <div class="rundown-row"><span class="time">17.00&ndash;18.00</span><span>Waktu bebas &mdash; mandi &amp; bersiap sebelum makan malam</span></div>
-        <div class="rundown-row"><span class="time">18.00&ndash;19.30</span><span>Makan malam + Kata Sambutan Ketua Panitia <em>(pembukaan resmi acara 3 hari)</em></span></div>
+        <div class="rundown-row"><span class="time">18.00&ndash;19.30</span><span>Makan malam + Sambutan Singkat Ketua Panitia <em>(pembukaan)</em> + Penjelasan Program oleh Sie Acara</span></div>
         <div class="rundown-row"><span class="time">19.30&ndash;20.00</span><span>Line Dance <em>(opsional, buat yang minat &amp; bisa)</em></span></div>
         <div class="rundown-row"><span class="time">20.00&ndash;21.00</span><span>TikTok Dance Group Challenge <em>(bareng-bareng, semua ikutan)</em></span></div>
         <div class="rundown-row"><span class="time">21.00&ndash;23.00</span><span>Dance Floor / Party <em>(musik 80-90an, penutup malam, semua gabung)</em></span></div>
@@ -4552,6 +4583,21 @@
   window.addEventListener('appinstalled', () => {
     if(installBtn) installBtn.style.display = 'none';
   });
+
+  // Deteksi iPhone/iPad — browser Apple sengaja TIDAK sediakan tombol install otomatis
+  // (beforeinstallprompt), jadi kita tampilkan tombol "Cara Install" yang buka panduan manual.
+  (function(){
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const isStandalone = window.navigator.standalone === true; // sudah di-install
+    const iosBtn = document.getElementById('iosInstallBtn');
+    const iosOverlay = document.getElementById('iosInstallOverlay');
+    if(isIOS && !isStandalone && iosBtn){
+      iosBtn.style.display = 'flex';
+      iosBtn.addEventListener('click', () => { iosOverlay.style.display = 'flex'; });
+      document.getElementById('iosInstallClose').addEventListener('click', () => { iosOverlay.style.display = 'none'; });
+      iosOverlay.addEventListener('click', (e) => { if(e.target === iosOverlay) iosOverlay.style.display = 'none'; });
+    }
+  })();
 </script>
 
 </body></html>
