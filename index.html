@@ -2279,6 +2279,17 @@
           <div style="font-family:'Fraunces',serif; font-weight:700; font-size:1.1rem; color:var(--gold);" id="solidaritasSisa">Rp 0</div>
         </div>
       </div>
+
+      <div style="margin-top:16px;">
+        <div style="display:flex; justify-content:space-between; align-items:baseline; font-size:0.78rem; color:rgba(37,28,24,0.65); margin-bottom:5px;">
+          <span>&#127919; Progress menuju target</span>
+          <span id="solidaritasProgressPct" style="font-family:'IBM Plex Mono',monospace; font-weight:600; color:var(--pine);">0%</span>
+        </div>
+        <div style="height:10px; background:rgba(51,73,63,0.12); border-radius:5px; overflow:hidden;">
+          <div id="solidaritasProgressBar" style="height:100%; width:0%; background:var(--pine); border-radius:5px; transition:width 0.6s ease;"></div>
+        </div>
+        <div style="font-size:0.72rem; color:rgba(37,28,24,0.5); margin-top:4px; text-align:right;">Target: Rp 130.000.000</div>
+      </div>
       <p style="margin-top:10px; font-size:0.75rem; color:rgba(37,28,24,0.5); text-align:center;">Angka di atas diupdate manual oleh Bendahara secara berkala &mdash; agregat total saja, tanpa nama penerima, untuk jaga privasi.</p>
 
       <div id="solidaritasNamesBox" style="margin-top:12px;"></div>
@@ -4374,6 +4385,13 @@
       if(!isNaN(solTerkumpul)){
         const solTerkumpulEl = document.getElementById('solidaritasTerkumpul');
         if(solTerkumpulEl) solTerkumpulEl.textContent = formatRupiah(solTerkumpul);
+
+        const SOLIDARITAS_TARGET = 130000000;
+        const pct = Math.max(0, Math.min(100, (solTerkumpul / SOLIDARITAS_TARGET) * 100));
+        const barEl = document.getElementById('solidaritasProgressBar');
+        const pctEl = document.getElementById('solidaritasProgressPct');
+        if(barEl) barEl.style.width = pct + '%';
+        if(pctEl) pctEl.textContent = pct.toFixed(0) + '%';
       }
       if(!isNaN(solAlokasi)){
         const solAlokasiEl = document.getElementById('solidaritasAlokasi');
