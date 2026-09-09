@@ -457,7 +457,7 @@
     content:"+"; font-family:'IBM Plex Mono',monospace;
     color:var(--gold); font-size:1.2rem; margin-left:12px;
   }
-  .rundown-day[open] summary::after{content:"–";}
+  .rundown-day[open] > summary::after{content:"–";}
   .rundown-list{padding:0 24px 22px;}
   .rundown-row{
     display:grid; grid-template-columns:90px 1fr; gap:16px;
@@ -616,7 +616,7 @@
     content:"+"; font-family:'IBM Plex Mono',monospace;
     color:var(--gold); font-size:1.1rem; margin-left:12px;
   }
-  .alumni-class[open] summary::after{content:"–";}
+  .alumni-class[open] > summary::after{content:"–";}
   .alumni-rows{ padding:0 22px 18px; }
   .alumni-row{
     display:flex; align-items:center; gap:10px;
@@ -751,10 +751,10 @@
 
   /* ---------- MODAL QR CHECK-IN ---------- */
   .qr-modal-overlay{
-    display:none; position:fixed; inset:0; z-index:200;
+    display:none; position:absolute; left:0; top:0; z-index:200;
     background:rgba(20,10,8,0.72);
     align-items:center; justify-content:center;
-    padding:20px;
+    padding:20px; box-sizing:border-box;
   }
   .qr-modal-overlay.open{ display:flex; }
   .qr-modal-box{
@@ -1568,15 +1568,15 @@
       <div class="rundown-list">
         <div class="rundown-row"><span class="time">06.00&ndash;07.00</span><span>Pilih salah satu: Jalan Santai &middot; Zumba/Poco-Poco &middot; Yoga &middot; Renang</span></div>
         <div class="rundown-row"><span class="time">07.00&ndash;08.30</span><span>Mandi, bersiap &amp; sarapan</span></div>
-        <div class="rundown-row"><span class="time">08.30&ndash;09.00</span><span>Perjalanan ke Toban Talun / Selecta</span></div>
-        <div class="rundown-row"><span class="time">09.00&ndash;12.00</span><span><strong>Grup 1:</strong> Jeep Tour Toban Talun &middot; <strong>Grup 2:</strong> Selecta &mdash; Taman Bunga <em>(2 rombongan @75 orang, makan siang nasi kotak di lokasi masing-masing)</em></span></div>
-        <div class="rundown-row"><span class="time">12.00&ndash;15.00</span><span><strong>Grup 1:</strong> pindah ke Selecta &mdash; Taman Bunga &middot; <strong>Grup 2:</strong> pindah ke Jeep Tour Toban Talun</span></div>
+        <div class="rundown-row"><span class="time">08.30&ndash;09.00</span><span>Perjalanan ke Coban Talun / Selecta</span></div>
+        <div class="rundown-row"><span class="time">09.00&ndash;12.00</span><span><strong>Grup 1:</strong> Jeep Tour Coban Talun &middot; <strong>Grup 2:</strong> Selecta &mdash; Taman Bunga <em>(2 rombongan @75 orang, makan siang nasi kotak di lokasi masing-masing)</em></span></div>
+        <div class="rundown-row"><span class="time">12.00&ndash;15.00</span><span><strong>Grup 1:</strong> pindah ke Selecta &mdash; Taman Bunga &middot; <strong>Grup 2:</strong> pindah ke Jeep Tour Coban Talun</span></div>
         <div class="rundown-row"><span class="time">15.00&ndash;15.30</span><span>Perjalanan kembali ke hotel</span></div>
         <div class="rundown-row"><span class="time">15.30&ndash;17.00</span><span>Amazing Race Mini <em>(tim dibagi panitia, 6 pos: Escape Room Mini, Gobak Sodor, Guess Who Suara, Trivia Kosayu, Tebak Foto Jadul vs Sekarang, Foto Formasi Lucu)</em></span></div>
         <div class="rundown-row"><span class="time">17.00&ndash;18.00</span><span>Waktu bebas &mdash; mandi &amp; bersiap busana Gala Dinner</span></div>
         <div class="rundown-row"><span class="time">18.00&ndash;18.30</span><span>Foto formal per kelas <em>(sudah berbusana Gala Dinner)</em></span></div>
         <div class="rundown-row"><span class="time">18.30&ndash;19.00</span><span>Persiapan akhir &amp; masuk venue Gala Dinner</span></div>
-        <div class="rundown-row"><span class="time">19.00&ndash;20.30</span><span>Gala Dinner + sambutan</span></div>
+        <div class="rundown-row"><span class="time">19.00&ndash;20.30</span><span>Gala Dinner + Kata Sambutan Ketua Panitia</span></div>
         <div class="rundown-row"><span class="time">20.30&ndash;21.00</span><span>Musical Chairs lagu 80-90an</span></div>
         <div class="rundown-row"><span class="time">21.00&ndash;21.30</span><span>Line Dance</span></div>
         <div class="rundown-row"><span class="time">21.30&ndash;23.00</span><span>Hiburan live band/karaoke <em>(penutup malam)</em></span></div>
@@ -1602,7 +1602,7 @@
         <div class="rundown-row"><span class="time">07.00&ndash;08.00</span><span>Pilih salah satu: Jalan Santai &middot; Zumba/Poco-Poco &middot; Yoga &middot; Renang</span></div>
         <div class="rundown-row"><span class="time">08.00&ndash;10.00</span><span>Sarapan &amp; packing</span></div>
         <div class="rundown-row"><span class="time">10.00&ndash;11.00</span><span>Check-out hotel &amp; berkumpul</span></div>
-        <div class="rundown-row"><span class="time">11.00&ndash;12.30</span><span>Sesi Foto &amp; Ucapan Perpisahan <em>(video kompilasi highlight reuni + sambutan penutup + foto bersama seluruh angkatan)</em></span></div>
+        <div class="rundown-row"><span class="time">11.00&ndash;12.30</span><span>Sesi Foto &amp; Ucapan Perpisahan <em>(video kompilasi highlight reuni + sambutan penutup Wakil Ketua Panitia + foto bersama seluruh angkatan)</em></span></div>
         <div class="rundown-row"><span class="time">12.30&ndash;13.00</span><span>Perjalanan ke lokasi makan siang</span></div>
         <div class="rundown-row"><span class="time">13.00&ndash;14.30</span><span>Makan siang bersama <em>(di luar hotel)</em></span></div>
         <div class="rundown-row"><span class="time">14.30&ndash;15.30</span><span>Waktu bebas belanja oleh-oleh <em>(untuk yang mau, sebelum menuju bandara/stasiun)</em></span></div>
@@ -3549,6 +3549,24 @@
   const qrModalName = document.getElementById('qrModalName');
   const qrModalKelas = document.getElementById('qrModalKelas');
 
+  function positionQrOverlay(){
+    if(!qrModalOverlay) return;
+    // Pakai visualViewport (kalau tersedia) supaya posisi selalu akurat sesuai layar yang
+    // BENERAN kelihatan di HP saat itu — tidak terpengaruh kalau ada bug lain yang bikin
+    // "layout viewport" browser melebar dari layar aslinya.
+    const vv = window.visualViewport;
+    const scrollX = window.scrollX || window.pageXOffset || 0;
+    const scrollY = window.scrollY || window.pageYOffset || 0;
+    const vw = vv ? vv.width : window.innerWidth;
+    const vh = vv ? vv.height : window.innerHeight;
+    const offsetLeft = vv ? vv.offsetLeft : 0;
+    const offsetTop = vv ? vv.offsetTop : 0;
+    qrModalOverlay.style.left = (scrollX + offsetLeft) + 'px';
+    qrModalOverlay.style.top = (scrollY + offsetTop) + 'px';
+    qrModalOverlay.style.width = vw + 'px';
+    qrModalOverlay.style.height = vh + 'px';
+  }
+
   function openQrModal(nama){
     const a = alumniData.find(x => x.n === nama);
     if(!a) return;
@@ -3568,11 +3586,24 @@
         QRCode.toCanvas(qrModalCanvas, a.n, { width: 220, margin: 1 }, (err) => { if(err) console.error(err); });
       }
     };
+    positionQrOverlay();
     qrModalOverlay.classList.add('open');
+    window.addEventListener('resize', positionQrOverlay);
+    window.addEventListener('scroll', positionQrOverlay);
+    if(window.visualViewport){
+      window.visualViewport.addEventListener('resize', positionQrOverlay);
+      window.visualViewport.addEventListener('scroll', positionQrOverlay);
+    }
   }
 
   function closeQrModal(){
     qrModalOverlay.classList.remove('open');
+    window.removeEventListener('resize', positionQrOverlay);
+    window.removeEventListener('scroll', positionQrOverlay);
+    if(window.visualViewport){
+      window.visualViewport.removeEventListener('resize', positionQrOverlay);
+      window.visualViewport.removeEventListener('scroll', positionQrOverlay);
+    }
   }
 
   if(qrModalOverlay){
