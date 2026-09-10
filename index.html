@@ -4598,6 +4598,48 @@
       iosOverlay.addEventListener('click', (e) => { if(e.target === iosOverlay) iosOverlay.style.display = 'none'; });
     }
   })();
+
+  // ========== TRACKING: Berapa Orang Buka App (mode Standalone) ==========
+  // SETUP (sekali saja, dilakukan panitia):
+  // 1. Buat Google Form baru "Reuni 87 - App Open Log" dengan 1 pertanyaan short-text:
+  //    "Device ID" — ambil entry ID-nya lewat "Get pre-filled link"/"Pre-fill form" (isi
+  //    contoh apa saja di kotaknya dulu, baru klik Get Link), sama seperti form2 lain.
+  // 2. Tempel base URL & entry ID ke 2 baris di bawah ini (ganti null).
+  // 3. Sambungkan form ke Sheets seperti biasa (tidak perlu publish CSV, ini cuma tempat
+  //    catat data mentah — panitia baca langsung dari sheet-nya, hitung device ID UNIK
+  //    pakai formula, misal: =COUNTA(UNIQUE(A2:A1000)) di kolom Device ID).
+  // Selama masih null, fitur ini otomatis nonaktif (tidak ada catatan yang terkirim).
+  const APP_OPEN_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8zq5g_XQ0IZwkS-vi5GT5PP3JdcdawKA2q2c4gXaY-VMajg/viewform";
+  const APP_OPEN_ENTRY_ID = "1267743050";
+
+  (function trackAppOpen(){
+    if(!APP_OPEN_FORM_BASE_URL || !APP_OPEN_ENTRY_ID) return;
+
+    // App dibuka dalam mode "standalone" (dari ikon Home Screen, bukan browser biasa)?
+    // Cara deteksi beda antara iOS vs Android/Chrome, jadi dicek dua-duanya.
+    const isStandaloneIOS = window.navigator.standalone === true;
+    const isStandaloneAndroid = window.matchMedia && window.matchMedia('(display-mode: standalone)').matches;
+    if(!isStandaloneIOS && !isStandaloneAndroid) return; // dibuka lewat browser biasa, jangan dicatat
+
+    // Tanda pengenal acak per HP, disimpan sekali & dipakai terus (biar 1 orang = 1 ID,
+    // walau dibuka berkali-kali)
+    let deviceId;
+    try{
+      deviceId = localStorage.getItem('reuni87_device_id');
+      if(!deviceId){
+        deviceId = 'dev-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2,10);
+        localStorage.setItem('reuni87_device_id', deviceId);
+      }
+    }catch(e){ return; } // localStorage diblokir (mode private dsb), skip saja
+
+    // Kirim diam-diam lewat iframe tersembunyi (submit form tanpa perlu buka/isi form manual)
+    const formUrl = `${APP_OPEN_FORM_BASE_URL.replace('/viewform','/formResponse')}?usp=pp_url&entry.${APP_OPEN_ENTRY_ID}=${encodeURIComponent(deviceId)}&submit=Submit`;
+    const iframe = document.createElement('iframe');
+    iframe.style.display = 'none';
+    iframe.src = formUrl;
+    document.body.appendChild(iframe);
+    setTimeout(() => { iframe.remove(); }, 5000);
+  })();
 </script>
 
 </body></html>
