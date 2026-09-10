@@ -1457,7 +1457,7 @@
       <source src="images/reuni-promo.mp4" type="video/mp4">
       Browser Anda tidak mendukung pemutaran video. <a href="images/reuni-promo.mp4" style="color:var(--gold);">Unduh videonya di sini</a>.
     </video>
-    <span class="promo-hint">Tap untuk memutar &middot; 26 detik</span>
+    <span class="promo-hint" id="promoHintText">Tap untuk memutar &middot; 26 detik</span>
   </div>
 </section>
 
@@ -4611,6 +4611,30 @@
   // Selama masih null, fitur ini otomatis nonaktif (tidak ada catatan yang terkirim).
   const APP_OPEN_FORM_BASE_URL = "https://docs.google.com/forms/d/e/1FAIpQLSd8zq5g_XQ0IZwkS-vi5GT5PP3JdcdawKA2q2c4gXaY-VMajg/viewform";
   const APP_OPEN_ENTRY_ID = "1267743050";
+
+  const APP_OPEN_CSV_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQEAfeunbZJgCwO_Xhy2FK9tViaEz8IP0XrdsGcLLnEx5cAaFb3q1_gV-iF7OoGC2Bk0SZl6sbpVTku/pub?gid=175988894&single=true&output=csv";
+
+  // Angka kecil di bawah Video Ajakan (gantiin teks durasi) — cuma Sam yang tau artinya.
+  // Kalau gagal dimuat (offline dll), teks aslinya ("Tap untuk memutar...") dibiarkan tampil,
+  // supaya pengunjung biasa tetap dapat info yang berguna kalau angkanya kebetulan gagal muncul.
+  async function loadAppOpenCount(){
+    if(!APP_OPEN_CSV_URL) return;
+    try{
+      const res = await fetch(APP_OPEN_CSV_URL);
+      const text = await res.text();
+      const lines = text.split(/\r?\n/).filter(Boolean);
+      if(lines.length < 2) return;
+      const header = parseCsvLine(lines[0]).map(h => h.replace(/"/g,'').trim().toLowerCase());
+      const idIdx = header.findIndex(h => h.includes('device') && h.includes('id'));
+      if(idIdx === -1) return;
+      const uniqueIds = new Set(
+        lines.slice(1).map(line => (parseCsvLine(line)[idIdx] || '').replace(/"/g,'').trim()).filter(Boolean)
+      );
+      const el = document.getElementById('promoHintText');
+      if(el) el.textContent = String(uniqueIds.size);
+    }catch(err){ /* diam saja, biarkan teks asli tetap tampil */ }
+  }
+  loadAppOpenCount();
 
   (function trackAppOpen(){
     if(!APP_OPEN_FORM_BASE_URL || !APP_OPEN_ENTRY_ID) return;
