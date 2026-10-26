@@ -153,6 +153,10 @@
   @media (max-width:860px){
     .hero .wrap{grid-template-columns:1fr; text-align:left;}
   }
+  .ticket-meta .tk-link{color:var(--ruby); font-weight:600; font-size:0.85rem;}
+  .ticket-meta .tk-note{color:var(--ruby-deep);}
+  .ticket-meta strong{color:var(--ruby-deep);}
+  .ticket-meta > div > span:last-child{line-height:1.5; font-size:0.92rem;}
   .hero-side{display:flex; flex-direction:column; gap:16px; min-width:0;}
   .info-penting{background:#fff; border:1px solid var(--stamp-line); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; font-size:0.9rem; line-height:1.5;}
   .info-penting .ip-row{display:flex; gap:10px; align-items:baseline;}
@@ -1444,19 +1448,14 @@
       <div class="ticket-main">
         <div class="tag">Tiket Reuni &middot; Angkatan 87</div>
         <h3>Reuni Rubi 1987&ndash;2027</h3>
-        <div class="ticket-meta">
-          <div><span class="k mono">TANGGAL</span> 30 Jul &ndash; 1 Agu 2027</div>
-          <div><span class="k mono">DURASI</span> 3 hari 2 malam</div>
-          <div><span class="k mono">LOKASI</span> <span id="lokasi-info">Golden Tulip Holland Resort, Batu</span></div>
-          <div><span class="k mono">TEMA</span> Tetap Bersemangat</div>
+        <div class="ticket-meta" id="acara">
+          <div><span class="k mono">TANGGAL</span> <span><strong>30 Jul &ndash; 1 Agu 2027</strong> (Jumat&ndash;Minggu)</span></div>
+          <div><span class="k mono">DURASI</span> <span>3 hari 2 malam</span></div>
+          <div><span class="k mono">LOKASI</span> <span><span id="lokasi-info"><strong id="lokasi-detail">Golden Tulip Holland Resort, Batu</strong></span><br><a class="tk-link" href="https://www.instagram.com/goldentuliphollandresortbatu/" target="_blank" rel="noopener">Lihat foto &amp; video hotel &rarr;</a></span></div>
+          <div><span class="k mono">BIAYA</span> <span>Early Bird <strong>Rp 3.200.000</strong> &middot; Normal <strong>Rp 3.500.000</strong><br>Early Bird untuk <strong>100 pembayar pertama</strong> ATAU sampai <strong>31 Des 2026</strong>. <strong class="tk-note">Early Bird adalah harga bersubsidi khusus untuk Alumni &mdash; pasangan/tamu tetap dikenakan harga normal.</strong><br><a class="tk-link" href="#keuangan">Rincian di section Keuangan &amp; Pembayaran &rarr;</a></span></div>
         </div>
       </div>
       <div class="ticket-stub">ANGKATAN &middot; 1987</div>
-    </div>
-    <div class="info-penting" id="acara">
-      <div class="ip-row"><span class="k mono">TANGGAL</span><span><strong>30 Jul &ndash; 1 Agu 2027</strong> &middot; Jumat&ndash;Minggu, 3 hari 2 malam</span></div>
-      <div class="ip-row"><span class="k mono">LOKASI</span><span><strong id="lokasi-detail">Golden Tulip Holland Resort, Batu</strong><br><a href="https://www.instagram.com/goldentuliphollandresortbatu/" target="_blank" rel="noopener">Lihat foto &amp; video hotelnya di Instagram &rarr;</a></span></div>
-      <div class="ip-row"><span class="k mono">BIAYA</span><span>Early Bird <strong>Rp 3.200.000</strong> &middot; Normal <strong>Rp 3.500.000</strong><br>Early Bird untuk <strong>100 pembayar pertama</strong> ATAU sampai <strong>31 Des 2026</strong>. <strong class="ip-note">Early Bird adalah harga bersubsidi khusus untuk Alumni &mdash; pasangan/tamu tetap dikenakan harga normal.</strong><br><a href="#keuangan">Rincian di section Keuangan &amp; Pembayaran &rarr;</a></span></div>
     </div>
     </div>
   </div>
