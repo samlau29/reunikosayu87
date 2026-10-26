@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Reuni Rubi 1987&ndash;2027 &middot; Tetap Bersemangat</title>
+<title>Reuni Rubi Kosayu87 &middot; 1987&ndash;2027</title>
 
 <!-- PWA: bisa di-"Add to Home Screen" jadi app di HP -->
 <link rel="manifest" href="manifest.json">
@@ -153,6 +153,13 @@
   @media (max-width:860px){
     .hero .wrap{grid-template-columns:1fr; text-align:left;}
   }
+  .hero-side{display:flex; flex-direction:column; gap:16px; min-width:0;}
+  .info-penting{background:#fff; border:1px solid var(--stamp-line); border-radius:14px; padding:14px 16px; display:flex; flex-direction:column; gap:10px; font-size:0.9rem; line-height:1.5;}
+  .info-penting .ip-row{display:flex; gap:10px; align-items:baseline;}
+  .info-penting .k{font-size:0.7rem; color:var(--ruby); min-width:62px; flex:none;}
+  .info-penting strong{color:var(--ruby-deep);}
+  .info-penting .ip-note{display:inline;}
+  .info-penting a{color:var(--ruby); font-weight:600;}
   .eyebrow{
     display:inline-flex; align-items:center; gap:8px;
     font-family:'IBM Plex Mono', monospace;
@@ -1425,13 +1432,14 @@
   <div class="wrap">
     <div>
       <span class="eyebrow">1987 &mdash; 2027</span>
-      <h1>Reuni Rubi<em>Tetap Bersemangat</em></h1>
+      <h1>Reuni Rubi<em>Kosayu87</em></h1>
       <p class="lede">Empat dekade sejak kita lulus, semangat almamater itu masih menyala. Reuni Rubi mengumpulkan kembali angkatan 1987 untuk tiga hari penuh cerita, tawa, dan kebersamaan.</p>
       <div class="hero-cta">
         <a href="#rsvp" class="btn btn-primary">Konfirmasi Kehadiran</a>
         <a href="#rundown" class="btn btn-ghost">Lihat Rundown Acara</a>
       </div>
     </div>
+    <div class="hero-side">
     <div class="ticket">
       <div class="ticket-main">
         <div class="tag">Tiket Reuni &middot; Angkatan 87</div>
@@ -1444,6 +1452,12 @@
         </div>
       </div>
       <div class="ticket-stub">ANGKATAN &middot; 1987</div>
+    </div>
+    <div class="info-penting" id="acara">
+      <div class="ip-row"><span class="k mono">TANGGAL</span><span><strong>30 Jul &ndash; 1 Agu 2027</strong> &middot; Jumat&ndash;Minggu, 3 hari 2 malam</span></div>
+      <div class="ip-row"><span class="k mono">LOKASI</span><span><strong id="lokasi-detail">Golden Tulip Holland Resort, Batu</strong><br><a href="https://www.instagram.com/goldentuliphollandresortbatu/" target="_blank" rel="noopener">Lihat foto &amp; video hotelnya di Instagram &rarr;</a></span></div>
+      <div class="ip-row"><span class="k mono">BIAYA</span><span>Early Bird <strong>Rp 3.200.000</strong> &middot; Normal <strong>Rp 3.500.000</strong><br>Early Bird untuk <strong>100 pembayar pertama</strong> ATAU sampai <strong>31 Des 2026</strong>. <strong class="ip-note">Early Bird adalah harga bersubsidi khusus untuk Alumni &mdash; pasangan/tamu tetap dikenakan harga normal.</strong><br><a href="#keuangan">Rincian di section Keuangan &amp; Pembayaran &rarr;</a></span></div>
+    </div>
     </div>
   </div>
 </header>
@@ -1509,33 +1523,6 @@
     <div class="practical-box reveal">
       <h4>&#128203; Kenapa Daftar Awal Juga Membantu Panitia</h4>
       <p>Selain soal kebersamaan, ada alasan praktis juga: panitia butuh <strong>jumlah peserta yang akurat</strong> untuk reservasi hotel, negosiasi konsumsi, cetak kaos/merchandise, dan keperluan lainnya. Sebagian besar vendor (hotel, dsb) juga minta <strong>deposit di muka</strong> saat booking &mdash; jadi dukungan dana dari alumni yang sudah pasti hadir sangat membantu proses ini berjalan lancar.</p>
-    </div>
-  </div>
-</section>
-
-<section id="acara">
-  <div class="wrap">
-    <div class="section-head reveal">
-      <span class="eyebrow">Detail Acara</span>
-      <h2>Info Penting</h2>
-      <p>Venue sudah final dan biaya sudah ditetapkan &mdash; catat semuanya di bawah ini.</p>
-    </div>
-    <div class="tema-grid">
-      <div class="tema-card reveal">
-        <div class="num mono">TGL</div>
-        <h3>30 Jul &ndash; 1 Agu 2027</h3>
-        <p>Jumat sampai Minggu, 3 hari 2 malam.</p>
-      </div>
-      <div class="tema-card reveal">
-        <div class="num mono">LOKASI</div>
-        <h3 id="lokasi-detail">Golden Tulip Holland Resort, Batu</h3>
-        <p><a href="https://www.instagram.com/goldentuliphollandresortbatu/" target="_blank" rel="noopener" style="color:var(--ruby); font-weight:600;">Lihat foto &amp; video hotelnya di Instagram &rarr;</a></p>
-      </div>
-      <div class="tema-card reveal">
-        <div class="num mono">BIAYA</div>
-        <h3 style="font-size:1.05rem; line-height:1.6;">Early Bird <strong style="color:var(--ruby-deep);">Rp 3.200.000</strong><br>Normal <strong style="color:var(--ruby-deep);">Rp 3.500.000</strong></h3>
-        <p>Early Bird untuk <strong>100 pembayar pertama</strong> <strong>ATAU sampai 31 Desember 2026</strong>, mana yang lebih dulu tercapai. <strong style="color:var(--ruby-deep);">Early Bird adalah harga bersubsidi khusus untuk Alumni &mdash; pasangan/tamu tetap dikenakan harga normal.</strong> Rincian lengkap di <a href="#keuangan" style="color:var(--ruby); font-weight:600;">section Keuangan &amp; Pembayaran &rarr;</a></p>
-      </div>
     </div>
   </div>
 </section>
