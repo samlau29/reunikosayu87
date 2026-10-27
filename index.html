@@ -655,6 +655,11 @@
   }
   .alumni-row.confirmed .alumni-name{ font-weight:600; }
   .alumni-row.deceased{ opacity:0.55; }
+  .biaya-collapse > summary{ list-style:none; cursor:pointer; text-align:center; position:relative; padding-right:24px; }
+  .biaya-collapse > summary::-webkit-details-marker{ display:none; }
+  .biaya-collapse > summary::after{ content:"+"; position:absolute; right:4px; top:4px; font-family:'IBM Plex Mono',monospace; color:var(--gold); font-size:1.2rem; }
+  .biaya-collapse[open] > summary::after{ content:"–"; }
+  .alumni-alm-label{ font-family:'IBM Plex Mono',monospace; font-size:0.72rem; letter-spacing:0.06em; text-transform:uppercase; color:rgba(37,28,24,0.55); border-top:1px solid var(--stamp-line); margin-top:10px; padding:10px 4px 2px; }
   .alumni-row.deceased .alumni-tick{ border-color:transparent; }
   .alumni-photo{
     width:32px; height:32px; border-radius:50%;
@@ -1414,7 +1419,7 @@
       <a href="#tema">Tema</a>
       <a href="#acara">Acara</a>
       <a href="#rundown">Rundown</a>
-      <a href="#rsvp">Konfirmasi</a>
+      <a href="#rsvp">Pendaftaran</a>
       <a href="#daftar-alumni">Daftar Alumni</a>
       <a href="#ulang-tahun">Ulang Tahun</a>
       <a href="#tebak-siapa-aku">Tebak Siapa Aku</a>
@@ -1438,7 +1443,7 @@
       <h1>Reuni Rubi<em>Kosayu87</em></h1>
       <p class="lede">Empat dekade sejak kita lulus, semangat almamater itu masih menyala. Reuni Rubi mengumpulkan kembali angkatan 1987 untuk tiga hari penuh cerita, tawa, dan kebersamaan.</p>
       <div class="hero-cta">
-        <a href="#rsvp" class="btn btn-primary">Konfirmasi Kehadiran</a>
+        <a href="#rsvp" class="btn btn-primary">Pendaftaran</a>
         <a href="#rundown" class="btn btn-ghost">Lihat Rundown Acara</a>
       </div>
     </div>
@@ -1619,8 +1624,8 @@
 <section class="rsvp" id="rsvp">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Konfirmasi</span>
-      <h2>Konfirmasi Kehadiran &amp; Data Diri</h2>
+      <span class="eyebrow">Pendaftaran</span>
+      <h2>Pendaftaran &amp; Data Diri</h2>
       <p>Isi form di bawah untuk konfirmasi kehadiran sekaligus update data diri kamu (kota, WhatsApp, email) &mdash; cukup sekali isi.</p>
     </div>
 
@@ -1642,7 +1647,7 @@
         frameborder="0"
         marginheight="0"
         marginwidth="0"
-        title="Form Konfirmasi Kehadiran & Data Diri">
+        title="Form Pendaftaran & Data Diri">
         Memuat form&hellip;
       </iframe>
       <div class="rsvp-fallback">
@@ -2094,8 +2099,8 @@
     </div>
 
     <div class="live-report-box reveal" id="biayaPerOrangBox" style="text-align:left; border-style:solid;">
-      <div class="lr-title" style="text-align:center;">Estimasi Biaya Dasar Acara</div>
-      <p style="font-size:0.78rem; color:rgba(37,28,24,0.5); text-align:center; margin-top:2px; font-style:italic;">(bukan harga tiket yang kamu bayar)</p>
+      <details class="biaya-collapse">
+      <summary><span class="lr-title" style="display:inline;">Estimasi Biaya Dasar Acara</span><br><span style="font-size:0.78rem; color:rgba(37,28,24,0.5); font-style:italic;">(bukan harga tiket yang kamu bayar) &mdash; klik untuk lihat rincian</span></summary>
 
       <div style="margin:14px 0; padding:14px 16px; background:rgba(124,31,43,0.1); border:2px solid var(--ruby); border-radius:8px; text-align:center;">
         <p style="font-size:0.95rem; color:var(--ruby-deep); margin:0; font-weight:700;">&#9888;&#65039; Tabel di bawah ini BUKAN harga yang kamu bayar</p>
@@ -2153,6 +2158,7 @@
       <p style="font-size:0.78rem; color:rgba(37,28,24,0.5); margin-top:14px; font-style:italic; text-align:center;">Angka ini sudah termasuk dana cadangan. Ingat: yang kamu bayar tetap <strong>Rp 3.200.000 (Early Bird) atau Rp 3.500.000 (Normal)</strong> &mdash; bukan Rp 3.900.000 di atas.</p>
 
       <div id="biayaPerOrangBreakdown"></div>
+      </details>
     </div>
 
     <div class="prize-box reveal" style="margin-top:20px;">
@@ -2643,7 +2649,8 @@
     "Iwan Kurniawan", "Budi Santoso", "Eko Santoso", "Ang Giok Hwa",
     "Wijaya Suwono", "Prilianto", "Firman Setiawan",
     "Oei Yan An / Andi Winarko", "Henry Edward Kahermadi",
-    "Liaw Gi Hian", "Hendy Wendjaja", "Tjin Tjee Sin", "Indahwati Budiardjo"
+    "Liaw Gi Hian", "Hendy Wendjaja", "Tjin Tjee Sin", "Indahwati Budiardjo",
+    "Sia Kok Wee"
   ].map(normalizeName);
   let deceasedNames = [];
 
@@ -2845,11 +2852,16 @@
       const membersSorted = members.slice().sort((a, b) => {
         const aConfirmed = !isDeceased(a.n) && isConfirmed(a.n, a.d);
         const bConfirmed = !isDeceased(b.n) && isConfirmed(b.n, b.d);
+        const aDec = isDeceased(a.n), bDec = isDeceased(b.n);
+        if(aDec !== bDec) return aDec ? 1 : -1;   // yang berpulang selalu di paling bawah
         if(aConfirmed !== bConfirmed) return aConfirmed ? -1 : 1;
         return a.n.localeCompare(b.n);
       });
+      let deceasedLabelShown = false;
       const rows = membersSorted.map(a => {
         const deceased = isDeceased(a.n);
+        let deceasedLabel = '';
+        if(deceased && !deceasedLabelShown){ deceasedLabelShown = true; deceasedLabel = '<div class="alumni-alm-label">&#128330;&#65039; Telah berpulang</div>'; }
         const confirmed = !deceased && isConfirmed(a.n, a.d);
         if(confirmed) totalConfirmed++;
         const duluTag = a.d ? ` <span class="alumni-dulu">(dulu: ${escapeHtmlAlumni(a.d)})</span>` : '';
@@ -2882,7 +2894,7 @@
         const photoHtml = a.photo
           ? `<img class="alumni-photo" src="${a.photo}" alt="">`
           : `<img class="alumni-photo" src="${getCartoonAvatarUrl(a.n)}" alt="">`;
-        return `<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
+        return `${deceasedLabel}<div class="alumni-row ${confirmed ? 'confirmed' : ''} ${deceased ? 'deceased' : ''}">
           <div class="alumni-tick">&#10003;</div>
           ${photoHtml}
           <div class="alumni-name">${escapeHtmlAlumni(a.n)}${duluTag}${deceased ? ' <span class="alumni-alm">&#10014;</span>' : ''}${jumlahHtml}${waHtml}${paidHtml}${shirtHtml}${qrBtnHtml}</div>
