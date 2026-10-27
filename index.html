@@ -2586,6 +2586,10 @@
       const nameIdx = findNameColumnIndex(header);
       const jumlahIdx = header.findIndex(h => h.includes('jumlah'));
       const waColIdx = header.findIndex(h => h.includes('whatsapp') || h.includes('nomor wa'));
+      // Kolom nama ketik-sendiri untuk Alumni SMP / Kelas 2-3 (opsi dropdown-nya sama untuk semua
+      // orang, jadi kalau dipakai sebagai kunci, beberapa orang SMP akan tergabung jadi 1 entri)
+      const smpFreeIdx2 = header.findIndex(h => h.includes('smp') && (h.includes('tulis') || h.includes('nama kamu')));
+      const kelas23FreeIdx2 = header.findIndex(h => h.includes('kelas 2') && (h.includes('tulis') || h.includes('nama kamu')));
       if(nameIdx === -1) return;
 
       // Kumpulkan per-nama (bukan per-baris) — kalau nama sama muncul lebih dari sekali (misal
@@ -2594,7 +2598,15 @@
       const perNama = {};
       lines.slice(1).forEach(line => {
         const cols = parseCsvLine(line);
-        const nm = normalizeName(extractPlainName(cols[nameIdx] ? cols[nameIdx].replace(/"/g,'') : ''));
+        const rawSel = cols[nameIdx] ? cols[nameIdx].replace(/"/g,'').trim() : '';
+        const selLower = rawSel.toLowerCase();
+        let keyName = rawSel;
+        if(selLower.includes('alumni smp kosayu') && smpFreeIdx2 > -1){
+          keyName = (cols[smpFreeIdx2] || '').replace(/"/g,'').trim() || rawSel;
+        } else if((selLower.includes('alumni kelas 2') || selLower.includes('tidak mulai dari kelas 1')) && kelas23FreeIdx2 > -1){
+          keyName = (cols[kelas23FreeIdx2] || '').replace(/"/g,'').trim() || rawSel;
+        }
+        const nm = normalizeName(extractPlainName(keyName));
         if(!nm) return;
         const rawJumlah = jumlahIdx > -1 ? (cols[jumlahIdx] || '').replace(/"/g,'').trim() : '';
         const jumlah = rawJumlah === '' ? 1 : parseInt(rawJumlah, 10); // kosong = anggap 1 orang
