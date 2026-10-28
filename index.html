@@ -4164,7 +4164,7 @@
       const manualHtml = roomGroups.map(names => `
         <div class="room-group-card">
           <span class="room-group-icon">&#127976;</span>
-          <span class="room-group-names">${names.map(n => escapeHtmlAlumni(n)).join(', ')}</span>
+          <span class="room-group-names">${names.map(n => escapeHtmlAlumni(n)).join(' <span style="color:var(--gold); font-weight:700; margin:0 4px;">+</span> ')}</span>
         </div>
       `).join('');
       const autoHtml = autoFamilyGroups.map(a => {
