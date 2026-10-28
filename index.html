@@ -2937,7 +2937,7 @@
         </div>`;
       }).join('');
       html += `<details class="alumni-class">
-        <summary>Kelas ${k} <span class="class-count">${members.length} alumni</span></summary>
+        <summary>Kelas ${k} <span class="class-count">${members.filter(a => !isDeceased(a.n)).length} alumni${(n => n ? ` &middot; ${n} berpulang` : '')(members.filter(a => isDeceased(a.n)).length)}</span></summary>
         <div class="alumni-rows">${rows}</div>
       </details>`;
     });
@@ -3000,8 +3000,10 @@
 
     const stats = classKeys.map(k => {
       const members = classes[k];
-      const confirmed = members.filter(a => !isDeceased(a.n) && isConfirmed(a.n, a.d)).length;
-      return { k, confirmed, total: members.length, pct: members.length ? (confirmed/members.length*100) : 0 };
+      // Pembagi = alumni yang masih aktif saja (yang sudah berpulang tidak dihitung), supaya adil antar kelas
+      const active = members.filter(a => !isDeceased(a.n));
+      const confirmed = active.filter(a => isConfirmed(a.n, a.d)).length;
+      return { k, confirmed, total: active.length, pct: active.length ? (confirmed/active.length*100) : 0 };
     });
 
     const maxPct = Math.max(...stats.map(s => s.pct), 0);
