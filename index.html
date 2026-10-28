@@ -623,7 +623,7 @@
   }
   .alumni-class summary{
     list-style:none; cursor:pointer;
-    display:grid; grid-template-columns:1fr auto auto; align-items:center; column-gap:12px;
+    display:grid; grid-template-columns:1fr auto auto; grid-auto-flow:dense; align-items:center; column-gap:12px; row-gap:4px;
     padding:16px 22px;
     font-family:'Fraunces', serif; font-weight:600; font-size:1.02rem;
     color:var(--ruby-deep);
@@ -638,6 +638,9 @@
     color:var(--gold); font-size:1.1rem;
   }
   .alumni-class[open] > summary::after{content:"–";}
+  @media (max-width:640px){
+    .alumni-class summary .class-count.hint{ grid-column:1 / -1; text-align:left; white-space:normal; }
+  }
   .alumni-rows{ padding:0 22px 18px; }
   .alumni-row{
     display:flex; align-items:center; gap:10px;
@@ -1512,10 +1515,13 @@
   <div class="wrap">
     <div class="section-head reveal">
       <span class="eyebrow">Rundown</span>
-      <h2>Rangkaian 3 Hari &mdash; DRAFT ONLY. Akan di-update oleh panitia sesudah rapat acara</h2>
-      <p>Klik tiap hari untuk lihat detail acara.</p>
+      <h2>Rangkaian 3 Hari</h2>
+      <p>Masih <strong>draft</strong> &mdash; akan di-update panitia sesudah rapat acara.</p>
     </div>
 
+    <details class="alumni-class bonus-item" id="rundown-wrap" data-auto-open>
+      <summary>&#128197; Lihat Rundown Acara <span class="class-count">draft</span></summary>
+      <div class="alumni-rows" style="padding-top:14px;">
     <details class="rundown-day reveal" open>
       <summary>Hari 1 &middot; Kedatangan &amp; Welcome <span class="day-date">Jumat, 30 Jul</span></summary>
       <div class="rundown-list">
@@ -1533,7 +1539,7 @@
       </div>
 
       <details class="alumni-class" style="margin:14px 22px 0;">
-        <summary style="font-size:0.88rem;">&#127918; Cara Main: Human Bingo <span class="class-count">baca dulu biar nggak canggung hari-H</span></summary>
+        <summary style="font-size:0.88rem;">&#127918; Cara Main: Human Bingo <span class="class-count hint">baca dulu biar nggak canggung hari-H</span></summary>
         <div class="alumni-rows" style="padding:4px 22px 16px;">
           <ol style="margin:0; padding-left:18px; line-height:1.8;">
             <li>Ambil 1 kartu bingo di meja registrasi (isinya 25 kotak pernyataan, sama untuk semua orang)</li>
@@ -1546,7 +1552,7 @@
       </details>
 
       <details class="alumni-class" style="margin:14px 22px 0;">
-        <summary style="font-size:0.88rem;">&#128172; Cara Main: Crosstown Connections <span class="class-count">baca dulu biar nggak canggung hari-H</span></summary>
+        <summary style="font-size:0.88rem;">&#128172; Cara Main: Crosstown Connections <span class="class-count hint">baca dulu biar nggak canggung hari-H</span></summary>
         <div class="alumni-rows" style="padding:4px 22px 16px;">
           <ol style="margin:0; padding-left:18px; line-height:1.8;">
             <li>MC contohkan 1 jenis salam ke sukarelawan (misal: tos/high-five)</li>
@@ -1560,7 +1566,7 @@
       </details>
 
       <details class="alumni-class" style="margin:10px 22px 18px;">
-        <summary style="font-size:0.88rem;">&#128172; Cara Main: Identity Crisis <span class="class-count">baca dulu biar nggak canggung hari-H</span></summary>
+        <summary style="font-size:0.88rem;">&#128172; Cara Main: Identity Crisis <span class="class-count hint">baca dulu biar nggak canggung hari-H</span></summary>
         <div class="alumni-rows" style="padding:4px 22px 16px;">
           <ol style="margin:0; padding-left:18px; line-height:1.8;">
             <li>Tulis nama sendiri + 2-3 fakta singkat (kota tinggal, pekerjaan, hobi, dll) di kartu kecil</li>
@@ -1594,7 +1600,7 @@
       </div>
 
       <details class="alumni-class" style="margin:14px 22px 18px;">
-        <summary style="font-size:0.88rem;">&#127939; Cara Main: Amazing Race Mini <span class="class-count">baca dulu biar nggak bingung hari-H</span></summary>
+        <summary style="font-size:0.88rem;">&#127939; Cara Main: Amazing Race Mini <span class="class-count hint">baca dulu biar nggak bingung hari-H</span></summary>
         <div class="alumni-rows" style="padding:4px 22px 16px;">
           <ol style="margin:0; padding-left:18px; line-height:1.8;">
             <li>Peserta dibagi jadi <strong>beberapa tim seimbang</strong> (pembagian diatur panitia hari-H)</li>
@@ -1617,6 +1623,8 @@
         <div class="rundown-row"><span class="time">12.30&ndash;13.00</span><span>Perjalanan ke lokasi makan siang</span></div>
         <div class="rundown-row"><span class="time">13.00&ndash;14.30</span><span>Makan siang bersama <em>(di luar hotel)</em></span></div>
         <div class="rundown-row"><span class="time">14.30&ndash;15.30</span><span>Waktu bebas belanja oleh-oleh <em>(untuk yang mau, sebelum menuju bandara/stasiun)</em></span></div>
+      </div>
+    </details>
       </div>
     </details>
   </div>
@@ -4261,7 +4269,7 @@
   // Tebak Siapa Aku & Papan Kenangan ada di dalam lipatan "Bonus": buka otomatis kalau link/menu menuju ke sana
   function openBonusFor(hash){
     const t = hash && document.querySelector(hash);
-    const d = t && t.closest && t.closest('details.bonus-item');
+    const d = t && t.closest && (t.closest('details.bonus-item') || t.querySelector('details.bonus-item[data-auto-open]'));
     if(d && !d.open){ d.open = true; setTimeout(()=>t.scrollIntoView({behavior:'smooth'}), 50); }
   }
   document.addEventListener('click', e=>{ const a=e.target.closest('a[href^="#"]'); if(a) openBonusFor(a.getAttribute('href')); });
