@@ -502,6 +502,14 @@
     background:var(--cream-white);
     display:block;
   }
+  .recent-reg{ background:var(--cream-white); color:var(--ink); border-radius:12px; padding:16px 18px; margin-top:18px; box-shadow:8px 8px 0 rgba(0,0,0,0.15); }
+  .recent-reg-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; color:var(--ruby-deep); margin-bottom:8px; }
+  .recent-reg-row{ display:grid; grid-template-columns:64px 1fr auto; gap:10px; align-items:baseline; padding:7px 0; border-top:1px dashed var(--stamp-line); font-size:0.9rem; }
+  .recent-reg-row:first-child{ border-top:none; }
+  .recent-reg-row .rr-date{ font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--ruby); }
+  .recent-reg-row .rr-jml{ font-family:'IBM Plex Mono',monospace; font-size:0.78rem; color:var(--pine); white-space:nowrap; }
+  .recent-reg-row .rr-tag{ font-size:0.72rem; color:rgba(37,28,24,0.5); margin-left:6px; }
+  .recent-reg-empty{ font-size:0.86rem; color:rgba(37,28,24,0.55); padding:4px 0; }
   .rsvp-fallback{ text-align:center; margin-top:14px; }
   .rsvp-note{
     font-size:0.8rem; color:rgba(37,28,24,0.55);
@@ -1663,6 +1671,14 @@
         Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSc1KVHMP2Gptky2VdRebjrfPGXKhAbUJc3NHdh3nTsV0acC9w/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
       </div>
       <div class="rsvp-note">Data hanya digunakan panitia untuk keperluan reuni Angkatan 1987.</div>
+    </div>
+
+    <div class="recent-reg reveal" id="recentRegBox">
+      <div class="recent-reg-title">&#127881; Pendaftar 3 Hari Terakhir</div>
+      <div id="recentRegList" class="recent-reg-list"><div class="recent-reg-empty">Memuat&hellip;</div></div>
+    </div>
+
+    <div>
       <p style="text-align:center; margin-top:16px; font-size:0.85rem; color:rgba(251,247,237,0.7);">Belum siap konfirmasi hadir tapi mau update data kontak? <a href="#update-data" style="color:var(--gold); font-weight:600;">Klik di sini &darr;</a></p>
     </div>
   </div>
@@ -2597,6 +2613,47 @@
   let smpNames = [];
   let kelas23Names = [];
 
+  // ---------- PENDAFTAR 3 HARI TERAKHIR (kotak kecil di bawah form Pendaftaran) ----------
+  const RECENT_REG_DAYS = 3;
+  function parseSheetTimestamp(str){
+    // Format Google Form: "28/10/2026 14:11:20" (dd/mm/yyyy). Kalau format lain, coba Date() biasa.
+    const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/.exec((str||'').trim());
+    if(m) return new Date(+m[3], +m[2]-1, +m[1], +(m[4]||0), +(m[5]||0), +(m[6]||0));
+    const d = new Date(str); return isNaN(d) ? null : d;
+  }
+  function renderRecentRegistrants(lines, header, nameIdx, jumlahIdx, smpIdx, k23Idx){
+    const list = document.getElementById('recentRegList');
+    if(!list) return;
+    const tsIdx = header.findIndex(h => h.includes('timestamp') || h.includes('waktu'));
+    if(tsIdx === -1){ list.innerHTML = '<div class="recent-reg-empty">Data tanggal tidak tersedia.</div>'; return; }
+    const cutoff = new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate() - (RECENT_REG_DAYS - 1));
+    const seen = {}; const rows = [];
+    lines.slice(1).forEach(line => {
+      const cols = parseCsvLine(line);
+      const ts = parseSheetTimestamp((cols[tsIdx]||'').replace(/"/g,''));
+      const rawSel = (cols[nameIdx]||'').replace(/"/g,'').trim();
+      const sel = rawSel.toLowerCase();
+      let nama = rawSel;
+      if(sel.includes('alumni smp kosayu') && smpIdx > -1) nama = (cols[smpIdx]||'').replace(/"/g,'').trim() || rawSel;
+      else if((sel.includes('alumni kelas 2') || sel.includes('tidak mulai dari kelas 1')) && k23Idx > -1) nama = (cols[k23Idx]||'').replace(/"/g,'').trim() || rawSel;
+      nama = extractPlainName(nama);
+      if(!nama || !ts) return;
+      const key = normalizeName(nama);
+      const isUpdate = !!seen[key]; seen[key] = true;   // nama sudah pernah muncul di baris lebih awal = kirim ulang
+      const rawJ = jumlahIdx > -1 ? (cols[jumlahIdx]||'').replace(/"/g,'').trim() : '';
+      const jml = rawJ === '' ? 1 : (parseInt(rawJ,10) || 0);
+      if(ts >= cutoff) rows.push({ts, nama, jml, isUpdate});
+    });
+    rows.sort((a,b) => b.ts - a.ts);
+    if(rows.length === 0){ list.innerHTML = `<div class="recent-reg-empty">Belum ada pendaftar baru dalam ${RECENT_REG_DAYS} hari terakhir.</div>`; return; }
+    const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+    list.innerHTML = rows.map(r => `<div class="recent-reg-row">
+      <span class="rr-date">${r.ts.getDate()} ${bulan[r.ts.getMonth()]}</span>
+      <span>${escapeHtmlAlumni(r.nama)}${r.isUpdate ? '<span class="rr-tag">(update)</span>' : ''}</span>
+      <span class="rr-jml">${r.jml} orang</span>
+    </div>`).join('');
+  }
+
   async function loadConfirmedNames(){
     if(!RSVP_CSV_URL) return;
     try{
@@ -2638,6 +2695,8 @@
           wa: wa
         };
       });
+
+      try{ renderRecentRegistrants(lines, header, nameIdx, jumlahIdx, smpFreeIdx2, kelas23FreeIdx2); }catch(e){ console.error('recent reg', e); }
 
       // Batal hadir: kalau orang edit Jumlah Hadir jadi 0, dianggap batal (tidak ikut hitungan,
       // tidak tercentang lagi di Daftar Alumni)
