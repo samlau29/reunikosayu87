@@ -695,6 +695,10 @@
     margin-top:6px; font-size:0.75rem; color:rgba(37,28,24,0.5);
     font-family:'IBM Plex Mono',monospace;
   }
+  .wajah-class-tabs{ display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin:-8px auto 22px; }
+  .wajah-class-btn{ padding:6px 14px; border-radius:20px; border:1px solid var(--stamp-line); background:transparent; color:var(--ink); font-family:'IBM Plex Mono',monospace; font-size:0.78rem; cursor:pointer; }
+  .wajah-class-btn.active{ background:var(--ruby); color:var(--cream-white); border-color:var(--ruby); }
+  .wajah-card-kelas{ font-family:'IBM Plex Mono',monospace; font-size:0.62rem; color:var(--ruby); opacity:0.8; }
   .wajah-grid{
     display:grid; grid-template-columns:repeat(auto-fill, minmax(110px, 1fr));
     gap:14px;
@@ -1875,6 +1879,18 @@
     <div class="wajah-search-wrap reveal">
       <input type="text" id="wajahSearch" placeholder="&#128269; Cari nama...">
       <div class="wajah-count" id="wajahCount"></div>
+    </div>
+    <div class="wajah-class-tabs reveal" id="wajahClassTabs">
+      <button type="button" class="wajah-class-btn active" data-kelas="">Semua</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-1">I-1</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-2">I-2</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-3">I-3</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-4">I-4</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-5">I-5</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-6">I-6</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-7">I-7</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-8">I-8</button>
+      <button type="button" class="wajah-class-btn" data-kelas="I-9">I-9</button>
     </div>
     <div id="wajahGrid" class="wajah-grid reveal"></div>
   </div>
@@ -3127,10 +3143,11 @@
     // Tidak tampilkan foto alumni yang sudah berpulang di galeri publik ini (baik dari daftar
     // manual maupun dari update status via Form 2) — sebagai bentuk penghormatan.
     const withPhoto = alumniData.filter(a => a.photo && !isDeceased(a.n));
-    const filtered = withPhoto.filter(a => !term || normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term)));
+    const byClass = wajahClass ? withPhoto.filter(a => a.k === wajahClass) : withPhoto;
+    const filtered = byClass.filter(a => !term || normalizeName(a.n).includes(term) || (a.d && normalizeName(a.d).includes(term)));
     filtered.sort((a,b) => a.n.localeCompare(b.n));
 
-    if(countEl) countEl.textContent = `${withPhoto.length} foto tersedia`;
+    if(countEl) countEl.textContent = wajahClass ? `${byClass.length} foto · Kelas ${wajahClass}` : `${withPhoto.length} foto tersedia`;
 
     if(filtered.length === 0){
       grid.innerHTML = '<div class="wajah-empty">Nama tidak ditemukan di galeri foto.</div>';
@@ -3140,13 +3157,14 @@
     // Kalau lagi tidak nyari (term kosong) dan belum klik "Tampilkan Semua", batasi jumlah foto
     // yang di-render sekaligus — supaya halaman tidak kepanjangan & HP tidak kewalahan render
     // ratusan foto sekaligus. Kalau lagi nyari (ada term), tetap tampilkan semua hasil cocok.
-    const shouldLimit = !term && !wajahShowAll && filtered.length > WAJAH_INITIAL_COUNT;
+    const shouldLimit = !term && !wajahClass && !wajahShowAll && filtered.length > WAJAH_INITIAL_COUNT;
     const displayList = shouldLimit ? filtered.slice(0, WAJAH_INITIAL_COUNT) : filtered;
 
     let html = displayList.map(a => `
       <div class="wajah-card">
         <img src="${a.photo}" alt="${escapeHtmlAlumni(a.n)}" class="lightbox-trigger" data-group="wajah">
         <div class="wajah-card-name">${escapeHtmlAlumni(a.n)}</div>
+        <div class="wajah-card-kelas">Kelas ${escapeHtmlAlumni(a.k)}</div>
       </div>
     `).join('');
 
@@ -3171,6 +3189,14 @@
     forceRepaint(grid);
   }
 
+  let wajahClass = '';
+  document.querySelectorAll('.wajah-class-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      wajahClass = btn.dataset.kelas || '';
+      document.querySelectorAll('.wajah-class-btn').forEach(b => b.classList.toggle('active', b === btn));
+      renderWajahGrid(document.getElementById('wajahSearch') ? document.getElementById('wajahSearch').value : '');
+    });
+  });
   const wajahSearchInput = document.getElementById('wajahSearch');
   if(wajahSearchInput){
     wajahSearchInput.addEventListener('input', (e) => renderWajahGrid(e.target.value));
