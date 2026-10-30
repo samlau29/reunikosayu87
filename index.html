@@ -281,12 +281,20 @@
     order:-2;
     display:flex; flex-direction:column; justify-content:center;
   }
-  .cd-col{ order:-2; display:flex; flex-direction:column; gap:10px; flex:1 1 320px; max-width:420px; margin:0 8px 10px; }
-  .cd-col .cd-item-link{ order:0; width:auto; flex-basis:auto; margin-bottom:0; }
-  .cd-col .recent-reg{ margin-top:0; box-shadow:none; padding:12px 14px; }
-  .cd-col .recent-reg-title{ font-size:0.95rem; }
-  .cd-col .recent-reg-row{ font-size:0.86rem; padding:5px 0; }
-  @media (max-width:640px){ .cd-col{ flex-basis:100%; max-width:none; margin:0 0 10px; } }
+  .cd-pairs{ order:-2; flex-basis:100%; display:grid; grid-template-columns:1fr 1fr; gap:16px; max-width:900px; margin:0 auto 14px; align-items:stretch; }
+  .cd-pairs .cd-item-link{ order:0; width:auto; flex-basis:auto; margin:0; border-right:1px solid rgba(199,154,62,0.35); justify-content:flex-start; padding:14px 18px 16px; }
+  .cd-pairs .cd-cta-hint{ margin-top:auto; display:block; text-align:center; }
+  .cd-recent{ text-align:left; border-top:1px dashed rgba(251,247,237,0.22); margin:12px 0 12px; padding-top:10px; }
+  .cd-recent-title{ font-family:'Fraunces',serif; font-weight:700; font-size:0.92rem; color:var(--cream-white); margin-bottom:4px; }
+  .cd-recent .recent-reg-row{ border-top-color:rgba(251,247,237,0.15); font-size:0.84rem; padding:5px 0; color:var(--cream-white); grid-template-columns:52px 1fr auto; }
+  .cd-recent .recent-reg-row .rr-date{ color:var(--gold); }
+  .cd-recent .recent-reg-row .rr-jml{ color:rgba(251,247,237,0.75); }
+  .cd-recent .recent-reg-empty{ color:rgba(251,247,237,0.55); }
+  .cd-p1{ grid-column:1; } .cd-p2{ grid-column:2; }
+  @media (max-width:640px){
+    .cd-pairs{ grid-template-columns:1fr; }
+    .cd-p1,.cd-p2{ grid-column:1; }
+  }
   .cd-item-link:hover{ opacity:0.85; transform:translateY(-2px); }
   .cd-item-link .cd-label{ color:var(--gold); font-weight:600; }
   .cd-cta-hint{
@@ -1510,19 +1518,29 @@
     <div class="cd-item"><div class="cd-num" id="cd-hours">--</div><div class="cd-label">Jam</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-mins">--</div><div class="cd-label">Menit</div></div>
     <div class="cd-item"><div class="cd-num" id="cd-secs">--</div><div class="cd-label">Detik</div></div>
-    <div class="cd-col">
-    <a href="#daftar-alumni" class="cd-item cd-item-link"><div class="cd-label">Alumni Terdaftar</div><div class="cd-num" id="cd-confirmed">--</div><div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div><div class="cd-sublabel">426 Alumni aktif, 33 sudah berpulang</div><div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div></a>
-      <div class="recent-reg" id="recentRegBox">
-        <div class="recent-reg-title">&#127881; Pendaftar 3 Hari Terakhir</div>
-        <div id="recentRegList" class="recent-reg-list"><div class="recent-reg-empty">Memuat&hellip;</div></div>
+    <div class="cd-pairs">
+    <a href="#daftar-alumni" class="cd-item cd-item-link cd-p1">
+      <div class="cd-label">Alumni Terdaftar</div>
+      <div class="cd-num" id="cd-confirmed">--</div>
+      <div class="cd-sublabel" id="cd-total-attending" style="font-weight:700; color:var(--gold); font-size:0.72rem;"></div>
+      <div class="cd-sublabel">426 Alumni aktif, 33 sudah berpulang</div>
+      <div class="cd-recent" id="recentRegBox">
+        <div class="cd-recent-title">&#127881; 3 Pendaftar Terakhir</div>
+        <div id="recentRegList"><div class="recent-reg-empty">Memuat&hellip;</div></div>
       </div>
-    </div>
-    <div class="cd-col">
-    <a href="#keuangan" class="cd-item cd-item-link"><div class="cd-label">Sudah Bayar/Nabung</div><div class="cd-num" id="cd-paid-count">--</div><div class="cd-sublabel" style="font-weight:700; color:var(--gold); font-size:0.72rem;">termasuk Early Bird</div><div class="cd-sublabel">Kuota Early Bird 100 orang pertama</div><div class="cd-cta-hint">&#128176; Cek Progress Early Bird</div></a>
-      <div class="recent-reg" id="recentPayBox">
-        <div class="recent-reg-title">&#128176; Bayar/Nabung 3 Hari Terakhir</div>
-        <div id="recentPayList" class="recent-reg-list"><div class="recent-reg-empty">Memuat&hellip;</div></div>
+      <div class="cd-cta-hint">&#128071; Lihat Siapa yang Sudah Daftar</div>
+    </a>
+    <a href="#keuangan" class="cd-item cd-item-link cd-p2">
+      <div class="cd-label">Sudah Bayar/Nabung</div>
+      <div class="cd-num" id="cd-paid-count">--</div>
+      <div class="cd-sublabel" style="font-weight:700; color:var(--gold); font-size:0.72rem;">termasuk Early Bird</div>
+      <div class="cd-sublabel">Kuota Early Bird 100 orang pertama</div>
+      <div class="cd-recent" id="recentPayBox">
+        <div class="cd-recent-title">&#128176; 3 Terakhir Bayar/Nabung</div>
+        <div id="recentPayList"><div class="recent-reg-empty">Memuat&hellip;</div></div>
       </div>
+      <div class="cd-cta-hint">&#128176; Cek Progress Early Bird</div>
+    </a>
     </div>
   </div>
 </div>
@@ -2642,8 +2660,8 @@
   let smpNames = [];
   let kelas23Names = [];
 
-  // ---------- PENDAFTAR 3 HARI TERAKHIR (kotak kecil di bawah form Pendaftaran) ----------
-  const RECENT_REG_DAYS = 3;
+  // ---------- 3 PENDAFTAR TERAKHIR (kotak kecil di bawah kartu Alumni Terdaftar) ----------
+  const RECENT_REG_COUNT = 3; // tampilkan N terakhir (bukan per tanggal), supaya kotak tidak pernah kosong
   function parseSheetTimestamp(str){
     // Format Google Form: "28/10/2026 14:11:20" (dd/mm/yyyy). Kalau format lain, coba Date() biasa.
     const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})(?:\s+(\d{1,2}):(\d{2})(?::(\d{2}))?)?/.exec((str||'').trim());
@@ -2655,7 +2673,6 @@
     if(!list) return;
     const tsIdx = header.findIndex(h => h.includes('timestamp') || h.includes('waktu'));
     if(tsIdx === -1){ list.innerHTML = '<div class="recent-reg-empty">Data tanggal tidak tersedia.</div>'; return; }
-    const cutoff = new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate() - (RECENT_REG_DAYS - 1));
     const seen = {}; const rows = [];
     lines.slice(1).forEach(line => {
       const cols = parseCsvLine(line);
@@ -2671,14 +2688,15 @@
       const isUpdate = !!seen[key]; seen[key] = true;   // nama sudah pernah muncul di baris lebih awal = kirim ulang
       const rawJ = jumlahIdx > -1 ? (cols[jumlahIdx]||'').replace(/"/g,'').trim() : '';
       const jml = rawJ === '' ? 1 : (parseInt(rawJ,10) || 0);
-      if(ts >= cutoff) rows.push({ts, nama, jml, isUpdate});
+      if(!isUpdate) rows.push({ts, nama, jml});   // kirim-ulang (update data) tidak dihitung pendaftar baru
     });
     rows.sort((a,b) => b.ts - a.ts);
-    if(rows.length === 0){ list.innerHTML = `<div class="recent-reg-empty">Belum ada pendaftar baru dalam ${RECENT_REG_DAYS} hari terakhir.</div>`; return; }
+    rows.splice(RECENT_REG_COUNT);
+    if(rows.length === 0){ list.innerHTML = '<div class="recent-reg-empty">Belum ada pendaftar.</div>'; return; }
     const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     list.innerHTML = rows.map(r => `<div class="recent-reg-row">
       <span class="rr-date">${r.ts.getDate()} ${bulan[r.ts.getMonth()]}</span>
-      <span>${escapeHtmlAlumni(r.nama)}${r.isUpdate ? '<span class="rr-tag">(update)</span>' : ''}</span>
+      <span>${escapeHtmlAlumni(r.nama)}</span>
       <span class="rr-jml">${r.jml} orang</span>
     </div>`).join('');
   }
@@ -3628,30 +3646,31 @@
     return digits ? parseInt(digits, 10) : 0;
   }
 
-  // ---------- BAYAR/NABUNG 3 HARI TERAKHIR (kotak kecil di bawah kartu Sudah Bayar/Nabung) ----------
+  // ---------- 3 TERAKHIR BAYAR/NABUNG (kotak kecil di bawah kartu Sudah Bayar/Nabung) ----------
   // Sumber: kolom "Tanggal Bayar Pertama" di sheet Bendahara — jadi yang tampil adalah orang yang
-  // MULAI bayar/nabung dalam 3 hari terakhir (cicilan lanjutan dari yang sudah mulai tidak terdeteksi).
+  // paling baru MULAI bayar/nabung (cicilan lanjutan dari yang sudah mulai tidak terdeteksi).
   function renderRecentPayers(lines, header, nameIdx, biayaIdx, dibayarIdx){
     const list = document.getElementById('recentPayList');
     if(!list) return;
     const tglIdx = header.findIndex(h => h.includes('tanggal') && h.includes('bayar'));
     const nickIdx = header.findIndex(h => h.includes('nama sekarang') || h.includes('panggilan'));
     if(tglIdx === -1){ list.innerHTML = '<div class="recent-reg-empty">Data tanggal bayar tidak tersedia.</div>'; return; }
-    const cutoff = new Date(); cutoff.setHours(0,0,0,0); cutoff.setDate(cutoff.getDate() - (RECENT_REG_DAYS - 1));
-    const rows = [];
+    const rows = []; const seenPay = {};
     lines.slice(1).forEach(line => {
       const cols = parseCsvLine(line);
       const ts = parseSheetTimestamp((cols[tglIdx]||'').replace(/"/g,''));
       let nama = (cols[nameIdx]||'').replace(/"/g,'').trim();
       if(nama.toLowerCase().includes('alumni smp kosayu') && nickIdx > -1) nama = (cols[nickIdx]||'').replace(/"/g,'').trim() || nama;
       nama = extractPlainName(nama);
-      if(!nama || !ts || ts < cutoff) return;
+      if(!nama || !ts) return;
+      const key = normalizeName(nama); if(seenPay[key]) return; seenPay[key] = true;
       const biaya = biayaIdx > -1 ? parseRupiah(cols[biayaIdx]||'') : 0;
       const dibayar = dibayarIdx > -1 ? parseRupiah(cols[dibayarIdx]||'') : 0;
       rows.push({ts, nama, lunas: biaya > 0 && dibayar >= biaya});
     });
     rows.sort((a,b) => b.ts - a.ts);
-    if(rows.length === 0){ list.innerHTML = `<div class="recent-reg-empty">Belum ada yang mulai bayar/nabung dalam ${RECENT_REG_DAYS} hari terakhir.</div>`; return; }
+    rows.splice(RECENT_REG_COUNT);
+    if(rows.length === 0){ list.innerHTML = '<div class="recent-reg-empty">Belum ada yang bayar/nabung.</div>'; return; }
     const bulan = ['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
     list.innerHTML = rows.map(r => `<div class="recent-reg-row">
       <span class="rr-date">${r.ts.getDate()} ${bulan[r.ts.getMonth()]}</span>
