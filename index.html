@@ -290,6 +290,11 @@
   .cd-recent .recent-reg-row .rr-date{ color:var(--gold); }
   .cd-recent .recent-reg-row .rr-jml{ color:rgba(251,247,237,0.75); }
   .cd-recent .recent-reg-empty{ color:rgba(251,247,237,0.55); }
+  /* Kartu kedua (Bayar/Nabung) dibedakan warnanya: nuansa hijau, bukan emas */
+  .cd-p2{ background:rgba(74,124,89,0.22); border-color:rgba(120,190,140,0.55); }
+  .cd-p2 .cd-label, .cd-p2 .cd-num, .cd-p2 .cd-sublabel[style*="var(--gold)"]{ color:#9FD9A8 !important; }
+  .cd-p2 .cd-recent .rr-date{ color:#9FD9A8; }
+  .cd-p2 .cd-cta-hint{ background:#6FBF80; color:#10251A; }
   .cd-p1{ grid-column:1; } .cd-p2{ grid-column:2; }
   @media (max-width:640px){
     .cd-pairs{ grid-template-columns:1fr; }
