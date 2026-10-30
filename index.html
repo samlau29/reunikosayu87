@@ -532,6 +532,8 @@
   .upg-row{ display:grid; grid-template-columns:1fr auto; gap:12px; align-items:center; padding:7px 0; }
   .upg-price{ color:var(--ruby-deep); white-space:nowrap; text-align:right; font-size:0.95rem; }
   .upg-price small{ font-size:0.72rem; font-weight:400; color:rgba(37,28,24,0.6); margin-left:3px; }
+  .update-list{ list-style:none; padding:0; margin:10px 0 12px; display:grid; gap:6px; font-size:0.95rem; }
+  .update-list li{ padding:8px 12px; background:var(--cream-white); border:1px solid var(--stamp-line); border-radius:8px; }
   .recent-reg{ background:var(--cream-white); color:var(--ink); border-radius:12px; padding:16px 18px; margin-top:18px; box-shadow:8px 8px 0 rgba(0,0,0,0.15); }
   .recent-reg-title{ font-family:'Fraunces',serif; font-weight:700; font-size:1.05rem; color:var(--ruby-deep); margin-bottom:8px; }
   .recent-reg-row{ display:grid; grid-template-columns:64px 1fr auto; gap:10px; align-items:baseline; padding:7px 0; border-top:1px dashed var(--stamp-line); font-size:0.9rem; }
@@ -1735,26 +1737,29 @@
 <section id="update-data">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Bantu Panitia</span>
-      <h2>Update Data &mdash; Diri Sendiri atau Teman</h2>
-      <p><strong>Bukan untuk daftar hadir.</strong> Form ini hanya untuk update kontak (WhatsApp, kota, email) &mdash; milik kamu sendiri atau teman angkatan 87 yang tidak aktif di grup. Pendaftaran tetap lewat form Pendaftaran di atas.</p>
+      <span class="eyebrow">Sudah Daftar?</span>
+      <h2>Update Data Pribadi</h2>
+      <p>Untuk yang <strong>sudah mendaftar</strong> dan mau mengubah atau melengkapi data sendiri:</p>
+      <ul class="update-list">
+        <li>&#128241; Nomor WhatsApp, kota, email</li>
+        <li>&#128085; Ukuran kaos</li>
+        <li>&#127958; Rencana extend stay (check-in lebih awal / check-out lebih lama)</li>
+      </ul>
+      <p style="font-size:0.88rem; opacity:0.75;">Kabar duka atau info tentang teman lain cukup disampaikan ke panitia lewat WA, tidak perlu lewat form ini.</p>
     </div>
 
     <details class="alumni-class bonus-item" id="update-data-wrap" data-auto-open>
-      <summary>&#9997;&#65039; Buka Form Update Data <span class="class-count">opsional</span></summary>
+      <summary>&#9997;&#65039; Buka Form Update Data</summary>
       <div class="alumni-rows" style="padding-top:14px;">
 
     <div class="quick-find-box reveal">
-      <label for="quickFindInput2" class="quick-find-label">&#128269; Cara Cepat: Ketik Nama (Kamu atau Teman)</label>
+      <label for="quickFindInput2" class="quick-find-label">&#128269; Cara Cepat: Ketik Nama Kamu</label>
       <input type="text" id="quickFindInput2" class="quick-find-input" placeholder="Contoh: Sam, Fany, Rifan...">
       <div id="quickFindResults2" class="quick-find-results"></div>
-      <p class="quick-find-hint">Klik nama yang dicari, form akan otomatis kebuka dengan nama sudah terisi &mdash; tidak perlu scroll dropdown panjang lagi.</p>
+      <p class="quick-find-hint">Klik nama kamu, form akan otomatis kebuka dengan nama sudah terisi &mdash; tidak perlu scroll dropdown panjang lagi.</p>
     </div>
 
     <div class="rsvp-form-wrap reveal">
-      <div style="background:var(--paper-warm); border:1px solid var(--stamp-line); border-radius:10px; padding:12px 16px; margin-bottom:18px; font-size:0.92rem; text-align:center; color:var(--ink,#251C18);">
-        &#128070; <strong style="color:var(--ruby-deep);">Alumni SMP Kosayu</strong> atau <strong style="color:var(--ruby-deep);">masuk dari Kelas 2/3</strong>? Silakan hubungi <strong style="color:var(--ruby-deep);">Sam Lau</strong> untuk mendaftar: <a href="https://wa.me/61433678700?text=Halo%20Sam%2C%20saya%20mau%20daftar%20Reuni%20Rubi%20Kosayu87" target="_blank" rel="noopener" style="color:var(--ruby); font-weight:700; white-space:nowrap;">&#128241; WA +61 433 678 700</a>
-      </div>
       <iframe
         src="https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform?embedded=true"
         width="100%"
@@ -1768,7 +1773,6 @@
       <div class="rsvp-fallback">
         Form tidak muncul? <a href="https://docs.google.com/forms/d/e/1FAIpQLSe9yv5WsxFGPzH8EK4VmcrgSLL2K9JNwA7b8KMOr6MVDfOemg/viewform" target="_blank" rel="noopener" class="btn btn-primary" style="margin-top:10px;">Buka Form di Tab Baru</a>
       </div>
-      <div class="rsvp-note">Tahu kontak lebih dari satu teman? Isi form ini beberapa kali, satu kali per orang.</div>
       <div class="rsvp-note">Data hanya digunakan panitia untuk keperluan reuni Angkatan 1987.</div>
     </div>
       </div>
@@ -1882,7 +1886,7 @@
       <span class="eyebrow">&#127958; Opsional</span>
       <h2>Mau Liburan Lebih Lama di Batu?</h2>
       <p>Mau check-in lebih awal 1-2 hari sebelum acara, atau check-out lebih lama 1-2 hari sesudahnya, buat liburan santai di Batu? Boleh banget &mdash; panitia bantu koordinasi ketersediaan kamar tambahan di hotel yang sama, tapi <strong>booking &amp; pembayaran malam tambahan ditanggung &amp; diurus sendiri langsung ke hotel</strong> (terpisah dari biaya reuni).</p>
-      <p style="font-size:0.85rem; opacity:0.75;">Isi lewat form Update Data (cari nama kamu di section Daftar Alumni). Ada pertanyaan opsional: boleh nama &amp; tanggal extend kamu ditampilkan di sini, supaya sesama alumni yang extend di tanggal berdekatan bisa saling kontak &amp; jalan bareng. Kalau nggak mau ditampilkan, tetap bisa isi &mdash; datanya cuma dipakai panitia buat koordinasi kamar.</p>
+      <p style="font-size:0.85rem; opacity:0.75;">Isi lewat <a href="#update-data" style="color:var(--ruby); font-weight:600;">form Update Data Pribadi</a>. Ada pertanyaan opsional: boleh nama &amp; tanggal extend kamu ditampilkan di sini, supaya sesama alumni yang extend di tanggal berdekatan bisa saling kontak &amp; jalan bareng. Kalau nggak mau ditampilkan, tetap bisa isi &mdash; datanya cuma dipakai panitia buat koordinasi kamar.</p>
     </div>
 
     <div id="extendStayList" class="reveal" style="margin-top:20px;"></div>
